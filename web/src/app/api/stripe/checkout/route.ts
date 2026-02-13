@@ -30,7 +30,7 @@ export async function POST() {
     customer: customerId,
     mode: "subscription",
     line_items: [{ price: priceId, quantity: 1 }],
-    success_url: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/pcs?subscribed=true`,
+    success_url: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/dispositivos?subscribed=true`,
     cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/pricing?canceled=true`,
     metadata: { clerk_user_id: userId },
   });

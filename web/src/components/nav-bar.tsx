@@ -14,6 +14,7 @@ import {
 import { Bars3Icon, BellIcon, XMarkIcon, Cog6ToothIcon, CreditCardIcon, ShieldCheckIcon } from "@heroicons/react/24/outline";
 import {
   SignInButton,
+  SignUpButton,
   SignedIn,
   SignedOut,
   UserButton,
@@ -32,14 +33,23 @@ export default function NavBar() {
   const { user } = useUser();
   const { isActive, isInGracePeriod, isPastDue, daysUntilBlock } = useSubscription();
 
+  const isLanding = pathname === "/";
+
   const navigation = [
     { name: "Dispositivos", href: "/dispositivos", current: pathname.startsWith("/dispositivos") || pathname.startsWith("/dispositivo/") },
     { name: "Download", href: "/download", current: pathname === "/download" },
     { name: "Configurações", href: "/settings", current: pathname.startsWith("/settings") },
   ];
 
+  const landingNav = [
+    { name: "Funcionalidades", href: "#features" },
+    { name: "Depoimentos", href: "#testimonials" },
+    { name: "FAQ", href: "#faq" },
+    { name: "Download", href: "/download" },
+  ];
+
   return (
-    <Disclosure as="nav" className="border-b border-gray-200 bg-white">
+    <Disclosure as="nav" className={isLanding ? "bg-white/80 backdrop-blur-lg border-b border-gray-200/50 sticky top-0 z-50" : "border-b border-gray-200 bg-white"}>
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -69,15 +79,45 @@ export default function NavBar() {
                     ))}
                   </div>
                 </SignedIn>
+                {isLanding && (
+                  <SignedOut>
+                    <div className="hidden sm:-my-px sm:ml-8 sm:flex sm:space-x-6">
+                      {landingNav.map((item) => (
+                        <a
+                          key={item.name}
+                          href={item.href}
+                          className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900 transition"
+                        >
+                          {item.name}
+                        </a>
+                      ))}
+                    </div>
+                  </SignedOut>
+                )}
               </div>
 
-              <div className="hidden sm:ml-6 sm:flex sm:items-center">
+              <div className="hidden sm:ml-6 sm:flex sm:items-center gap-3">
                 <SignedOut>
-                  <SignInButton mode="modal">
-                    <button className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 transition">
-                      Entrar
-                    </button>
-                  </SignInButton>
+                  {isLanding ? (
+                    <>
+                      <SignInButton mode="modal">
+                        <button className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition">
+                          Entrar
+                        </button>
+                      </SignInButton>
+                      <SignUpButton mode="modal">
+                        <button className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 transition shadow-sm">
+                          Começar grátis
+                        </button>
+                      </SignUpButton>
+                    </>
+                  ) : (
+                    <SignInButton mode="modal">
+                      <button className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 transition">
+                        Entrar
+                      </button>
+                    </SignInButton>
+                  )}
                 </SignedOut>
 
                 <SignedIn>

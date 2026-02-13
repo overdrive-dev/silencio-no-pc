@@ -136,14 +136,14 @@ export default async function Home() {
   }
 
   return (
-    <div className="-mx-4 sm:-mx-6 lg:-mx-8 -mt-8">
+    <div>
       {/* ── Hero ── */}
       <section className="relative isolate overflow-hidden bg-white">
-        <div className="absolute inset-x-0 top-0 -z-10 h-full bg-gradient-to-b from-indigo-50/70 to-white" />
-        <svg className="absolute inset-0 -z-10 h-full w-full stroke-gray-200 [mask-image:radial-gradient(100%_100%_at_top_right,white,transparent)]" aria-hidden="true">
-          <defs><pattern id="hero-pattern" width="200" height="200" x="50%" y="-1" patternUnits="userSpaceOnUse"><path d="M.5 200V.5H200" fill="none" /></pattern></defs>
-          <rect width="100%" height="100%" strokeWidth="0" fill="url(#hero-pattern)" />
-        </svg>
+        {/* Smooth gradient background */}
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(99,102,241,0.12),transparent)]" />
+        <div className="absolute top-0 left-1/2 -z-10 -translate-x-1/2 w-[1200px] h-[600px] bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.08),transparent_70%)]" />
+        <div className="absolute -top-24 right-0 -z-10 w-96 h-96 rounded-full bg-indigo-100/40 blur-3xl" />
+        <div className="absolute -top-10 left-0 -z-10 w-72 h-72 rounded-full bg-cyan-100/30 blur-3xl" />
 
         <div className="mx-auto max-w-4xl px-6 py-28 sm:py-36 lg:py-44 text-center">
           <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-4 py-1.5 text-sm font-medium text-indigo-700 ring-1 ring-inset ring-indigo-200 mb-8">
@@ -443,8 +443,8 @@ export default async function Home() {
       </div>
 
       {/* ── Final CTA ── */}
-      <section className="relative isolate py-20 sm:py-28 px-6 bg-white">
-        <div className="absolute inset-x-0 bottom-0 -z-10 h-80 bg-gradient-to-t from-indigo-50/50 to-transparent" />
+      <section className="relative isolate py-20 sm:py-28 px-6 bg-white overflow-hidden">
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_50%_at_50%_100%,rgba(99,102,241,0.08),transparent)]" />
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
             Pronto para ter paz em casa?

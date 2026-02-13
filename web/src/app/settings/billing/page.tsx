@@ -16,9 +16,13 @@ export default function SettingsBillingPage() {
       if (data.url) {
         clearSubscriptionCache();
         window.location.href = data.url;
+      } else {
+        console.error("Portal response:", data);
+        alert(data.error || "Erro ao abrir portal de pagamento. Tente novamente.");
       }
     } catch (err) {
       console.error("Erro ao abrir portal:", err);
+      alert("Erro de conexão ao abrir portal. Tente novamente.");
     } finally {
       setActionLoading(false);
     }

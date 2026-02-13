@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import NavBar from "@/components/nav-bar";
+import MainWrapper from "@/components/main-wrapper";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -25,11 +26,9 @@ export default function RootLayout({
         <body className={`${geistSans.variable} antialiased h-full bg-gray-50 text-gray-900`}>
           <div className="min-h-full">
             <NavBar />
-            <main>
-              <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-                {children}
-              </div>
-            </main>
+            <MainWrapper>
+              {children}
+            </MainWrapper>
           </div>
         </body>
       </html>
