@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import type { PC, PCSettings } from "@/lib/types";
+import type { PC, PCSettings, AppEvent, DailyUsage } from "@/lib/types";
 import { useSubscription } from "@/hooks/use-subscription";
 import PaymentBanner from "@/components/payment-banner";
 
@@ -47,6 +47,25 @@ function UsageGauge({ used, limit }: { used: number; limit: number }) {
   );
 }
 
+const EVENT_BADGES: Record<string, { label: string; color: string }> = {
+  strike: { label: "Strike", color: "bg-amber-100 text-amber-700" },
+  penalidade_tempo: { label: "Penalidade", color: "bg-red-100 text-red-700" },
+  bloqueio: { label: "Bloqueio", color: "bg-red-100 text-red-700" },
+  desbloqueio: { label: "Desbloqueio", color: "bg-green-100 text-green-700" },
+  command: { label: "Comando", color: "bg-blue-100 text-blue-700" },
+  app_started: { label: "Iniciado", color: "bg-green-100 text-green-700" },
+  app_closed: { label: "Encerrado", color: "bg-amber-100 text-amber-700" },
+  app_killed: { label: "Forçado", color: "bg-red-100 text-red-700" },
+  sessao_inicio: { label: "Sessão", color: "bg-indigo-100 text-indigo-700" },
+  sessao_fim: { label: "Sessão Fim", color: "bg-gray-100 text-gray-600" },
+  calibracao: { label: "Calibração", color: "bg-gray-100 text-gray-600" },
+};
+
+const EVENT_TYPES = [
+  "strike", "penalidade_tempo", "bloqueio", "desbloqueio", "command",
+  "app_started", "app_closed", "app_killed", "sessao_inicio", "sessao_fim",
+];
+
 export default function PcDashboard() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
@@ -62,6 +81,13 @@ export default function PcDashboard() {
   const [tokenClaimed, setTokenClaimed] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [activeTab, setActiveTab] = useState<"history" | "events">("history");
+  const [history, setHistory] = useState<DailyUsage[]>([]);
+  const [events, setEvents] = useState<AppEvent[]>([]);
+  const [eventsTotal, setEventsTotal] = useState(0);
+  const [eventsOffset, setEventsOffset] = useState(0);
+  const [eventFilter, setEventFilter] = useState<string>("");
+  const eventsLimit = 20;
 
   const deletePc = async () => {
     setDeleting(true);
@@ -105,14 +131,17 @@ export default function PcDashboard() {
 
   const fetchData = useCallback(async () => {
     try {
-      const [pcRes, settingsRes] = await Promise.all([
+      const [pcRes, settingsRes, histRes] = await Promise.all([
         fetch(`/api/dispositivo/${id}`),
         fetch(`/api/dispositivo/${id}/settings`),
+        fetch(`/api/dispositivo/${id}/history?days=14`),
       ]);
       const pcData = await pcRes.json();
       const settingsData = await settingsRes.json();
+      const histData = await histRes.json();
       setPc(pcData.pc);
       setSettings(settingsData.settings);
+      setHistory(histData.history || []);
     } catch (err) {
       console.error("Erro ao buscar dados:", err);
     } finally {
@@ -120,11 +149,35 @@ export default function PcDashboard() {
     }
   }, [id]);
 
+  const fetchEvents = useCallback(async () => {
+    try {
+      const params = new URLSearchParams({
+        limit: String(eventsLimit),
+        offset: String(eventsOffset),
+      });
+      if (eventFilter) params.set("type", eventFilter);
+      const res = await fetch(`/api/dispositivo/${id}/events?${params}`);
+      const data = await res.json();
+      setEvents(data.events || []);
+      setEventsTotal(data.total || 0);
+    } catch (err) {
+      console.error("Erro ao buscar eventos:", err);
+    }
+  }, [id, eventFilter, eventsOffset]);
+
   useEffect(() => {
     fetchData();
     const interval = setInterval(fetchData, 15_000);
     return () => clearInterval(interval);
   }, [fetchData]);
+
+  useEffect(() => {
+    if (activeTab === "events") fetchEvents();
+  }, [activeTab, fetchEvents]);
+
+  useEffect(() => {
+    setEventsOffset(0);
+  }, [eventFilter]);
 
   // Fast polling when token modal is open — detect claim
   useEffect(() => {
@@ -212,19 +265,12 @@ export default function PcDashboard() {
           >
             Remover
           </button>
-          {[
-            { label: "Histórico", href: `/dispositivo/${id}/history` },
-            { label: "Eventos", href: `/dispositivo/${id}/events` },
-            { label: "Configurações", href: `/dispositivo/${id}/settings` },
-          ].map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              className="rounded-lg bg-white px-3 py-1.5 text-sm font-medium text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 transition"
-            >
-              {link.label}
-            </Link>
-          ))}
+          <Link
+            href={`/dispositivo/${id}/settings`}
+            className="rounded-lg bg-white px-3 py-1.5 text-sm font-medium text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 transition"
+          >
+            Configurações
+          </Link>
         </div>
       </div>
 
@@ -343,6 +389,164 @@ export default function PcDashboard() {
         {pc.last_heartbeat && (
           <span>Último ping: {new Date(pc.last_heartbeat).toLocaleString("pt-BR")}</span>
         )}
+      </div>
+
+      {/* ── History & Events tabs ── */}
+      <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
+        <div className="flex border-b border-gray-200">
+          <button
+            onClick={() => setActiveTab("history")}
+            className={`flex-1 py-3 text-sm font-medium transition ${
+              activeTab === "history"
+                ? "text-indigo-600 border-b-2 border-indigo-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            Histórico (14 dias)
+          </button>
+          <button
+            onClick={() => setActiveTab("events")}
+            className={`flex-1 py-3 text-sm font-medium transition ${
+              activeTab === "events"
+                ? "text-indigo-600 border-b-2 border-indigo-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            Eventos {eventsTotal > 0 && `(${eventsTotal})`}
+          </button>
+        </div>
+
+        <div className="p-5">
+          {activeTab === "history" && (
+            <>
+              {history.length === 0 ? (
+                <p className="text-center text-sm text-gray-400 py-6">Nenhum dado de uso registrado ainda.</p>
+              ) : (
+                <>
+                  <div className="space-y-1.5">
+                    {history.map((day) => {
+                      const maxMin = Math.max(...history.map((d) => d.total_minutes), 1);
+                      const pct = (day.total_minutes / maxMin) * 100;
+                      const dateStr = new Date(day.date + "T12:00:00").toLocaleDateString("pt-BR", {
+                        weekday: "short",
+                        day: "2-digit",
+                        month: "short",
+                      });
+                      return (
+                        <div key={day.date} className="flex items-center gap-3">
+                          <span className="text-xs text-gray-400 w-24 text-right shrink-0">{dateStr}</span>
+                          <div className="flex-1 h-5 bg-gray-100 rounded-md overflow-hidden">
+                            <div
+                              className="h-full bg-indigo-500 rounded-md transition-all duration-500"
+                              style={{ width: `${pct}%` }}
+                            />
+                          </div>
+                          <span className="text-xs text-gray-500 w-14 shrink-0">{formatTime(day.total_minutes)}</span>
+                          <span className="text-xs text-gray-400 w-8 shrink-0">{day.sessions_count}x</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="mt-4 pt-3 border-t border-gray-100 flex gap-6 text-sm text-gray-500">
+                    <div>
+                      <span className="text-gray-400">Média:</span>{" "}
+                      <span className="font-medium text-gray-900">
+                        {formatTime(Math.round(history.reduce((s, d) => s + d.total_minutes, 0) / history.length))}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-gray-400">Total ({history.length}d):</span>{" "}
+                      <span className="font-medium text-gray-900">
+                        {formatTime(history.reduce((s, d) => s + d.total_minutes, 0))}
+                      </span>
+                    </div>
+                  </div>
+                </>
+              )}
+            </>
+          )}
+
+          {activeTab === "events" && (
+            <>
+              <div className="flex flex-wrap gap-1.5 mb-4">
+                <button
+                  onClick={() => setEventFilter("")}
+                  className={`px-2.5 py-1 rounded-md text-xs font-medium transition ${
+                    !eventFilter ? "bg-indigo-600 text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                  }`}
+                >
+                  Todos
+                </button>
+                {EVENT_TYPES.map((type) => {
+                  const badge = EVENT_BADGES[type] || { label: type, color: "" };
+                  return (
+                    <button
+                      key={type}
+                      onClick={() => setEventFilter(type)}
+                      className={`px-2.5 py-1 rounded-md text-xs font-medium transition ${
+                        eventFilter === type ? "bg-indigo-600 text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                      }`}
+                    >
+                      {badge.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {events.length === 0 ? (
+                <p className="text-center text-sm text-gray-400 py-6">Nenhum evento encontrado.</p>
+              ) : (
+                <div className="space-y-1.5">
+                  {events.map((evt) => {
+                    const badge = EVENT_BADGES[evt.type] || { label: evt.type, color: "bg-gray-100 text-gray-600" };
+                    return (
+                      <div
+                        key={evt.id}
+                        className="rounded-lg border border-gray-100 bg-gray-50 px-3 py-2.5 flex items-center gap-3"
+                      >
+                        <span className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${badge.color}`}>
+                          {badge.label}
+                        </span>
+                        <span className="text-sm text-gray-700 flex-1 truncate">{evt.description}</span>
+                        {evt.noise_db > 0 && (
+                          <span className="text-xs text-gray-400 shrink-0">{evt.noise_db.toFixed(0)} dB</span>
+                        )}
+                        <span className="text-xs text-gray-400 shrink-0">
+                          {new Date(evt.timestamp).toLocaleString("pt-BR", {
+                            day: "2-digit", month: "2-digit",
+                            hour: "2-digit", minute: "2-digit",
+                          })}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {eventsTotal > eventsLimit && (
+                <div className="flex items-center justify-center gap-4 mt-4 pt-3 border-t border-gray-100">
+                  <button
+                    onClick={() => setEventsOffset(Math.max(0, eventsOffset - eventsLimit))}
+                    disabled={eventsOffset === 0}
+                    className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 disabled:opacity-30 rounded-lg text-xs font-medium transition"
+                  >
+                    ← Anterior
+                  </button>
+                  <span className="text-xs text-gray-400">
+                    {eventsOffset + 1}–{Math.min(eventsOffset + eventsLimit, eventsTotal)} de {eventsTotal}
+                  </span>
+                  <button
+                    onClick={() => setEventsOffset(eventsOffset + eventsLimit)}
+                    disabled={eventsOffset + eventsLimit >= eventsTotal}
+                    className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 disabled:opacity-30 rounded-lg text-xs font-medium transition"
+                  >
+                    Próximo →
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
 
       {/* Delete PC modal */}
