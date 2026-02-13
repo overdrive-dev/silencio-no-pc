@@ -43,9 +43,9 @@ export default function NavBar() {
 
   const landingNav = [
     { name: "Funcionalidades", href: "#features" },
+    { name: "Saúde Digital", href: "#saude-digital" },
     { name: "Depoimentos", href: "#testimonials" },
     { name: "FAQ", href: "#faq" },
-    { name: "Download", href: "/download" },
   ];
 
   return (
