@@ -22,7 +22,7 @@ const faqs = [
   {
     question: "Posso controlar mais de um dispositivo?",
     answer:
-      "Sim! Você pode registrar e gerenciar múltiplos dispositivos a partir de uma única conta. Cada dispositivo tem suas próprias configurações de tempo, horários e limites.",
+      "Sim! O plano inclui até 2 dispositivos com uma única assinatura. Cada dispositivo tem suas próprias configurações de tempo, horários e limites, tudo gerenciável pelo mesmo painel.",
   },
   {
     question: "A criança consegue desinstalar ou burlar?",
@@ -40,9 +40,9 @@ const faqs = [
       "O controle de tempo e bloqueio funcionam offline. A sincronização com o painel web (comandos remotos, status em tempo real) requer conexão com a internet.",
   },
   {
-    question: "Quanto custa?",
+    question: "Quanto custa o KidsPC?",
     answer:
-      "O KidsPC é gratuito para uso pessoal. Oferecemos planos pagos com recursos avançados como histórico detalhado, múltiplos dispositivos e suporte prioritário.",
+      "O KidsPC custa R$\u00A019,90/mês e inclui até 2 dispositivos, controle de tempo, monitoramento de barulho, comandos remotos, histórico de uso e atualizações automáticas. Você pode cancelar a qualquer momento. Pagamentos processados com segurança pelo Stripe.",
   },
 ];
 

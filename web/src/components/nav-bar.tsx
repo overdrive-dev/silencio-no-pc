@@ -107,7 +107,7 @@ export default function NavBar() {
                       </SignInButton>
                       <SignUpButton mode="modal">
                         <button className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 transition shadow-sm">
-                          Começar grátis
+                          Assine por R$&nbsp;19,90
                         </button>
                       </SignUpButton>
                     </>

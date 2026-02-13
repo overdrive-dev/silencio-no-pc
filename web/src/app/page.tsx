@@ -164,7 +164,7 @@ export default async function Home() {
           <div className="animate-fade-in-up delay-3 mt-12 flex items-center justify-center gap-4 flex-wrap">
             <SignUpButton mode="modal">
               <button className="rounded-full bg-slate-900 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-slate-900/20 hover:bg-slate-800 transition-all hover:-translate-y-0.5 hover:shadow-xl">
-                Começar grátis
+                Assine por R$&nbsp;19,90/mês
               </button>
             </SignUpButton>
             <a
@@ -178,7 +178,7 @@ export default async function Home() {
           <div className="animate-fade-in-up delay-4 mt-16 flex items-center justify-center gap-x-8 gap-y-3 flex-wrap text-sm text-slate-500">
             <div className="flex items-center gap-2">
               <ShieldCheckIcon className="size-5 text-teal-600" />
-              <span>Gratuito para uso pessoal</span>
+              <span>Até 2 dispositivos</span>
             </div>
             <div className="flex items-center gap-2">
               <ComputerDesktopIcon className="size-5 text-slate-500" />
@@ -517,7 +517,7 @@ export default async function Home() {
           <div className="mt-10 flex items-center justify-center gap-4 flex-wrap">
             <SignUpButton mode="modal">
               <button className="rounded-full bg-teal-500 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-teal-500/20 hover:bg-teal-400 transition-all hover:-translate-y-0.5 hover:shadow-xl">
-                Criar conta grátis
+                Assine por R$&nbsp;19,90/mês
               </button>
             </SignUpButton>
             <SignInButton mode="modal">
