@@ -8,7 +8,10 @@ export function getStripe(): Stripe {
     if (!key) {
       throw new Error("Missing STRIPE_SECRET_KEY env var");
     }
-    _stripe = new Stripe(key);
+    _stripe = new Stripe(key, {
+      timeout: 8000,
+      maxNetworkRetries: 1,
+    });
   }
   return _stripe;
 }

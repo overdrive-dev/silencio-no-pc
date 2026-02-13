@@ -7,9 +7,11 @@ import { CheckIcon } from "@heroicons/react/20/solid";
 export default function SettingsBillingPage() {
   const { subscription, loading, isActive, isInGracePeriod, isPastDue, isCanceled, daysUntilBlock } = useSubscription();
   const [actionLoading, setActionLoading] = useState(false);
+  const [portalError, setPortalError] = useState<string | null>(null);
 
   const handleManagePortal = async () => {
     setActionLoading(true);
+    setPortalError(null);
     try {
       const res = await fetch("/api/stripe/portal", { method: "POST" });
       const data = await res.json();
@@ -18,11 +20,11 @@ export default function SettingsBillingPage() {
         window.location.href = data.url;
       } else {
         console.error("Portal response:", data);
-        alert(data.error || "Erro ao abrir portal de pagamento. Tente novamente.");
+        setPortalError(data.error || "Erro ao abrir portal de pagamento. Tente novamente.");
       }
     } catch (err) {
       console.error("Erro ao abrir portal:", err);
-      alert("Erro de conexão ao abrir portal. Tente novamente.");
+      setPortalError("Erro de conexão. Tente novamente em alguns segundos.");
     } finally {
       setActionLoading(false);
     }
@@ -54,6 +56,22 @@ export default function SettingsBillingPage() {
 
   return (
     <div className="space-y-16">
+      {portalError && (
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4 flex items-start gap-3">
+          <span className="text-red-500 text-lg shrink-0">⚠️</span>
+          <div className="flex-1">
+            <p className="text-sm font-medium text-red-800">{portalError}</p>
+            <button
+              onClick={handleManagePortal}
+              className="mt-2 text-sm font-semibold text-red-700 hover:text-red-600 underline"
+            >
+              Tentar novamente
+            </button>
+          </div>
+          <button onClick={() => setPortalError(null)} className="text-red-400 hover:text-red-600 text-lg">×</button>
+        </div>
+      )}
+
       {/* Subscription status */}
       <div>
         <h2 className="text-base/7 font-semibold text-gray-900">Assinatura</h2>

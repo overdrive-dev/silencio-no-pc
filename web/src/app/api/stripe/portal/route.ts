@@ -27,6 +27,10 @@ export async function POST() {
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Unknown error";
     console.error("[portal] Error:", message);
-    return NextResponse.json({ error: message }, { status: 500 });
+    const isConnectionError = message.includes("connection") || message.includes("timeout") || message.includes("retried");
+    const userMessage = isConnectionError
+      ? "Erro temporário de conexão com o Stripe. Tente novamente em alguns segundos."
+      : message;
+    return NextResponse.json({ error: userMessage }, { status: 500 });
   }
 }
