@@ -49,15 +49,15 @@ export default function NavBar() {
   ];
 
   return (
-    <Disclosure as="nav" className={isLanding ? "bg-white/80 backdrop-blur-lg border-b border-gray-200/50 sticky top-0 z-50" : "border-b border-gray-200 bg-white"}>
+    <Disclosure as="nav" className={isLanding ? "bg-white/80 backdrop-blur-lg border-b border-stone-200/50 sticky top-0 z-50" : "border-b border-stone-200 bg-white"}>
       {({ open }) => (
         <>
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 justify-between">
               <div className="flex">
                 <div className="flex shrink-0 items-center">
-                  <Link href="/" className="flex items-center gap-2 text-xl font-bold text-indigo-600">
-                    <ShieldCheckIcon className="size-6" />
+                  <Link href="/" className="flex items-center gap-2 text-xl font-display text-slate-900">
+                    <ShieldCheckIcon className="size-6 text-teal-600" />
                     KidsPC
                   </Link>
                 </div>
@@ -106,14 +106,14 @@ export default function NavBar() {
                         </button>
                       </SignInButton>
                       <SignUpButton mode="modal">
-                        <button className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 transition shadow-sm">
+                        <button className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 transition shadow-sm">
                           Começar grátis
                         </button>
                       </SignUpButton>
                     </>
                   ) : (
                     <SignInButton mode="modal">
-                      <button className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 transition">
+                      <button className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 transition">
                         Entrar
                       </button>
                     </SignInButton>
@@ -171,7 +171,7 @@ export default function NavBar() {
                 </SignedIn>
                 <SignedOut>
                   <SignInButton mode="modal">
-                    <button className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 transition">
+                    <button className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 transition">
                       Entrar
                     </button>
                   </SignInButton>

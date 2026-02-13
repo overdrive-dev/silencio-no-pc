@@ -138,95 +138,91 @@ export default async function Home() {
   return (
     <div>
       {/* ── Hero ── */}
-      <section className="relative isolate overflow-hidden bg-white">
-        {/* Smooth gradient background */}
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(99,102,241,0.12),transparent)]" />
-        <div className="absolute top-0 left-1/2 -z-10 -translate-x-1/2 w-[1200px] h-[600px] bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.08),transparent_70%)]" />
-        <div className="absolute -top-24 right-0 -z-10 w-96 h-96 rounded-full bg-indigo-100/40 blur-3xl" />
-        <div className="absolute -top-10 left-0 -z-10 w-72 h-72 rounded-full bg-cyan-100/30 blur-3xl" />
+      <section className="relative isolate overflow-hidden bg-gradient-to-b from-stone-50 via-white to-stone-50 bg-grain">
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_60%_50%_at_50%_-10%,rgba(20,184,166,0.08),transparent)]" />
+        <div className="absolute top-20 -right-32 -z-10 w-[500px] h-[500px] rounded-full bg-teal-100/30 blur-[100px]" />
+        <div className="absolute -top-20 -left-20 -z-10 w-[400px] h-[400px] rounded-full bg-amber-100/20 blur-[100px]" />
 
-        <div className="mx-auto max-w-4xl px-6 py-28 sm:py-36 lg:py-44 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-4 py-1.5 text-sm font-medium text-indigo-700 ring-1 ring-inset ring-indigo-200 mb-8">
+        <div className="relative z-10 mx-auto max-w-4xl px-6 pt-32 pb-24 sm:pt-40 sm:pb-32 lg:pt-48 lg:pb-36 text-center">
+          <div className="animate-fade-in-up delay-0 inline-flex items-center gap-2 rounded-full bg-white/80 backdrop-blur-sm px-4 py-1.5 text-sm font-medium text-teal-700 ring-1 ring-teal-200/60 mb-10 shadow-sm">
             <span className="relative flex size-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-500 opacity-75" />
-              <span className="relative inline-flex size-2 rounded-full bg-indigo-600" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-teal-500 opacity-75" />
+              <span className="relative inline-flex size-2 rounded-full bg-teal-600" />
             </span>
             v2.0.3 disponível — auto-update incluso
           </div>
 
-          <h1 className="text-5xl font-bold tracking-tight text-gray-900 sm:text-7xl">
+          <h1 className="animate-fade-in-up delay-1 font-display text-5xl tracking-tight text-slate-900 sm:text-7xl lg:text-8xl leading-[0.95]">
             Controle parental{" "}
-            <span className="bg-gradient-to-r from-indigo-600 to-cyan-600 bg-clip-text text-transparent">
-              inteligente
-            </span>
+            <span className="text-teal-600">inteligente</span>
           </h1>
-          <p className="mt-6 text-lg leading-8 text-gray-600 max-w-2xl mx-auto">
+          <p className="animate-fade-in-up delay-2 mt-8 text-lg leading-8 text-slate-600 max-w-2xl mx-auto sm:text-xl">
             Limite tempo de tela, monitore barulho e gerencie os dispositivos do seu filho
             remotamente. Sem complicação, sem briga.
           </p>
 
-          <div className="mt-10 flex items-center justify-center gap-4 flex-wrap">
+          <div className="animate-fade-in-up delay-3 mt-12 flex items-center justify-center gap-4 flex-wrap">
             <SignUpButton mode="modal">
-              <button className="rounded-xl bg-indigo-600 px-8 py-3.5 text-sm font-semibold text-white shadow-md shadow-indigo-200 hover:bg-indigo-500 transition-all hover:-translate-y-0.5">
+              <button className="rounded-full bg-slate-900 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-slate-900/20 hover:bg-slate-800 transition-all hover:-translate-y-0.5 hover:shadow-xl">
                 Começar grátis
               </button>
             </SignUpButton>
             <a
               href="#features"
-              className="rounded-xl px-8 py-3.5 text-sm font-semibold text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50 transition"
+              className="rounded-full px-8 py-3.5 text-sm font-semibold text-slate-700 ring-1 ring-slate-300 hover:ring-slate-400 hover:bg-white transition-all"
             >
               Ver funcionalidades
             </a>
           </div>
 
-          <div className="mt-14 flex items-center justify-center gap-x-8 gap-y-3 flex-wrap text-sm text-gray-500">
+          <div className="animate-fade-in-up delay-4 mt-16 flex items-center justify-center gap-x-8 gap-y-3 flex-wrap text-sm text-slate-500">
             <div className="flex items-center gap-2">
-              <ShieldCheckIcon className="size-5 text-green-600" />
+              <ShieldCheckIcon className="size-5 text-teal-600" />
               <span>Gratuito para uso pessoal</span>
             </div>
             <div className="flex items-center gap-2">
-              <ComputerDesktopIcon className="size-5 text-indigo-600" />
+              <ComputerDesktopIcon className="size-5 text-slate-500" />
               <span>Windows 10/11</span>
             </div>
             <div className="flex items-center gap-2">
-              <ArrowPathIcon className="size-5 text-purple-600" />
+              <ArrowPathIcon className="size-5 text-slate-500" />
               <span>Atualização automática</span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-lg">📱</span>
-              <span className="text-amber-600 font-medium">Android & iOS em breve</span>
+            <div className="flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 ring-1 ring-amber-200/60">
+              <span className="text-base">📱</span>
+              <span className="text-amber-700 font-medium text-xs">Android & iOS em breve</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* ── Features ── */}
-      <section id="features" className="py-20 sm:py-28 px-6 bg-gray-50">
+      <section id="features" className="py-24 sm:py-32 px-6 bg-white">
         <div className="mx-auto max-w-6xl">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-base font-semibold text-indigo-600">Tudo que você precisa</h2>
-            <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            <p className="text-sm font-semibold tracking-widest uppercase text-teal-600">Tudo que você precisa</p>
+            <p className="mt-3 font-display text-3xl tracking-tight text-slate-900 sm:text-4xl">
               Funcionalidades completas
             </p>
-            <p className="mt-4 text-lg text-gray-600">
+            <p className="mt-4 text-lg text-slate-500">
               Do controle de tempo ao monitoramento de barulho — tudo gerenciável remotamente.
             </p>
           </div>
 
           <div className="mx-auto mt-16 max-w-5xl">
-            <dl className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {features.map((feature) => (
+            <dl className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {features.map((feature, index) => (
                 <div
                   key={feature.name}
-                  className="relative rounded-2xl bg-white p-7 shadow-sm ring-1 ring-gray-200 hover:shadow-md hover:ring-indigo-200 transition-all hover:-translate-y-0.5"
+                  className={`animate-fade-in-up delay-${index} group relative rounded-2xl bg-stone-50/80 p-7 ring-1 ring-stone-200/80 hover:bg-white hover:shadow-lg hover:shadow-slate-200/50 hover:ring-teal-200/60 transition-all duration-300 hover:-translate-y-1`}
                 >
-                  <dt className="flex items-center gap-3 text-base font-semibold text-gray-900">
-                    <div className="flex size-10 items-center justify-center rounded-lg bg-indigo-50">
-                      <feature.icon className="size-5 text-indigo-600" />
+                  <dt className="flex items-center gap-3 text-base font-semibold text-slate-900">
+                    <div className="flex size-10 items-center justify-center rounded-xl bg-teal-50 ring-1 ring-teal-100 group-hover:bg-teal-100 transition-colors">
+                      <feature.icon className="size-5 text-teal-600" />
                     </div>
                     {feature.name}
                   </dt>
-                  <dd className="mt-3 text-sm leading-relaxed text-gray-600">
+                  <dd className="mt-3 text-sm leading-relaxed text-slate-500">
                     {feature.description}
                   </dd>
                 </div>
@@ -237,54 +233,59 @@ export default async function Home() {
       </section>
 
       {/* ── How it works ── */}
-      <section className="py-20 sm:py-28 px-6 bg-white">
+      <section className="py-24 sm:py-32 px-6 bg-stone-50">
         <div className="mx-auto max-w-6xl">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-base font-semibold text-indigo-600">Simples de configurar</h2>
-            <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-              Funcionando em 3 passos
-            </p>
-          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.5fr] gap-16 items-start">
+            <div className="lg:sticky lg:top-32">
+              <p className="text-sm font-semibold tracking-widest uppercase text-teal-600">Simples de configurar</p>
+              <p className="mt-3 font-display text-3xl tracking-tight text-slate-900 sm:text-4xl">
+                Funcionando em 3 passos
+              </p>
+              <p className="mt-4 text-base text-slate-500">
+                Do cadastro ao controle total em menos de 5 minutos.
+              </p>
+            </div>
 
-          <div className="mx-auto mt-16 max-w-4xl">
-            <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
-              {steps.map((step, index) => (
-                <div key={step.number} className="relative text-center">
-                  {index < steps.length - 1 && (
-                    <div className="hidden md:block absolute top-10 left-[60%] w-[80%] border-t-2 border-dashed border-gray-200" />
-                  )}
-                  <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-indigo-50 ring-1 ring-indigo-100">
-                    <step.icon className="size-7 text-indigo-600" />
+            <div className="relative">
+              <div className="absolute left-6 top-8 bottom-8 w-px bg-gradient-to-b from-teal-300 via-teal-200 to-transparent" />
+
+              <div className="space-y-10">
+                {steps.map((step, index) => (
+                  <div key={step.number} className={`animate-fade-in-up delay-${index + 1} relative flex gap-6`}>
+                    <div className="relative z-10 flex size-12 shrink-0 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-stone-200">
+                      <step.icon className="size-6 text-teal-600" />
+                    </div>
+                    <div className="pt-1">
+                      <span className="text-xs font-bold text-teal-600 tracking-widest uppercase">
+                        Passo {step.number}
+                      </span>
+                      <h3 className="mt-1 text-lg font-semibold text-slate-900">{step.title}</h3>
+                      <p className="mt-1.5 text-sm leading-relaxed text-slate-500">{step.description}</p>
+                    </div>
                   </div>
-                  <div className="mt-6">
-                    <span className="text-xs font-bold text-indigo-600 tracking-widest uppercase">
-                      Passo {step.number}
-                    </span>
-                    <h3 className="mt-2 text-lg font-semibold text-gray-900">{step.title}</h3>
-                    <p className="mt-2 text-sm text-gray-600">{step.description}</p>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* ── Testimonials ── */}
-      <section id="testimonials" className="py-20 sm:py-28 px-6 bg-gray-50">
-        <div className="mx-auto max-w-6xl">
+      <section id="testimonials" className="relative py-24 sm:py-32 px-6 bg-slate-900 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(20,184,166,0.15),transparent)]" />
+        <div className="relative mx-auto max-w-6xl">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-base font-semibold text-indigo-600">Depoimentos</h2>
-            <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            <p className="text-sm font-semibold tracking-widest uppercase text-teal-400">Depoimentos</p>
+            <p className="mt-3 font-display text-3xl tracking-tight text-white sm:text-4xl">
               O que os pais dizem
             </p>
           </div>
 
-          <div className="mx-auto mt-16 max-w-5xl grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mx-auto mt-16 max-w-5xl grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {testimonials.map((testimonial, index) => (
               <div
                 key={index}
-                className="flex flex-col rounded-2xl bg-white p-7 shadow-sm ring-1 ring-gray-200"
+                className={`animate-fade-in-up delay-${index + 1} flex flex-col rounded-2xl bg-white/[0.06] backdrop-blur-sm p-7 ring-1 ring-white/10 hover:ring-teal-400/30 transition-all duration-300`}
               >
                 <div className="flex gap-1 text-amber-400 mb-4">
                   {[...Array(5)].map((_, i) => (
@@ -293,16 +294,16 @@ export default async function Home() {
                     </svg>
                   ))}
                 </div>
-                <blockquote className="flex-1 text-sm leading-relaxed text-gray-600">
+                <blockquote className="flex-1 text-sm leading-relaxed text-slate-300">
                   &ldquo;{testimonial.body}&rdquo;
                 </blockquote>
-                <div className="mt-6 flex items-center gap-3 border-t border-gray-100 pt-5">
-                  <div className="flex size-10 items-center justify-center rounded-full bg-indigo-100 text-sm font-bold text-indigo-600">
+                <div className="mt-6 flex items-center gap-3 border-t border-white/10 pt-5">
+                  <div className="flex size-10 items-center justify-center rounded-full bg-teal-500/20 text-sm font-bold text-teal-300">
                     {testimonial.author.name.charAt(0)}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-gray-900">{testimonial.author.name}</p>
-                    <p className="text-xs text-gray-500">{testimonial.author.role}</p>
+                    <p className="text-sm font-semibold text-white">{testimonial.author.name}</p>
+                    <p className="text-xs text-slate-400">{testimonial.author.role}</p>
                   </div>
                 </div>
               </div>
@@ -312,20 +313,20 @@ export default async function Home() {
       </section>
 
       {/* ── Saúde Digital ── */}
-      <section id="saude-digital" className="py-20 sm:py-28 px-6 bg-white">
+      <section id="saude-digital" className="py-24 sm:py-32 px-6 bg-white">
         <div className="mx-auto max-w-6xl">
-          <div className="mx-auto max-w-2xl text-center mb-14">
-            <h2 className="text-base font-semibold text-indigo-600">Saúde Digital Infantil</h2>
-            <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          <div className="mx-auto max-w-2xl text-center mb-16">
+            <p className="text-sm font-semibold tracking-widest uppercase text-teal-600">Saúde Digital Infantil</p>
+            <p className="mt-3 font-display text-3xl tracking-tight text-slate-900 sm:text-4xl">
               O que a ciência diz sobre tempo de tela
             </p>
-            <p className="mt-4 text-lg text-gray-600">
+            <p className="mt-4 text-lg text-slate-500">
               Entender os impactos do uso excessivo de telas é o primeiro passo para proteger seu filho.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div className="rounded-2xl bg-stone-50/80 p-7 ring-1 ring-stone-200/80 space-y-4">
               <div className="flex items-center gap-3">
                 <div className="rounded-full bg-blue-100 p-2.5">
                   <svg className="size-5 text-blue-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -341,13 +342,13 @@ export default async function Home() {
                 href="https://www.who.int/news/item/24-04-2019-to-grow-up-healthy-children-need-to-sit-less-and-play-more"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-500 transition"
+                className="inline-flex items-center text-sm font-medium text-teal-600 hover:text-teal-500 transition"
               >
                 Leia mais &rarr;
               </a>
             </div>
 
-            <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm space-y-4">
+            <div className="rounded-2xl bg-stone-50/80 p-7 ring-1 ring-stone-200/80 space-y-4">
               <div className="flex items-center gap-3">
                 <div className="rounded-full bg-green-100 p-2.5">
                   <svg className="size-5 text-green-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -363,13 +364,13 @@ export default async function Home() {
                 href="https://www.aap.org/en/patient-care/media-and-children/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-500 transition"
+                className="inline-flex items-center text-sm font-medium text-teal-600 hover:text-teal-500 transition"
               >
                 Leia mais &rarr;
               </a>
             </div>
 
-            <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm space-y-4">
+            <div className="rounded-2xl bg-stone-50/80 p-7 ring-1 ring-stone-200/80 space-y-4">
               <div className="flex items-center gap-3">
                 <div className="rounded-full bg-amber-100 p-2.5">
                   <svg className="size-5 text-amber-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -385,7 +386,7 @@ export default async function Home() {
                 href="https://www.sbp.com.br/especiais/pediatria-para-familias/cuidados-com-a-saude/tempo-de-tela/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-500 transition"
+                className="inline-flex items-center text-sm font-medium text-teal-600 hover:text-teal-500 transition"
               >
                 Leia mais &rarr;
               </a>
@@ -395,37 +396,37 @@ export default async function Home() {
       </section>
 
       {/* ── Changelog ── */}
-      <section id="changelog" className="py-20 sm:py-28 px-6 bg-gray-50">
+      <section id="changelog" className="py-24 sm:py-32 px-6 bg-stone-50">
         <div className="mx-auto max-w-3xl">
           <div className="text-center mb-14">
-            <h2 className="text-base font-semibold text-indigo-600">Changelog</h2>
-            <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            <p className="text-sm font-semibold tracking-widest uppercase text-teal-600">Changelog</p>
+            <p className="mt-3 font-display text-3xl tracking-tight text-slate-900 sm:text-4xl">
               Atualizações recentes
             </p>
-            <p className="mt-4 text-lg text-gray-600">
+            <p className="mt-4 text-lg text-slate-500">
               O KidsPC está em constante evolução. Veja o que há de novo.
             </p>
           </div>
 
           <div className="relative">
-            <div className="absolute left-4 top-0 bottom-0 w-px bg-gray-200" />
+            <div className="absolute left-4 top-0 bottom-0 w-px bg-gradient-to-b from-teal-300 via-stone-200 to-transparent" />
 
             <div className="space-y-10">
               {changelog.map((release, index) => (
                 <div key={release.version} className="relative pl-12">
-                  <div className="absolute left-0 flex size-8 items-center justify-center rounded-full bg-white ring-1 ring-gray-200">
-                    <div className={`size-2.5 rounded-full ${index === 0 ? "bg-indigo-600" : "bg-gray-400"}`} />
+                  <div className="absolute left-0 flex size-8 items-center justify-center rounded-full bg-white ring-1 ring-stone-200 shadow-sm">
+                    <div className={`size-2.5 rounded-full ${index === 0 ? "bg-teal-500" : "bg-stone-400"}`} />
                   </div>
                   <div className="flex items-center gap-3 mb-3">
-                    <span className="inline-flex items-center rounded-md bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-200">
+                    <span className="inline-flex items-center rounded-md bg-teal-50 px-2.5 py-1 text-xs font-medium text-teal-700 ring-1 ring-inset ring-teal-200">
                       v{release.version}
                     </span>
-                    <span className="text-xs text-gray-500">{release.date}</span>
+                    <span className="text-xs text-slate-400">{release.date}</span>
                   </div>
                   <ul className="space-y-1.5">
                     {release.changes.map((change, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
-                        <span className="mt-1.5 size-1 shrink-0 rounded-full bg-gray-400" />
+                      <li key={i} className="flex items-start gap-2 text-sm text-slate-500">
+                        <span className="mt-1.5 size-1 shrink-0 rounded-full bg-slate-400" />
                         {change}
                       </li>
                     ))}
@@ -438,28 +439,28 @@ export default async function Home() {
       </section>
 
       {/* ── FAQ ── */}
-      <div className="px-6 bg-gray-50">
+      <div className="px-6 bg-white">
         <FaqSection />
       </div>
 
       {/* ── Final CTA ── */}
-      <section className="relative isolate py-20 sm:py-28 px-6 bg-white overflow-hidden">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_50%_at_50%_100%,rgba(99,102,241,0.08),transparent)]" />
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+      <section className="relative isolate py-24 sm:py-32 px-6 bg-slate-900 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_100%,rgba(20,184,166,0.12),transparent)]" />
+        <div className="relative mx-auto max-w-2xl text-center">
+          <h2 className="font-display text-3xl tracking-tight text-white sm:text-4xl">
             Pronto para ter paz em casa?
           </h2>
-          <p className="mt-4 text-lg text-gray-600">
+          <p className="mt-5 text-lg text-slate-400">
             Crie sua conta em segundos e comece a gerenciar os dispositivos do seu filho hoje.
           </p>
           <div className="mt-10 flex items-center justify-center gap-4 flex-wrap">
             <SignUpButton mode="modal">
-              <button className="rounded-xl bg-indigo-600 px-8 py-3.5 text-sm font-semibold text-white shadow-md shadow-indigo-200 hover:bg-indigo-500 transition-all hover:-translate-y-0.5">
+              <button className="rounded-full bg-teal-500 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-teal-500/20 hover:bg-teal-400 transition-all hover:-translate-y-0.5 hover:shadow-xl">
                 Criar conta grátis
               </button>
             </SignUpButton>
             <SignInButton mode="modal">
-              <button className="rounded-xl px-8 py-3.5 text-sm font-semibold text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50 transition">
+              <button className="rounded-full px-8 py-3.5 text-sm font-semibold text-slate-300 ring-1 ring-white/20 hover:ring-white/40 hover:text-white transition-all">
                 Já tenho conta
               </button>
             </SignInButton>
@@ -468,17 +469,18 @@ export default async function Home() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-gray-200 bg-white py-10 px-6">
-        <div className="mx-auto max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-gray-500">
-            &copy; {new Date().getFullYear()} KidsPC. Controle parental inteligente.
-          </p>
-          <div className="flex gap-6 text-sm text-gray-500">
-            <a href="#features" className="hover:text-gray-900 transition">Funcionalidades</a>
-            <a href="#testimonials" className="hover:text-gray-900 transition">Depoimentos</a>
-            <a href="#saude-digital" className="hover:text-gray-900 transition">Saúde Digital</a>
-            <a href="#changelog" className="hover:text-gray-900 transition">Changelog</a>
-            <a href="#faq" className="hover:text-gray-900 transition">FAQ</a>
+      <footer className="border-t border-stone-200 bg-stone-50 py-12 px-6">
+        <div className="mx-auto max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-2">
+            <ShieldCheckIcon className="size-5 text-teal-600" />
+            <span className="text-sm font-semibold text-slate-700">KidsPC</span>
+            <span className="text-sm text-slate-400">&middot; Controle parental inteligente</span>
+          </div>
+          <div className="flex gap-6 text-sm text-slate-400">
+            <a href="#features" className="hover:text-slate-700 transition">Funcionalidades</a>
+            <a href="#testimonials" className="hover:text-slate-700 transition">Depoimentos</a>
+            <a href="#saude-digital" className="hover:text-slate-700 transition">Saúde Digital</a>
+            <a href="#faq" className="hover:text-slate-700 transition">FAQ</a>
           </div>
         </div>
       </footer>

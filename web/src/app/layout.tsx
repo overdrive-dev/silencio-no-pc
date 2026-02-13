@@ -1,13 +1,21 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { DM_Serif_Display, Plus_Jakarta_Sans } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import NavBar from "@/components/nav-bar";
 import MainWrapper from "@/components/main-wrapper";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const displayFont = DM_Serif_Display({
+  weight: "400",
   subsets: ["latin"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const bodyFont = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-body",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -23,7 +31,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="pt-BR" className="h-full">
-        <body className={`${geistSans.variable} antialiased h-full bg-gray-50 text-gray-900`}>
+        <body className={`${displayFont.variable} ${bodyFont.variable} antialiased h-full bg-stone-50 text-slate-800`}>
           <div className="min-h-full">
             <NavBar />
             <MainWrapper>
