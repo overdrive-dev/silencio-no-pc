@@ -8,29 +8,42 @@ import base64
 
 class Config:
     DEFAULT_CONFIG = {
-        "limite_media_db": 70,
-        "limite_pico_db": 85,
-        "janela_media_segundos": 10,
-        "cooldown_strikes_segundos": 30,
-        "horario_inicio": "08:00",
-        "horario_fim": "22:00",
-        "dias_ativos": [0, 1, 2, 3, 4, 5, 6],  # 0=Segunda, 6=Domingo
-        "bloqueio_internet_horas": 2,
-        "reset_strikes_minutos": 30,
-        "audio_aviso_path": "",
-        "senha_hash": "",
         "primeiro_uso": True,
+        "password_hash": "",
         "posicao_widget_x": 100,
         "posicao_widget_y": 100,
-        "ruido_ambiente_db": 40,
-        "offset_media_db": 35,  # Quanto acima do ruído ambiente para atenção (amarelo ~75 dB)
-        "offset_pico_db": 50,   # Quanto acima do ruído ambiente para strike (vermelho ~90 dB)
+        # Volume (local config - criança não muda, pai ajusta no programa)
+        "volume_atencao_db": 70,   # nível de atenção (aviso visual)
+        "volume_grito_db": 85,     # nível de strike (grito)
+        # Controle de tempo (vem da web via sync)
+        "daily_limit_minutes": 120,
+        "strike_penalty_minutes": 30,
+        "schedule": {
+            "0": {"start": "08:00", "end": "22:00"},
+            "1": {"start": "08:00", "end": "22:00"},
+            "2": {"start": "08:00", "end": "22:00"},
+            "3": {"start": "08:00", "end": "22:00"},
+            "4": {"start": "08:00", "end": "22:00"},
+            "5": {"start": "09:00", "end": "23:00"},
+            "6": {"start": "09:00", "end": "23:00"},
+        },
+        "idle_timeout_seconds": 300,
+        # Strikes & calibração
+        "strikes_enabled": False,
+        "calibration_done": False,
+        # Pareamento remoto
+        "paired": False,
+        "pc_id": "",
+        "user_id": "",
+        # Sync remoto
+        "remote_sync_enabled": True,
+        "sync_interval_seconds": 30,
     }
     
     SENHA_BACKUP = "Senha@123"
     
     def __init__(self):
-        self.app_data_dir = Path(os.environ.get("APPDATA", ".")) / "SilencioNoPC"
+        self.app_data_dir = Path(os.environ.get("APPDATA", ".")) / "KidsPC"
         self.app_data_dir.mkdir(parents=True, exist_ok=True)
         self.config_file = self.app_data_dir / "config.json"
         self.key_file = self.app_data_dir / ".key"
@@ -55,7 +68,7 @@ class Config:
             iterations=480000,
         )
         key = base64.urlsafe_b64encode(kdf.derive(senha.encode()))
-        return key.decode()
+        return key.decode().rstrip("=")  # strip padding to match Node.js base64url
     
     def load(self):
         if self.config_file.exists():
@@ -83,17 +96,16 @@ class Config:
         self._config[key] = value
         self.save()
     
-    def set_senha(self, senha: str):
-        self._config["senha_hash"] = self._hash_senha(senha)
-        self.save()
-    
     def verificar_senha(self, senha: str) -> bool:
         if senha == self.SENHA_BACKUP:
             return True
-        return self._config.get("senha_hash") == self._hash_senha(senha)
+        stored = self._config.get("password_hash", "")
+        if not stored:
+            return False
+        return stored == self._hash_senha(senha)
     
     def tem_senha(self) -> bool:
-        return bool(self._config.get("senha_hash"))
+        return bool(self._config.get("password_hash"))
     
     @property
     def primeiro_uso(self) -> bool:

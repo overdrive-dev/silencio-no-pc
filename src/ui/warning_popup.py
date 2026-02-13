@@ -1,141 +1,105 @@
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton, QApplication
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QFont, QPainter, QColor
-import ctypes
 
-class FullScreenWarning(QDialog):
-    """Popup GIGANTE em tela cheia que fica por cima de TUDO."""
+
+class NoiseWarningPopup(QDialog):
+    """Popup moderno centralizado para avisos de barulho."""
     
-    def __init__(self, mensagem: str, icone: str = "⚠️", cor_fundo: str = "#B71C1C", 
-                 auto_fechar_segundos: int = 10):
-        super().__init__()
-        self.setWindowTitle("AVISO")
-        self.setModal(True)
-        
+    def __init__(self, titulo: str, mensagem: str, icone: str = "\u26a0\ufe0f",
+                 cor_destaque: str = "#FFC107", auto_fechar_segundos: int = 8,
+                 parent=None):
+        super().__init__(parent)
+        self.cor_destaque = cor_destaque
+        self._setup_ui(titulo, mensagem, icone, auto_fechar_segundos)
+        QTimer.singleShot(auto_fechar_segundos * 1000, self.accept)
+    
+    def _setup_ui(self, titulo, mensagem, icone, auto_fechar):
         self.setWindowFlags(
-            Qt.FramelessWindowHint | 
+            Qt.FramelessWindowHint |
             Qt.WindowStaysOnTopHint |
-            Qt.X11BypassWindowManagerHint |
-            Qt.Tool
+            Qt.Dialog
         )
-        self.setAttribute(Qt.WA_TranslucentBackground, False)
-        
-        self._forcar_primeiro_plano()
-        
-        screen = QApplication.primaryScreen().geometry()
-        self.setGeometry(screen)
-        
-        self.cor_fundo = cor_fundo
-        self.auto_fechar_segundos = auto_fechar_segundos
-        self._segundos_restantes = auto_fechar_segundos
-        
-        self._setup_ui(mensagem, icone)
-        
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self._atualizar_contador)
-        self.timer.start(1000)
-    
-    def _forcar_primeiro_plano(self):
-        """Força a janela a ficar na frente de TUDO, incluindo jogos fullscreen."""
-        try:
-            hwnd = int(self.winId())
-            ctypes.windll.user32.SetWindowPos(
-                hwnd, -1, 0, 0, 0, 0, 
-                0x0001 | 0x0002 | 0x0040
-            )
-            ctypes.windll.user32.SetForegroundWindow(hwnd)
-            ctypes.windll.user32.BringWindowToTop(hwnd)
-        except Exception:
-            pass
-    
-    def _setup_ui(self, mensagem: str, icone: str):
-        self.setStyleSheet(f"""
-            QDialog {{
-                background-color: {self.cor_fundo};
-            }}
-            QLabel {{
-                color: white;
-            }}
-            QPushButton {{
-                background-color: rgba(255, 255, 255, 0.2);
-                color: white;
-                border: 3px solid white;
-                padding: 20px 60px;
-                border-radius: 15px;
-                font-size: 24px;
-                font-weight: bold;
-            }}
-            QPushButton:hover {{
-                background-color: rgba(255, 255, 255, 0.3);
-            }}
-        """)
+        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setFixedSize(360, 200)
+        self._center_on_screen()
         
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(50, 50, 50, 50)
-        layout.setSpacing(30)
+        layout.setContentsMargins(28, 22, 28, 18)
+        layout.setSpacing(8)
         
-        layout.addStretch(1)
+        label_icon = QLabel(icone)
+        label_icon.setAlignment(Qt.AlignCenter)
+        label_icon.setFont(QFont("Segoe UI Emoji", 32))
+        label_icon.setStyleSheet("background: transparent;")
+        layout.addWidget(label_icon)
         
-        self.label_icone = QLabel(icone)
-        self.label_icone.setAlignment(Qt.AlignCenter)
-        self.label_icone.setFont(QFont("Segoe UI Emoji", 150))
-        layout.addWidget(self.label_icone)
+        label_title = QLabel(titulo)
+        label_title.setAlignment(Qt.AlignCenter)
+        label_title.setFont(QFont("Segoe UI", 15, QFont.Bold))
+        label_title.setStyleSheet(f"color: {self.cor_destaque}; background: transparent;")
+        layout.addWidget(label_title)
         
-        self.label_mensagem = QLabel(mensagem)
-        self.label_mensagem.setAlignment(Qt.AlignCenter)
-        self.label_mensagem.setFont(QFont("Arial Black", 72, QFont.Black))
-        self.label_mensagem.setWordWrap(True)
-        self.label_mensagem.setStyleSheet("color: white; text-shadow: 4px 4px 8px black;")
-        layout.addWidget(self.label_mensagem)
+        label_msg = QLabel(mensagem)
+        label_msg.setAlignment(Qt.AlignCenter)
+        label_msg.setWordWrap(True)
+        label_msg.setFont(QFont("Segoe UI", 11))
+        label_msg.setStyleSheet("color: #ccc; background: transparent;")
+        layout.addWidget(label_msg)
         
-        layout.addStretch(1)
+        layout.addSpacing(6)
         
-        self.btn_ok = QPushButton(f"ENTENDI ({self.auto_fechar_segundos}s)")
-        self.btn_ok.clicked.connect(self.accept)
-        self.btn_ok.setFont(QFont("Arial", 24, QFont.Bold))
-        layout.addWidget(self.btn_ok, alignment=Qt.AlignCenter)
-        
-        layout.addStretch(1)
+        btn = QPushButton("OK")
+        btn.setFixedWidth(90)
+        btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: {self.cor_destaque};
+                color: white;
+                border: none;
+                border-radius: 6px;
+                padding: 7px 20px;
+                font-size: 12px;
+                font-weight: bold;
+            }}
+            QPushButton:hover {{ opacity: 0.9; }}
+        """)
+        btn.clicked.connect(self.accept)
+        layout.addWidget(btn, alignment=Qt.AlignCenter)
     
-    def _atualizar_contador(self):
-        self._segundos_restantes -= 1
-        self.btn_ok.setText(f"ENTENDI ({self._segundos_restantes}s)")
-        
-        self._forcar_primeiro_plano()
-        
-        if self._segundos_restantes <= 0:
-            self.timer.stop()
-            self.accept()
+    def _center_on_screen(self):
+        screen = QApplication.primaryScreen()
+        if screen:
+            geo = screen.geometry()
+            self.move((geo.width() - self.width()) // 2,
+                      (geo.height() - self.height()) // 2)
     
-    def showEvent(self, event):
-        super().showEvent(event)
-        self._forcar_primeiro_plano()
-        self.activateWindow()
-        self.raise_()
-    
-    def closeEvent(self, event):
-        self.timer.stop()
-        super().closeEvent(event)
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setBrush(QColor(25, 25, 30, 240))
+        painter.setPen(Qt.NoPen)
+        painter.drawRoundedRect(self.rect(), 14, 14)
 
 
-def mostrar_aviso_abaixe_volume(parent=None):
-    popup = FullScreenWarning(
-        mensagem="ABAIXE\nO VOLUME!",
-        icone="🔊",
-        cor_fundo="#E65100",
-        auto_fechar_segundos=10
+def mostrar_aviso_leve(parent=None):
+    """Strike 1: aviso leve."""
+    popup = NoiseWarningPopup(
+        titulo="Abaixe o volume!",
+        mensagem="O barulho est\u00e1 alto demais.\nPor favor, reduza o volume.",
+        icone="\ud83d\udd0a",
+        cor_destaque="#FFC107",
+        auto_fechar_segundos=8,
     )
     popup.exec_()
 
 
-def mostrar_aviso_ultimo(parent=None):
-    popup = FullScreenWarning(
-        mensagem="ÚLTIMO AVISO!\n\nO PRÓXIMO\nDESLIGA A INTERNET!",
-        icone="🚨",
-        cor_fundo="#B71C1C",
-        auto_fechar_segundos=15
+def mostrar_aviso_forte(parent=None):
+    """Strike 2: aviso forte."""
+    popup = NoiseWarningPopup(
+        titulo="\u00daltimo aviso!",
+        mensagem="Pr\u00f3ximo strike remove 10 minutos\ndo seu tempo dispon\u00edvel!",
+        icone="\ud83d\udea8",
+        cor_destaque="#f44336",
+        auto_fechar_segundos=10,
     )
     popup.exec_()
-
-
-WarningPopup = FullScreenWarning

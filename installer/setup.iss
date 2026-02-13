@@ -1,28 +1,31 @@
-; Inno Setup Script para Silêncio no PC
+; Inno Setup Script para KidsPC
 
 [Setup]
-AppName=Silêncio no PC
-AppVersion=1.0.0
+AppName=KidsPC
+AppVersion=2.0.0
 AppPublisher=Controle Parental
-DefaultDirName={autopf}\SilencioNoPC
-DefaultGroupName=Silêncio no PC
+DefaultDirName={autopf}\KidsPC
+DefaultGroupName=KidsPC
 OutputDir=..\dist
-OutputBaseFilename=SilencioNoPC_Setup
+OutputBaseFilename=KidsPC_Setup
 Compression=lzma
 SolidCompression=yes
 PrivilegesRequired=admin
+CloseApplications=force
+RestartApplications=yes
+AppMutex=KidsPCMutex
 
 [Files]
-Source: "..\dist\SilencioNoPC.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\dist\KidsPC_v2.0.0.exe"; DestDir: "{app}"; DestName: "KidsPC.exe"; Flags: ignoreversion
 Source: "..\assets\*"; DestDir: "{app}\assets"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{group}\Silêncio no PC"; Filename: "{app}\SilencioNoPC.exe"
-Name: "{group}\Desinstalar Silêncio no PC"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\Silêncio no PC"; Filename: "{app}\SilencioNoPC.exe"
+Name: "{group}\KidsPC"; Filename: "{app}\KidsPC.exe"
+Name: "{group}\Desinstalar KidsPC"; Filename: "{uninstallexe}"
+Name: "{commondesktop}\KidsPC"; Filename: "{app}\KidsPC.exe"
 
 [Registry]
-Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "SilencioNoPC"; ValueData: """{app}\SilencioNoPC.exe"""; Flags: uninsdeletevalue
+Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "KidsPC"; ValueData: """{app}\KidsPC.exe"""; Flags: uninsdeletevalue
 
 [Run]
-Filename: "{app}\SilencioNoPC.exe"; Description: "Iniciar Silêncio no PC"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\KidsPC.exe"; Description: "Iniciar KidsPC"; Flags: nowait postinstall skipifsilent

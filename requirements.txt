@@ -1,7 +1,7 @@
-PyQt5==5.15.10
-pyaudio==0.2.14
-numpy==1.26.3
-cryptography==41.0.7
-pycaw==20230407
-comtypes==1.2.0
-pygame==2.6.1
+PyQt5>=5.15.10
+pyaudio>=0.2.14
+numpy>=1.26
+cryptography>=41.0
+pycaw>=20230407
+comtypes>=1.2.0
+supabase>=2.11.0

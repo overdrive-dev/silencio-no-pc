@@ -6,7 +6,7 @@ from typing import List, Dict
 
 class EventLogger:
     def __init__(self):
-        self.app_data_dir = Path(os.environ.get("APPDATA", ".")) / "SilencioNoPC"
+        self.app_data_dir = Path(os.environ.get("APPDATA", ".")) / "KidsPC"
         self.app_data_dir.mkdir(parents=True, exist_ok=True)
         self.log_file = self.app_data_dir / "eventos.json"
         self._eventos = []
@@ -48,9 +48,49 @@ class EventLogger:
     def calibracao(self, ruido_ambiente: float):
         self.registrar("calibracao", f"Calibração realizada: ruído ambiente = {ruido_ambiente} dB", ruido_ambiente)
     
+    def penalidade_tempo(self, minutos: int, nivel_db: float):
+        self.registrar("penalidade_tempo", f"Penalidade de {minutos} minutos por barulho", nivel_db)
+    
+    def uso_bloqueado(self, motivo: str):
+        self.registrar("bloqueio", f"Uso bloqueado: {motivo}")
+    
+    def uso_desbloqueado(self, motivo: str):
+        self.registrar("desbloqueio", f"Uso desbloqueado: {motivo}")
+    
+    def comando_remoto(self, comando: str, payload: dict = None):
+        desc = f"Comando remoto: {comando}"
+        if payload:
+            desc += f" ({payload})"
+        self.registrar("command", desc)
+    
+    def sessao_iniciada(self):
+        self.registrar("sessao_inicio", "Sessão de uso iniciada")
+    
+    def sessao_encerrada(self, duracao_min: int):
+        self.registrar("sessao_fim", f"Sessão encerrada ({duracao_min} min)")
+    
+    def app_iniciado(self):
+        self.registrar("app_started", "Programa iniciado")
+    
+    def app_encerrado(self):
+        self.registrar("app_closed", "Programa encerrado normalmente")
+    
     def get_eventos(self, limite: int = 100) -> List[Dict]:
         return self._eventos[-limite:][::-1]
     
     def get_eventos_hoje(self) -> List[Dict]:
         hoje = datetime.now().date().isoformat()
         return [e for e in self._eventos if e["timestamp"].startswith(hoje)][::-1]
+    
+    def get_pending_eventos(self) -> List[Dict]:
+        """Retorna eventos ainda não sincronizados."""
+        pending = [e for e in self._eventos if not e.get("synced", False)]
+        return pending
+    
+    def mark_synced(self, timestamps: List[str]):
+        """Marca eventos como sincronizados."""
+        ts_set = set(timestamps)
+        for e in self._eventos:
+            if e["timestamp"] in ts_set:
+                e["synced"] = True
+        self.save()

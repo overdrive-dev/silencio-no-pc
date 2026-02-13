@@ -108,37 +108,3 @@ class AudioMonitor:
         self._historico_db.clear()
         self._pico_atual = 0.0
     
-    def calibrar(self, duracao_segundos: int = 30, callback: Optional[Callable] = None) -> float:
-        """Calibra medindo o ruído ambiente por X segundos. Retorna a média."""
-        amostras = []
-        try:
-            pa = pyaudio.PyAudio()
-            stream = pa.open(
-                format=self.FORMAT,
-                channels=self.CHANNELS,
-                rate=self.RATE,
-                input=True,
-                frames_per_buffer=self.CHUNK
-            )
-            
-            inicio = time.time()
-            while time.time() - inicio < duracao_segundos:
-                data = stream.read(self.CHUNK, exception_on_overflow=False)
-                db = self._calcular_db(data)
-                amostras.append(db)
-                if callback:
-                    progresso = (time.time() - inicio) / duracao_segundos
-                    callback(progresso, db)
-                time.sleep(0.1)
-            
-            stream.stop_stream()
-            stream.close()
-            pa.terminate()
-            
-            if amostras:
-                return sum(amostras) / len(amostras)
-            return 40.0
-            
-        except Exception as e:
-            print(f"Erro na calibração: {e}")
-            return 40.0

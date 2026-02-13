@@ -1,114 +1,26 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QProgressBar, QFrame
-from PyQt5.QtCore import Qt, QPoint, QTimer, QSize
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QProgressBar
+from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QPainter, QColor, QFont
 
 
-class NivelInfoOverlay(QWidget):
-    """Overlay separado que mostra a tabela de níveis de dB."""
-    
-    NIVEIS_DB = [
-        (30, 50, "Sussurro", "#4CAF50"),
-        (50, 65, "Conversa normal", "#8BC34A"),
-        (65, 80, "Conversa alta / TV", "#FFC107"),
-        (80, 95, "GRITO / Música alta", "#FF5722"),
-        (95, 120, "Muito alto!", "#f44336"),
-    ]
-    
-    def __init__(self, parent_widget):
-        super().__init__()
-        self.parent_widget = parent_widget
-        self._nivel_atual = 0
-        
-        self.setWindowFlags(
-            Qt.FramelessWindowHint | 
-            Qt.WindowStaysOnTopHint | 
-            Qt.Tool
-        )
-        self.setAttribute(Qt.WA_TranslucentBackground)
-        self.setFixedSize(220, 160)
-        
-        self._setup_ui()
-        
-        self._hide_timer = QTimer(self)
-        self._hide_timer.setSingleShot(True)
-        self._hide_timer.timeout.connect(self.hide)
-    
-    def _setup_ui(self):
-        self.setStyleSheet("""
-            QWidget {
-                background-color: rgba(30, 30, 30, 230);
-                border-radius: 10px;
-            }
-            QLabel {
-                color: white;
-                font-size: 10px;
-            }
-        """)
-        
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(12, 10, 12, 10)
-        layout.setSpacing(3)
-        
-        titulo = QLabel("📊 Níveis de Referência")
-        titulo.setAlignment(Qt.AlignCenter)
-        titulo.setFont(QFont("Segoe UI", 10, QFont.Bold))
-        layout.addWidget(titulo)
-        
-        self.labels_niveis = []
-        for min_db, max_db, descricao, cor in self.NIVEIS_DB:
-            label = QLabel(f"  {min_db}-{max_db} dB: {descricao}")
-            label.setStyleSheet(f"color: {cor}; font-size: 10px; padding: 3px; border-radius: 4px;")
-            layout.addWidget(label)
-            self.labels_niveis.append((min_db, max_db, label, cor))
-    
-    def mostrar_com_nivel(self, nivel_db: float):
-        """Mostra o overlay e destaca o nível atual."""
-        self._nivel_atual = nivel_db
-        
-        for min_db, max_db, label, cor_original in self.labels_niveis:
-            if min_db <= nivel_db < max_db:
-                label.setStyleSheet(f"""
-                    background-color: {cor_original}; 
-                    color: white; 
-                    font-size: 11px; 
-                    font-weight: bold;
-                    padding: 4px; 
-                    border-radius: 5px;
-                """)
-            else:
-                label.setStyleSheet(f"color: {cor_original}; font-size: 10px; padding: 3px;")
-        
-        parent_pos = self.parent_widget.pos()
-        parent_size = self.parent_widget.size()
-        self.move(parent_pos.x(), parent_pos.y() + parent_size.height() + 5)
-        
-        self.show()
-        self.raise_()
-        
-        self._hide_timer.stop()
-        self._hide_timer.start(5000)
-    
-    def paintEvent(self, event):
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing)
-        painter.setBrush(QColor(30, 30, 30, 230))
-        painter.setPen(Qt.NoPen)
-        painter.drawRoundedRect(self.rect(), 10, 10)
-
-
 class NoiseMeterWidget(QWidget):
+    """Widget discreto flutuante que mostra tempo restante + indicador sutil de volume."""
+    
     def __init__(self, config):
         super().__init__()
         self.config = config
         self._nivel_atual = 0
         self._strikes = 0
+        self._remaining_minutes = 0
         self._drag_position = None
-        self._ultimo_estado_atencao = False
+        self._pulse_state = False
         
         self._setup_ui()
         self._load_position()
         
-        self._overlay = NivelInfoOverlay(self)
+        self._pulse_timer = QTimer(self)
+        self._pulse_timer.timeout.connect(self._toggle_pulse)
+        self._pulse_timer.setInterval(500)
     
     def _setup_ui(self):
         self.setWindowFlags(
@@ -117,52 +29,46 @@ class NoiseMeterWidget(QWidget):
             Qt.Tool
         )
         self.setAttribute(Qt.WA_TranslucentBackground)
-        self.setFixedSize(140, 85)
-        
-        self.setStyleSheet("""
-            QWidget {
-                background-color: rgba(30, 30, 30, 220);
-                border-radius: 10px;
-            }
-            QLabel {
-                color: white;
-                font-size: 11px;
-            }
-            QProgressBar {
-                border: 1px solid #555;
-                border-radius: 3px;
-                background-color: #333;
-                text-align: center;
-            }
-            QProgressBar::chunk {
-                border-radius: 2px;
-            }
-        """)
+        self.setFixedSize(100, 32)
         
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(10, 8, 10, 8)
-        layout.setSpacing(4)
+        layout.setContentsMargins(8, 5, 8, 4)
+        layout.setSpacing(2)
         
-        self.label_titulo = QLabel("🔊 Volume")
-        self.label_titulo.setAlignment(Qt.AlignCenter)
-        layout.addWidget(self.label_titulo)
+        top_row = QHBoxLayout()
+        top_row.setSpacing(3)
+        
+        self.label_time = QLabel("--:--")
+        self.label_time.setFont(QFont("Segoe UI", 11, QFont.Bold))
+        self.label_time.setStyleSheet("background: transparent; color: rgba(255,255,255,200);")
+        self.label_time.setAlignment(Qt.AlignCenter)
+        top_row.addWidget(self.label_time, 1)
+        
+        self.label_strikes = QLabel("")
+        self.label_strikes.setFont(QFont("Segoe UI Emoji", 7))
+        self.label_strikes.setStyleSheet("background: transparent; color: #ff6b6b;")
+        self.label_strikes.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        top_row.addWidget(self.label_strikes)
+        
+        layout.addLayout(top_row)
         
         self.barra_volume = QProgressBar()
         self.barra_volume.setRange(0, 100)
         self.barra_volume.setValue(0)
         self.barra_volume.setTextVisible(False)
-        self.barra_volume.setFixedHeight(15)
+        self.barra_volume.setFixedHeight(3)
+        self.barra_volume.setStyleSheet("""
+            QProgressBar {
+                border: none;
+                border-radius: 1px;
+                background-color: rgba(255,255,255,20);
+            }
+            QProgressBar::chunk {
+                background-color: #4CAF50;
+                border-radius: 1px;
+            }
+        """)
         layout.addWidget(self.barra_volume)
-        
-        self.label_db = QLabel("0 dB")
-        self.label_db.setAlignment(Qt.AlignCenter)
-        self.label_db.setFont(QFont("Arial", 12, QFont.Bold))
-        layout.addWidget(self.label_db)
-        
-        self.label_strikes = QLabel("")
-        self.label_strikes.setAlignment(Qt.AlignCenter)
-        self.label_strikes.setStyleSheet("color: #ff6b6b; font-size: 10px;")
-        layout.addWidget(self.label_strikes)
     
     def _load_position(self):
         x = self.config.get("posicao_widget_x", 100)
@@ -173,6 +79,21 @@ class NoiseMeterWidget(QWidget):
         pos = self.pos()
         self.config.set("posicao_widget_x", pos.x())
         self.config.set("posicao_widget_y", pos.y())
+    
+    def _toggle_pulse(self):
+        """Alterna pulso visual quando volume alto."""
+        self._pulse_state = not self._pulse_state
+        self.update()
+    
+    def _format_time(self, minutes: int) -> str:
+        """Formata minutos em 'H:MM' ou 'Mm'."""
+        if minutes <= 0:
+            return "0:00"
+        h = minutes // 60
+        m = minutes % 60
+        if h > 0:
+            return f"{h}:{m:02d}"
+        return f"{m}m"
     
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
@@ -190,38 +111,48 @@ class NoiseMeterWidget(QWidget):
             self._save_position()
             event.accept()
     
+    def atualizar_tempo(self, remaining_minutes: int):
+        """Atualiza o tempo restante exibido."""
+        self._remaining_minutes = remaining_minutes
+        self.label_time.setText(self._format_time(remaining_minutes))
+        
+        if remaining_minutes <= 5:
+            self.label_time.setStyleSheet("background: transparent; color: #f44336;")
+        elif remaining_minutes <= 15:
+            self.label_time.setStyleSheet("background: transparent; color: #FFC107;")
+        else:
+            self.label_time.setStyleSheet("background: transparent; color: rgba(255,255,255,200);")
+    
     def atualizar_nivel(self, nivel_db: float):
+        """Atualiza indicador sutil de volume."""
         self._nivel_atual = nivel_db
         
         valor_normalizado = min(100, max(0, int(nivel_db)))
         self.barra_volume.setValue(valor_normalizado)
         
-        self.label_db.setText(f"{nivel_db:.0f} dB")
-        
-        ruido_ambiente = self.config.get("ruido_ambiente_db", 40)
-        offset_media = self.config.get("offset_media_db", 35)
-        offset_pico = self.config.get("offset_pico_db", 50)
-        
-        limite_atencao = ruido_ambiente + offset_media
-        limite_perigo = ruido_ambiente + offset_pico
+        limite_atencao = self.config.get("volume_atencao_db", 70)
+        limite_perigo = self.config.get("volume_grito_db", 85)
         
         if nivel_db < limite_atencao:
-            cor = "#4CAF50"  # Verde
-            self._contrair_widget()
+            cor = "#4CAF50"
+            if self._pulse_timer.isActive():
+                self._pulse_timer.stop()
+                self._pulse_state = False
         elif nivel_db < limite_perigo:
-            cor = "#FFC107"  # Amarelo
-            self._expandir_widget()
+            cor = "#FFC107"
+            if self._pulse_timer.isActive():
+                self._pulse_timer.stop()
+                self._pulse_state = False
         else:
-            cor = "#f44336"  # Vermelho
-            self._expandir_widget()
-        
-        self._atualizar_tabela_destaque(nivel_db)
+            cor = "#f44336"
+            if not self._pulse_timer.isActive():
+                self._pulse_timer.start()
         
         self.barra_volume.setStyleSheet(f"""
             QProgressBar {{
-                border: 1px solid #555;
-                border-radius: 3px;
-                background-color: #333;
+                border: none;
+                border-radius: 2px;
+                background-color: rgba(255,255,255,30);
             }}
             QProgressBar::chunk {{
                 background-color: {cor};
@@ -229,43 +160,25 @@ class NoiseMeterWidget(QWidget):
             }}
         """)
     
-    def _expandir_widget(self):
-        if not self._expandido:
-            self._expandido = True
-            self.setFixedSize(self._tamanho_expandido)
-            self.frame_tabela.setVisible(True)
-    
-    def _contrair_widget(self):
-        if self._expandido:
-            self._expandido = False
-            self.setFixedSize(self._tamanho_normal)
-            self.frame_tabela.setVisible(False)
-    
-    def _atualizar_tabela_destaque(self, nivel_db: float):
-        for min_db, max_db, label, cor_original in self.labels_niveis:
-            if min_db <= nivel_db <= max_db:
-                label.setStyleSheet(f"""
-                    background-color: {cor_original}; 
-                    color: white; 
-                    font-size: 11px; 
-                    font-weight: bold;
-                    padding: 4px; 
-                    border-radius: 5px;
-                """)
-            else:
-                label.setStyleSheet(f"color: {cor_original}; font-size: 10px; padding: 2px;")
-    
     def atualizar_strikes(self, strikes: int):
+        """Atualiza indicador discreto de strikes."""
         self._strikes = strikes
         if strikes > 0:
-            avisos = "⚠️" * strikes
-            self.label_strikes.setText(f"{avisos} ({strikes}/4)")
+            cycle_pos = strikes % 3
+            cycle_pos = cycle_pos if cycle_pos != 0 else 3
+            self.label_strikes.setText(f"\u26a0 {strikes} ({cycle_pos}/3)")
         else:
             self.label_strikes.setText("")
     
     def paintEvent(self, event):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
-        painter.setBrush(QColor(30, 30, 30, 200))
+        
+        alpha = 180 if not self._pulse_state else 200
+        painter.setBrush(QColor(20, 20, 25, alpha))
         painter.setPen(Qt.NoPen)
-        painter.drawRoundedRect(self.rect(), 10, 10)
+        painter.drawRoundedRect(self.rect(), 8, 8)
+        
+        if self._pulse_state and self._nivel_atual > 0:
+            painter.setBrush(QColor(244, 67, 54, 15))
+            painter.drawRoundedRect(self.rect(), 8, 8)

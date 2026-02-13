@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.spec
+
+# Virtual env
+venv/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Installer artifacts
+installer/*.pfx
+installer/*.cer
+
+# Web (handled by web/.gitignore too)
+web/node_modules/
+web/.next/
+web/.env*
+
+# Secrets
+.github_token
+.githubtoken
+
+# App data
+*.log
