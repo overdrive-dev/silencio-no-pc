@@ -325,72 +325,131 @@ export default async function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <div className="rounded-2xl bg-stone-50/80 p-7 ring-1 ring-stone-200/80 space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="rounded-full bg-blue-100 p-2.5">
-                  <svg className="size-5 text-blue-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
-                  </svg>
-                </div>
-                <h3 className="font-semibold text-gray-900">OMS — Organização Mundial da Saúde</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <a
+              href="https://g1.globo.com/bemestar/noticia/2024/09/29/por-que-exposicao-excessiva-a-telas-pode-provocar-crises-de-raiva-do-seu-filho.ghtml"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group rounded-2xl bg-stone-50/80 p-7 ring-1 ring-stone-200/80 space-y-3 hover:ring-teal-200/60 hover:shadow-lg transition-all duration-300"
+            >
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center rounded-full bg-red-50 px-2.5 py-0.5 text-xs font-medium text-red-600 ring-1 ring-red-100">G1 Bem Estar</span>
+                <span className="text-xs text-slate-400">Set 2024</span>
               </div>
-              <p className="text-sm text-gray-600 leading-relaxed">
-                A OMS recomenda que crianças menores de 5 anos tenham no máximo 1 hora de tela por dia. O uso excessivo está associado a atrasos no desenvolvimento cognitivo, motor e emocional.
+              <h3 className="font-semibold text-slate-900 group-hover:text-teal-700 transition-colors leading-snug">
+                Por que exposição excessiva a telas pode provocar crises de raiva do seu filho
+              </h3>
+              <p className="text-sm text-slate-500 leading-relaxed">
+                Tempo de tela gera menor controle emocional em crianças de até 4 anos, criando um ciclo vicioso que interfere na saúde mental, segundo especialistas.
               </p>
-              <a
-                href="https://www.who.int/news/item/24-04-2019-to-grow-up-healthy-children-need-to-sit-less-and-play-more"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-sm font-medium text-teal-600 hover:text-teal-500 transition"
-              >
-                Leia mais &rarr;
-              </a>
-            </div>
+              <span className="inline-flex items-center text-sm font-medium text-teal-600 group-hover:text-teal-500 transition">
+                Ler artigo &rarr;
+              </span>
+            </a>
 
-            <div className="rounded-2xl bg-stone-50/80 p-7 ring-1 ring-stone-200/80 space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="rounded-full bg-green-100 p-2.5">
-                  <svg className="size-5 text-green-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
-                  </svg>
-                </div>
-                <h3 className="font-semibold text-gray-900">AAP — Academia Americana de Pediatria</h3>
+            <a
+              href="https://g1.globo.com/fantastico/noticia/2023/12/10/uso-prolongado-de-telas-por-criancas-e-adolescentes-preocupa-especialistas-veja-consequencias.ghtml"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group rounded-2xl bg-stone-50/80 p-7 ring-1 ring-stone-200/80 space-y-3 hover:ring-teal-200/60 hover:shadow-lg transition-all duration-300"
+            >
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-600 ring-1 ring-blue-100">G1 Fantástico</span>
+                <span className="text-xs text-slate-400">Dez 2023</span>
               </div>
-              <p className="text-sm text-gray-600 leading-relaxed">
-                A AAP orienta que crianças de 6 a 12 anos tenham limites consistentes de tempo de tela, priorizando sono, atividade física e interações presenciais. Telas não devem substituir brincadeiras.
+              <h3 className="font-semibold text-slate-900 group-hover:text-teal-700 transition-colors leading-snug">
+                Uso prolongado de telas por crianças e adolescentes preocupa especialistas
+              </h3>
+              <p className="text-sm text-slate-500 leading-relaxed">
+                Dispositivos podem amplificar problemas de saúde mental em jovens vulneráveis. Reportagem mostra as consequências do uso excessivo.
               </p>
-              <a
-                href="https://www.aap.org/en/patient-care/media-and-children/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-sm font-medium text-teal-600 hover:text-teal-500 transition"
-              >
-                Leia mais &rarr;
-              </a>
-            </div>
+              <span className="inline-flex items-center text-sm font-medium text-teal-600 group-hover:text-teal-500 transition">
+                Ler artigo &rarr;
+              </span>
+            </a>
 
-            <div className="rounded-2xl bg-stone-50/80 p-7 ring-1 ring-stone-200/80 space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="rounded-full bg-amber-100 p-2.5">
-                  <svg className="size-5 text-amber-600" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-                  </svg>
-                </div>
-                <h3 className="font-semibold text-gray-900">SBP — Sociedade Brasileira de Pediatria</h3>
+            <a
+              href="https://g1.globo.com/saude/noticia/2023/02/14/criancas-e-adolescentes-no-celular-uso-exagerado-afeta-o-cerebro-e-a-concentracao-veja-o-que-fazer.ghtml"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group rounded-2xl bg-stone-50/80 p-7 ring-1 ring-stone-200/80 space-y-3 hover:ring-teal-200/60 hover:shadow-lg transition-all duration-300"
+            >
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center rounded-full bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-600 ring-1 ring-green-100">G1 Saúde</span>
+                <span className="text-xs text-slate-400">Fev 2023</span>
               </div>
-              <p className="text-sm text-gray-600 leading-relaxed">
-                A SBP recomenda que crianças de 6 a 10 anos usem telas por no máximo 1-2 horas por dia, sempre com supervisão. O excesso pode causar irritabilidade, problemas de sono e dificuldade de concentração.
+              <h3 className="font-semibold text-slate-900 group-hover:text-teal-700 transition-colors leading-snug">
+                Uso exagerado do celular afeta o cérebro e a concentração de crianças
+              </h3>
+              <p className="text-sm text-slate-500 leading-relaxed">
+                Telas são fonte inesgotável de estímulos rápidos que liberam dopamina, prejudicando a capacidade de foco e atenção em atividades do mundo real.
               </p>
-              <a
-                href="https://www.sbp.com.br/especiais/pediatria-para-familias/cuidados-com-a-saude/tempo-de-tela/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-sm font-medium text-teal-600 hover:text-teal-500 transition"
-              >
-                Leia mais &rarr;
-              </a>
-            </div>
+              <span className="inline-flex items-center text-sm font-medium text-teal-600 group-hover:text-teal-500 transition">
+                Ler artigo &rarr;
+              </span>
+            </a>
+
+            <a
+              href="https://drauziovarella.uol.com.br/coluna-2/criancas-adolescentes-e-o-excesso-de-telas-coluna/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group rounded-2xl bg-stone-50/80 p-7 ring-1 ring-stone-200/80 space-y-3 hover:ring-teal-200/60 hover:shadow-lg transition-all duration-300"
+            >
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center rounded-full bg-purple-50 px-2.5 py-0.5 text-xs font-medium text-purple-600 ring-1 ring-purple-100">Drauzio Varella</span>
+              </div>
+              <h3 className="font-semibold text-slate-900 group-hover:text-teal-700 transition-colors leading-snug">
+                Crianças, adolescentes e o excesso de telas
+              </h3>
+              <p className="text-sm text-slate-500 leading-relaxed">
+                Coluna do portal Drauzio Varella aborda os riscos do tempo excessivo de tela para o desenvolvimento infantil e adolescente, com base em evidências científicas.
+              </p>
+              <span className="inline-flex items-center text-sm font-medium text-teal-600 group-hover:text-teal-500 transition">
+                Ler artigo &rarr;
+              </span>
+            </a>
+
+            <a
+              href="https://g1.globo.com/pr/parana/especial-publicitario/educacao-adventista/educacao-adventista/noticia/2024/11/14/o-perigo-das-telas-para-criancas-e-adolescentes.ghtml"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group rounded-2xl bg-stone-50/80 p-7 ring-1 ring-stone-200/80 space-y-3 hover:ring-teal-200/60 hover:shadow-lg transition-all duration-300"
+            >
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-600 ring-1 ring-amber-100">G1 Educação</span>
+                <span className="text-xs text-slate-400">Nov 2024</span>
+              </div>
+              <h3 className="font-semibold text-slate-900 group-hover:text-teal-700 transition-colors leading-snug">
+                O perigo das telas para crianças e adolescentes
+              </h3>
+              <p className="text-sm text-slate-500 leading-relaxed">
+                Crianças passam em média mais de 7 horas por dia em telas. A OMS recomenda no máximo 2 horas para a faixa de 5 a 17 anos. Artigo detalha os riscos à saúde física e mental.
+              </p>
+              <span className="inline-flex items-center text-sm font-medium text-teal-600 group-hover:text-teal-500 transition">
+                Ler artigo &rarr;
+              </span>
+            </a>
+
+            <a
+              href="https://autismoerealidade.org.br/2024/04/24/impacto-de-telas/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group rounded-2xl bg-stone-50/80 p-7 ring-1 ring-stone-200/80 space-y-3 hover:ring-teal-200/60 hover:shadow-lg transition-all duration-300"
+            >
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center rounded-full bg-teal-50 px-2.5 py-0.5 text-xs font-medium text-teal-600 ring-1 ring-teal-100">Autismo e Realidade</span>
+                <span className="text-xs text-slate-400">Abr 2024</span>
+              </div>
+              <h3 className="font-semibold text-slate-900 group-hover:text-teal-700 transition-colors leading-snug">
+                Impacto do uso excessivo de telas por crianças e adolescentes
+              </h3>
+              <p className="text-sm text-slate-500 leading-relaxed">
+                Para crianças de 6 a 10 anos, o máximo indicado é de 2 horas por dia. Estudos mostram efeitos no desenvolvimento, sono e comportamento social.
+              </p>
+              <span className="inline-flex items-center text-sm font-medium text-teal-600 group-hover:text-teal-500 transition">
+                Ler artigo &rarr;
+              </span>
+            </a>
           </div>
         </div>
       </section>
