@@ -47,6 +47,31 @@ function UsageGauge({ used, limit }: { used: number; limit: number }) {
   );
 }
 
+interface BlockedApp { id: string; name: string; display_name: string | null; }
+interface BlockedSite { id: string; domain: string; display_name: string | null; }
+
+const POPULAR_APPS = [
+  { name: "chrome.exe", display_name: "Google Chrome" },
+  { name: "msedge.exe", display_name: "Microsoft Edge" },
+  { name: "firefox.exe", display_name: "Firefox" },
+  { name: "robloxplayerbeta.exe", display_name: "Roblox" },
+  { name: "minecraft.exe", display_name: "Minecraft" },
+  { name: "fortnite.exe", display_name: "Fortnite" },
+  { name: "discord.exe", display_name: "Discord" },
+  { name: "steam.exe", display_name: "Steam" },
+];
+
+const POPULAR_SITES = [
+  { domain: "youtube.com", display_name: "YouTube" },
+  { domain: "tiktok.com", display_name: "TikTok" },
+  { domain: "instagram.com", display_name: "Instagram" },
+  { domain: "twitter.com", display_name: "Twitter/X" },
+  { domain: "roblox.com", display_name: "Roblox" },
+  { domain: "discord.com", display_name: "Discord" },
+  { domain: "twitch.tv", display_name: "Twitch" },
+  { domain: "reddit.com", display_name: "Reddit" },
+];
+
 const EVENT_BADGES: Record<string, { label: string; color: string }> = {
   strike: { label: "Strike", color: "bg-amber-100 text-amber-700" },
   penalidade_tempo: { label: "Penalidade", color: "bg-red-100 text-red-700" },
@@ -81,13 +106,21 @@ export default function PcDashboard() {
   const [tokenClaimed, setTokenClaimed] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [activeTab, setActiveTab] = useState<"history" | "events">("history");
+  const [activeTab, setActiveTab] = useState<"history" | "events" | "controls">("history");
   const [history, setHistory] = useState<DailyUsage[]>([]);
   const [events, setEvents] = useState<AppEvent[]>([]);
   const [eventsTotal, setEventsTotal] = useState(0);
   const [eventsOffset, setEventsOffset] = useState(0);
   const [eventFilter, setEventFilter] = useState<string>("");
   const eventsLimit = 20;
+  const [blockedApps, setBlockedApps] = useState<BlockedApp[]>([]);
+  const [blockedSites, setBlockedSites] = useState<BlockedSite[]>([]);
+  const [appBlockMode, setAppBlockMode] = useState<string>("blacklist");
+  const [siteBlockMode, setSiteBlockMode] = useState<string>("blacklist");
+  const [newAppName, setNewAppName] = useState("");
+  const [newAppDisplay, setNewAppDisplay] = useState("");
+  const [newSiteDomain, setNewSiteDomain] = useState("");
+  const [newSiteDisplay, setNewSiteDisplay] = useState("");
 
   const deletePc = async () => {
     setDeleting(true);
@@ -149,6 +182,87 @@ export default function PcDashboard() {
     }
   }, [id]);
 
+  const fetchControls = useCallback(async () => {
+    try {
+      const [appsRes, sitesRes, settingsRes] = await Promise.all([
+        fetch(`/api/dispositivo/${id}/blocked-apps`),
+        fetch(`/api/dispositivo/${id}/blocked-sites`),
+        fetch(`/api/dispositivo/${id}/settings`),
+      ]);
+      const appsData = await appsRes.json();
+      const sitesData = await sitesRes.json();
+      const settData = await settingsRes.json();
+      setBlockedApps(appsData.apps || []);
+      setBlockedSites(sitesData.sites || []);
+      if (settData.settings) {
+        setAppBlockMode(settData.settings.app_block_mode || "blacklist");
+        setSiteBlockMode(settData.settings.site_block_mode || "blacklist");
+      }
+    } catch (err) {
+      console.error("Erro ao buscar controles:", err);
+    }
+  }, [id]);
+
+  const addBlockedApp = async (name: string, display_name: string) => {
+    try {
+      await fetch(`/api/dispositivo/${id}/blocked-apps`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, display_name }),
+      });
+      setNewAppName("");
+      setNewAppDisplay("");
+      fetchControls();
+    } catch (err) {
+      console.error("Erro ao adicionar app:", err);
+    }
+  };
+
+  const removeBlockedApp = async (appId: string) => {
+    try {
+      await fetch(`/api/dispositivo/${id}/blocked-apps?appId=${appId}`, { method: "DELETE" });
+      fetchControls();
+    } catch (err) {
+      console.error("Erro ao remover app:", err);
+    }
+  };
+
+  const addBlockedSite = async (domain: string, display_name: string) => {
+    try {
+      await fetch(`/api/dispositivo/${id}/blocked-sites`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ domain, display_name }),
+      });
+      setNewSiteDomain("");
+      setNewSiteDisplay("");
+      fetchControls();
+    } catch (err) {
+      console.error("Erro ao adicionar site:", err);
+    }
+  };
+
+  const removeBlockedSite = async (siteId: string) => {
+    try {
+      await fetch(`/api/dispositivo/${id}/blocked-sites?siteId=${siteId}`, { method: "DELETE" });
+      fetchControls();
+    } catch (err) {
+      console.error("Erro ao remover site:", err);
+    }
+  };
+
+  const saveBlockMode = async (field: string, value: string) => {
+    try {
+      await fetch(`/api/dispositivo/${id}/settings`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ [field]: value }),
+      });
+    } catch (err) {
+      console.error("Erro ao salvar modo:", err);
+    }
+  };
+
   const fetchEvents = useCallback(async () => {
     try {
       const params = new URLSearchParams({
@@ -173,7 +287,8 @@ export default function PcDashboard() {
 
   useEffect(() => {
     if (activeTab === "events") fetchEvents();
-  }, [activeTab, fetchEvents]);
+    if (activeTab === "controls") fetchControls();
+  }, [activeTab, fetchEvents, fetchControls]);
 
   useEffect(() => {
     setEventsOffset(0);
@@ -414,6 +529,16 @@ export default function PcDashboard() {
           >
             Eventos {eventsTotal > 0 && `(${eventsTotal})`}
           </button>
+          <button
+            onClick={() => setActiveTab("controls")}
+            className={`flex-1 py-3 text-sm font-medium transition ${
+              activeTab === "controls"
+                ? "text-indigo-600 border-b-2 border-indigo-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            Controles
+          </button>
         </div>
 
         <div className="p-5">
@@ -545,6 +670,184 @@ export default function PcDashboard() {
                 </div>
               )}
             </>
+          )}
+
+          {activeTab === "controls" && (
+            <div className="space-y-8">
+              {/* ── Blocked Apps ── */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-gray-900">Aplicativos</h3>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-400">Modo:</span>
+                    <button
+                      onClick={() => {
+                        const next = appBlockMode === "blacklist" ? "whitelist" : "blacklist";
+                        setAppBlockMode(next);
+                        saveBlockMode("app_block_mode", next);
+                      }}
+                      className={`px-3 py-1 rounded-full text-xs font-medium transition ${
+                        appBlockMode === "blacklist"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-green-100 text-green-700"
+                      }`}
+                    >
+                      {appBlockMode === "blacklist" ? "Bloquear listados" : "Permitir apenas listados"}
+                    </button>
+                  </div>
+                </div>
+
+                <p className="text-xs text-gray-400">
+                  {appBlockMode === "blacklist"
+                    ? "Apps na lista serão fechados automaticamente. Todos os outros são permitidos."
+                    : "Apenas apps na lista poderão rodar. Todos os outros serão fechados."}
+                </p>
+
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Processo (ex: chrome.exe)"
+                    value={newAppName}
+                    onChange={(e) => setNewAppName(e.target.value)}
+                    className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Nome (ex: Chrome)"
+                    value={newAppDisplay}
+                    onChange={(e) => setNewAppDisplay(e.target.value)}
+                    className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                  />
+                  <button
+                    onClick={() => newAppName && addBlockedApp(newAppName, newAppDisplay || newAppName)}
+                    disabled={!newAppName}
+                    className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-500 disabled:opacity-40 transition shrink-0"
+                  >
+                    Adicionar
+                  </button>
+                </div>
+
+                <div className="flex flex-wrap gap-1.5">
+                  {POPULAR_APPS.filter(
+                    (p) => !blockedApps.some((a) => a.name === p.name)
+                  ).map((app) => (
+                    <button
+                      key={app.name}
+                      onClick={() => addBlockedApp(app.name, app.display_name)}
+                      className="px-2.5 py-1 rounded-full text-xs bg-gray-100 text-gray-500 hover:bg-indigo-50 hover:text-indigo-600 transition"
+                    >
+                      + {app.display_name}
+                    </button>
+                  ))}
+                </div>
+
+                {blockedApps.length === 0 ? (
+                  <p className="text-sm text-gray-400 text-center py-3">Nenhum aplicativo na lista.</p>
+                ) : (
+                  <div className="space-y-1">
+                    {blockedApps.map((app) => (
+                      <div
+                        key={app.id}
+                        className="flex items-center justify-between rounded-lg border border-gray-100 bg-gray-50 px-3 py-2"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-gray-700">{app.display_name || app.name}</span>
+                          <span className="text-xs text-gray-400">{app.name}</span>
+                        </div>
+                        <button
+                          onClick={() => removeBlockedApp(app.id)}
+                          className="text-xs text-red-500 hover:text-red-700 transition"
+                        >
+                          Remover
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <hr className="border-gray-100" />
+
+              {/* ── Blocked Sites ── */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-gray-900">Sites</h3>
+                  <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
+                    Bloquear listados
+                  </span>
+                </div>
+
+                <p className="text-xs text-gray-400">
+                  Sites na lista serão bloqueados no navegador via hosts file. Funciona em todos os navegadores.
+                </p>
+
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Domínio (ex: youtube.com)"
+                    value={newSiteDomain}
+                    onChange={(e) => setNewSiteDomain(e.target.value)}
+                    className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Nome (ex: YouTube)"
+                    value={newSiteDisplay}
+                    onChange={(e) => setNewSiteDisplay(e.target.value)}
+                    className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                  />
+                  <button
+                    onClick={() => newSiteDomain && addBlockedSite(newSiteDomain, newSiteDisplay || newSiteDomain)}
+                    disabled={!newSiteDomain}
+                    className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-500 disabled:opacity-40 transition shrink-0"
+                  >
+                    Adicionar
+                  </button>
+                </div>
+
+                <div className="flex flex-wrap gap-1.5">
+                  {POPULAR_SITES.filter(
+                    (p) => !blockedSites.some((s) => s.domain === p.domain)
+                  ).map((site) => (
+                    <button
+                      key={site.domain}
+                      onClick={() => addBlockedSite(site.domain, site.display_name)}
+                      className="px-2.5 py-1 rounded-full text-xs bg-gray-100 text-gray-500 hover:bg-indigo-50 hover:text-indigo-600 transition"
+                    >
+                      + {site.display_name}
+                    </button>
+                  ))}
+                </div>
+
+                {blockedSites.length === 0 ? (
+                  <p className="text-sm text-gray-400 text-center py-3">Nenhum site na lista.</p>
+                ) : (
+                  <div className="space-y-1">
+                    {blockedSites.map((site) => (
+                      <div
+                        key={site.id}
+                        className="flex items-center justify-between rounded-lg border border-gray-100 bg-gray-50 px-3 py-2"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-gray-700">{site.display_name || site.domain}</span>
+                          <span className="text-xs text-gray-400">{site.domain}</span>
+                        </div>
+                        <button
+                          onClick={() => removeBlockedSite(site.id)}
+                          className="text-xs text-red-500 hover:text-red-700 transition"
+                        >
+                          Remover
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="rounded-lg bg-indigo-50 border border-indigo-200 p-3 text-xs text-indigo-700">
+                As regras são sincronizadas automaticamente com o dispositivo a cada 30 segundos.
+              </div>
+            </div>
           )}
         </div>
       </div>

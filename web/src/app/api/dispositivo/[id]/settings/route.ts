@@ -46,6 +46,8 @@ export async function PUT(
     "daily_limit_minutes",
     "strike_penalty_minutes",
     "schedule",
+    "app_block_mode",
+    "site_block_mode",
   ];
 
   const updates: Record<string, unknown> = {};

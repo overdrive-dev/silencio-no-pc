@@ -16,7 +16,8 @@ class RemoteSync:
     
     def __init__(self, config, logger, activity_tracker, time_manager, 
                  strike_manager, screen_locker, actions,
-                 on_command: Optional[Callable] = None):
+                 on_command: Optional[Callable] = None,
+                 app_blocker=None, site_blocker=None):
         self.config = config
         self.logger = logger
         self.activity_tracker = activity_tracker
@@ -25,6 +26,8 @@ class RemoteSync:
         self.screen_locker = screen_locker
         self.actions = actions
         self.on_command = on_command
+        self.app_blocker = app_blocker
+        self.site_blocker = site_blocker
         
         self._running = Event()
         self._thread: Optional[Thread] = None
@@ -199,6 +202,9 @@ class RemoteSync:
             if result.data:
                 settings = result.data[0]
                 self._apply_settings(settings)
+                
+                # Sync blocking rules
+                self._sync_blocking_rules(client, pc_id, settings)
         except Exception as e:
             print(f"Erro ao buscar settings: {e}")
     
@@ -264,6 +270,23 @@ class RemoteSync:
             except Exception:
                 pass
     
+    def _sync_blocking_rules(self, client, pc_id: str, settings: Dict[str, Any]):
+        """Busca e aplica regras de bloqueio de apps e sites."""
+        try:
+            if self.app_blocker:
+                apps_result = client.table("blocked_apps").select("*").eq("pc_id", pc_id).execute()
+                app_mode = settings.get("app_block_mode", "blacklist")
+                self.app_blocker.update_rules(apps_result.data or [], app_mode)
+        except Exception as e:
+            print(f"Erro ao buscar blocked_apps: {e}")
+        
+        try:
+            if self.site_blocker:
+                sites_result = client.table("blocked_sites").select("*").eq("pc_id", pc_id).execute()
+                self.site_blocker.update_rules(sites_result.data or [])
+        except Exception as e:
+            print(f"Erro ao buscar blocked_sites: {e}")
+
     def _apply_settings(self, settings: Dict[str, Any]):
         """Aplica settings remotas na config local."""
         sync_fields = [

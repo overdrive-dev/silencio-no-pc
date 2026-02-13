@@ -25,6 +25,8 @@ from src.ui.time_warning_popup import TimeWarningPopup, TimePenaltyPopup, TimeBl
 from src.tray_app import TrayApp
 from src.remote_sync import RemoteSync
 from src.auto_updater import AutoUpdater
+from src.app_blocker import AppBlocker
+from src.site_blocker import SiteBlocker
 
 
 class AudioSignals(QObject):
@@ -52,6 +54,8 @@ class KidsPC:
         self.time_manager = TimeManager(self.config, self.activity_tracker)
         self.screen_locker = ScreenLocker()
         self.auto_updater = AutoUpdater(current_version=__version__)
+        self.app_blocker = AppBlocker(self.config, self.logger)
+        self.site_blocker = SiteBlocker(self.config, self.logger)
         
         self.audio_signals = AudioSignals()
         self.audio_signals.audio_update.connect(self._on_audio_update_safe)
@@ -84,6 +88,7 @@ class KidsPC:
         """Chamado quando o programa encerra normalmente."""
         try:
             self.activity_tracker.stop()
+            self.site_blocker.cleanup()
             self.logger.app_encerrado()
             if self.remote_sync:
                 self.remote_sync.send_shutdown_event("graceful")
@@ -191,6 +196,12 @@ class KidsPC:
             if not dialog.is_paired():
                 sys.exit(0)
     
+    def _setup_app_blocker_timer(self):
+        """Timer que verifica apps bloqueados a cada 3s."""
+        self.app_blocker_timer = QTimer()
+        self.app_blocker_timer.timeout.connect(self.app_blocker.check)
+        self.app_blocker_timer.start(3000)
+
     def _start_remote_sync(self):
         """Inicia sync remoto se pareado."""
         if self.config.get("paired", False):
@@ -202,6 +213,8 @@ class KidsPC:
                 strike_manager=self.strike_manager,
                 screen_locker=self.screen_locker,
                 actions=self.actions,
+                app_blocker=self.app_blocker,
+                site_blocker=self.site_blocker,
             )
             self.remote_sync.start()
     
@@ -235,6 +248,7 @@ class KidsPC:
         self.audio_monitor.start()
         self.activity_tracker.start()
         self._start_remote_sync()
+        self._setup_app_blocker_timer()
         
         remaining = self.time_manager.get_remaining_minutes()
         self.noise_meter.atualizar_tempo(remaining)

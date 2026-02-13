@@ -11,6 +11,7 @@ import {
   ComputerDesktopIcon,
   ShieldCheckIcon,
   BoltIcon,
+  NoSymbolIcon,
 } from "@heroicons/react/24/outline";
 import FaqSection from "@/components/landing/faq-section";
 
@@ -51,13 +52,20 @@ const features = [
       "Todas as ações sensíveis exigem senha. Configurações, adicionar tempo e fechar o app são protegidos.",
     icon: LockClosedIcon,
   },
+  {
+    name: "Bloqueio de Apps & Sites",
+    description:
+      "Bloqueie aplicativos e sites específicos ou permita apenas os aprovados. Regras sincronizadas remotamente.",
+    icon: NoSymbolIcon,
+    badge: "Novo",
+  },
 ];
 
 const steps = [
   {
     number: "01",
     title: "Crie sua conta",
-    description: "Registre-se gratuitamente no painel web e adicione um novo dispositivo.",
+    description: "Registre-se no painel web e adicione um novo dispositivo.",
     icon: ShieldCheckIcon,
   },
   {
@@ -90,6 +98,16 @@ const testimonials = [
 ];
 
 const changelog = [
+  {
+    version: "2.1.0",
+    date: "13 Fev 2026",
+    changes: [
+      "Novo: Bloqueio de aplicativos (blacklist/whitelist)",
+      "Novo: Bloqueio de sites via hosts file",
+      "Histórico e eventos integrados ao dashboard",
+      "Artigos brasileiros na seção Saúde Digital",
+    ],
+  },
   {
     version: "2.0.3",
     date: "13 Fev 2026",
@@ -221,6 +239,11 @@ export default async function Home() {
                       <feature.icon className="size-5 text-teal-600" />
                     </div>
                     {feature.name}
+                    {"badge" in feature && feature.badge && (
+                      <span className="ml-auto text-xs font-medium px-2 py-0.5 rounded-full bg-teal-100 text-teal-700 ring-1 ring-teal-200">
+                        {feature.badge}
+                      </span>
+                    )}
                   </dt>
                   <dd className="mt-3 text-sm leading-relaxed text-slate-500">
                     {feature.description}
