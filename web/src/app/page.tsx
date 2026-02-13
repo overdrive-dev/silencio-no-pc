@@ -197,8 +197,8 @@ export default async function Home() {
       </section>
 
       {/* ── Features ── */}
-      <section id="features" className="py-24 sm:py-32 px-6 bg-white">
-        <div className="mx-auto max-w-6xl">
+      <section id="features" className="py-24 sm:py-32 bg-white">
+        <div className="mx-auto max-w-6xl px-6">
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-sm font-semibold tracking-widest uppercase text-teal-600">Tudo que você precisa</p>
             <p className="mt-3 font-display text-3xl tracking-tight text-slate-900 sm:text-4xl">
@@ -233,8 +233,8 @@ export default async function Home() {
       </section>
 
       {/* ── How it works ── */}
-      <section className="py-24 sm:py-32 px-6 bg-stone-50">
-        <div className="mx-auto max-w-6xl">
+      <section className="py-24 sm:py-32 bg-stone-50">
+        <div className="mx-auto max-w-6xl px-6">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.5fr] gap-16 items-start">
             <div className="lg:sticky lg:top-32">
               <p className="text-sm font-semibold tracking-widest uppercase text-teal-600">Simples de configurar</p>
@@ -271,9 +271,9 @@ export default async function Home() {
       </section>
 
       {/* ── Testimonials ── */}
-      <section id="testimonials" className="relative py-24 sm:py-32 px-6 bg-slate-900 overflow-hidden">
+      <section id="testimonials" className="relative py-24 sm:py-32 bg-slate-900 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(20,184,166,0.15),transparent)]" />
-        <div className="relative mx-auto max-w-6xl">
+        <div className="relative mx-auto max-w-6xl px-6">
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-sm font-semibold tracking-widest uppercase text-teal-400">Depoimentos</p>
             <p className="mt-3 font-display text-3xl tracking-tight text-white sm:text-4xl">
@@ -313,8 +313,8 @@ export default async function Home() {
       </section>
 
       {/* ── Saúde Digital ── */}
-      <section id="saude-digital" className="py-24 sm:py-32 px-6 bg-white">
-        <div className="mx-auto max-w-6xl">
+      <section id="saude-digital" className="py-24 sm:py-32 bg-white">
+        <div className="mx-auto max-w-6xl px-6">
           <div className="mx-auto max-w-2xl text-center mb-16">
             <p className="text-sm font-semibold tracking-widest uppercase text-teal-600">Saúde Digital Infantil</p>
             <p className="mt-3 font-display text-3xl tracking-tight text-slate-900 sm:text-4xl">
@@ -396,8 +396,8 @@ export default async function Home() {
       </section>
 
       {/* ── Changelog ── */}
-      <section id="changelog" className="py-24 sm:py-32 px-6 bg-stone-50">
-        <div className="mx-auto max-w-3xl">
+      <section id="changelog" className="py-24 sm:py-32 bg-stone-50">
+        <div className="mx-auto max-w-3xl px-6">
           <div className="text-center mb-14">
             <p className="text-sm font-semibold tracking-widest uppercase text-teal-600">Changelog</p>
             <p className="mt-3 font-display text-3xl tracking-tight text-slate-900 sm:text-4xl">
@@ -439,14 +439,16 @@ export default async function Home() {
       </section>
 
       {/* ── FAQ ── */}
-      <div className="px-6 bg-white">
-        <FaqSection />
-      </div>
+      <section className="bg-white">
+        <div className="px-6">
+          <FaqSection />
+        </div>
+      </section>
 
       {/* ── Final CTA ── */}
-      <section className="relative isolate py-24 sm:py-32 px-6 bg-slate-900 overflow-hidden">
+      <section className="relative isolate py-24 sm:py-32 bg-slate-900 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_100%,rgba(20,184,166,0.12),transparent)]" />
-        <div className="relative mx-auto max-w-2xl text-center">
+        <div className="relative mx-auto max-w-2xl px-6 text-center">
           <h2 className="font-display text-3xl tracking-tight text-white sm:text-4xl">
             Pronto para ter paz em casa?
           </h2>
@@ -469,10 +471,10 @@ export default async function Home() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-stone-200 bg-stone-50 py-12 px-6">
-        <div className="mx-auto max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-6">
+      <footer className="border-t border-stone-200 bg-stone-50 py-12">
+        <div className="mx-auto max-w-7xl px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2">
-            <ShieldCheckIcon className="size-5 text-teal-600" />
+            <ComputerDesktopIcon className="size-5 text-teal-600" />
             <span className="text-sm font-semibold text-slate-700">KidsPC</span>
             <span className="text-sm text-slate-400">&middot; Controle parental inteligente</span>
           </div>

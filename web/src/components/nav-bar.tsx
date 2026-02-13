@@ -11,7 +11,7 @@ import {
   MenuItems,
   Transition,
 } from "@headlessui/react";
-import { Bars3Icon, BellIcon, XMarkIcon, Cog6ToothIcon, CreditCardIcon, ShieldCheckIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, BellIcon, XMarkIcon, Cog6ToothIcon, CreditCardIcon, ComputerDesktopIcon } from "@heroicons/react/24/outline";
 import {
   SignInButton,
   SignUpButton,
@@ -57,7 +57,7 @@ export default function NavBar() {
               <div className="flex">
                 <div className="flex shrink-0 items-center">
                   <Link href="/" className="flex items-center gap-2 text-xl font-display text-slate-900">
-                    <ShieldCheckIcon className="size-6 text-teal-600" />
+                    <ComputerDesktopIcon className="size-6 text-teal-600" />
                     KidsPC
                   </Link>
                 </div>
