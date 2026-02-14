@@ -147,9 +147,13 @@ class TrayApp:
         
         if self.time_manager:
             self.time_manager.add_time(30)
+            remaining = self.time_manager.get_remaining_minutes()
+            if self.noise_meter:
+                self.noise_meter.atualizar_tempo(remaining)
+            self._atualizar_status()
             if self.screen_locker and not self.time_manager.is_blocked():
                 self.screen_locker.stop_enforcement()
-            QMessageBox.information(None, "Tempo Adicionado", "+30 minutos adicionados!")
+            QMessageBox.information(None, "Tempo Adicionado", f"+30 minutos adicionados!\nTempo restante: {self._format_time(remaining)}")
     
     def _on_tutorial(self):
         if not self._solicitar_senha("Senha para Tutorial"):
