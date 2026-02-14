@@ -72,6 +72,29 @@ export interface DaySchedule {
 /** Keys are weekday numbers: "0"=Monday .. "6"=Sunday. Missing key = day disabled. */
 export type WeekSchedule = Record<string, DaySchedule>;
 
+export interface AppUsage {
+  id: string;
+  user_id: string;
+  pc_id: string;
+  date: string;
+  app_name: string;
+  display_name: string | null;
+  minutes: number;
+  category: string | null;
+}
+
+export interface SiteVisit {
+  id: string;
+  user_id: string;
+  pc_id: string;
+  date: string;
+  domain: string;
+  title: string | null;
+  visit_count: number;
+  total_seconds: number;
+  source: string;
+}
+
 export interface PCSettings {
   id: string;
   user_id: string;

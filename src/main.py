@@ -27,6 +27,8 @@ from src.remote_sync import RemoteSync
 from src.auto_updater import AutoUpdater
 from src.app_blocker import AppBlocker
 from src.site_blocker import SiteBlocker
+from src.window_tracker import WindowTracker
+from src.browser_history import BrowserHistory
 
 
 class AudioSignals(QObject):
@@ -57,6 +59,8 @@ class KidsPC:
         self.auto_updater = AutoUpdater(current_version=__version__)
         self.app_blocker = AppBlocker(self.config, self.logger)
         self.site_blocker = SiteBlocker(self.config, self.logger)
+        self.window_tracker = WindowTracker(poll_interval=5)
+        self.browser_history = BrowserHistory()
         
         self.audio_signals = AudioSignals()
         self.audio_signals.audio_update.connect(self._on_audio_update_safe)
@@ -89,6 +93,7 @@ class KidsPC:
     def _on_graceful_shutdown(self):
         """Chamado quando o programa encerra normalmente."""
         try:
+            self.window_tracker.stop()
             self.activity_tracker.stop()
             self.site_blocker.cleanup()
             self.logger.app_encerrado()
@@ -220,6 +225,8 @@ class KidsPC:
                 site_blocker=self.site_blocker,
                 on_command=self._on_remote_command,
                 audio_monitor=self.audio_monitor,
+                window_tracker=self.window_tracker,
+                browser_history=self.browser_history,
             )
             self.remote_sync.start()
     
@@ -260,6 +267,7 @@ class KidsPC:
         
         self.audio_monitor.start()
         self.activity_tracker.start()
+        self.window_tracker.start()
         self._start_remote_sync()
         self._setup_app_blocker_timer()
         

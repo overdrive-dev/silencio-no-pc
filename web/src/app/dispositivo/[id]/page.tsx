@@ -10,6 +10,7 @@ import UsageGauge, { formatTime } from "@/components/device/usage-gauge";
 import HistoryTab from "@/components/device/history-tab";
 import EventsTab from "@/components/device/events-tab";
 import ControlsTab from "@/components/device/controls-tab";
+import ActivityTab from "@/components/device/activity-tab";
 
 interface BlockedApp { id: string; name: string; display_name: string | null; }
 interface BlockedSite { id: string; domain: string; display_name: string | null; }
@@ -35,7 +36,7 @@ export default function PcDashboard() {
   const [tokenClaimed, setTokenClaimed] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [activeTab, setActiveTab] = useState<"history" | "events" | "controls">("history");
+  const [activeTab, setActiveTab] = useState<"history" | "events" | "activity" | "controls">("history");
   const [history, setHistory] = useState<DailyUsage[]>([]);
   const [events, setEvents] = useState<AppEvent[]>([]);
   const [eventsTotal, setEventsTotal] = useState(0);
@@ -450,6 +451,16 @@ export default function PcDashboard() {
             Eventos {eventsTotal > 0 && `(${eventsTotal})`}
           </button>
           <button
+            onClick={() => setActiveTab("activity")}
+            className={`flex-1 py-3 text-sm font-medium transition ${
+              activeTab === "activity"
+                ? "text-indigo-600 border-b-2 border-indigo-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            Atividade
+          </button>
+          <button
             onClick={() => setActiveTab("controls")}
             className={`flex-1 py-3 text-sm font-medium transition ${
               activeTab === "controls"
@@ -475,6 +486,8 @@ export default function PcDashboard() {
               setEventsOffset={setEventsOffset}
             />
           )}
+
+          {activeTab === "activity" && <ActivityTab deviceId={id} />}
 
           {activeTab === "controls" && (
             <ControlsTab

@@ -19,6 +19,8 @@ Reference guide for the KidsPC Windows desktop application (`src/`). Use when mo
 | `auto_updater.py` | `AutoUpdater` | Checks GitHub Releases API, downloads exe, applies via temp .bat script |
 | `pairing.py` | `PairingDialog` | QDialog for token-based PC↔account linking (calls `/api/dispositivos/claim`) |
 | `tray_app.py` | `TrayApp` | QSystemTrayIcon with context menu (status, time, config, strikes, update) |
+| `window_tracker.py` | `WindowTracker` | Tracks foreground window via Win32 API, aggregates time per app, extracts browser domains from titles |
+| `browser_history.py` | `BrowserHistory` | Reads Chrome/Edge/Firefox SQLite history DBs (copies to temp to avoid locks) |
 | `logger.py` | `EventLogger` | Local event log with `_pending_eventos` queue for sync |
 | `actions.py` | `Actions` | System actions (e.g., `shutdown_pc()`) |
 | `password_manager.py` | `solicitar_senha()` | QDialog for password input, verifies via `Config.verificar_senha()` |
@@ -65,8 +67,14 @@ Thread: ActivityTracker._monitor_loop()
 ├── Session start/end tracking
 └── Day reset logic
 
+Thread: WindowTracker._track_loop()
+├── GetForegroundWindow() + GetWindowText() poll (5s)
+├── psutil.Process(pid) for process name
+├── Browser domain extraction from window title
+└── Aggregates time per app and per domain
+
 Thread: RemoteSync._sync_loop()
-├── _sync_outbound(): heartbeat, sessions, daily_usage, events
+├── _sync_outbound(): heartbeat, sessions, daily_usage, events, app_usage, site_visits
 ├── _sync_inbound(): commands, settings, blocking rules
 └── Sleep interval (default 30s, interruptible)
 

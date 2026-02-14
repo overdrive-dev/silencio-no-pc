@@ -91,6 +91,7 @@ Reference guide for the KidsPC Supabase schema, RLS policies, and data patterns.
 **Index**: `idx_events_pc_timestamp` on `(pc_id, timestamp DESC)`
 
 **Event types**: `strike`, `penalidade_tempo`, `bloqueio`, `desbloqueio`, `command`, `app_started`, `app_closed`, `app_killed`, `sessao_inicio`, `sessao_fim`, `calibracao`
+**Deduplication index**: `idx_events_dedup` on `(pc_id, timestamp, type)` — desktop uses upsert with ignore_duplicates
 
 ### `commands` — Remote commands from web to desktop
 
@@ -150,6 +151,43 @@ Reference guide for the KidsPC Supabase schema, RLS policies, and data patterns.
 | `created_at` | timestamptz | |
 
 **Unique**: `uq_blocked_sites` on `(pc_id, domain)`
+
+### `app_usage` — Per-app time tracking per device per day
+
+| Column | Type | Notes |
+|---|---|---|
+| `id` | uuid PK | |
+| `user_id` | text NOT NULL | |
+| `pc_id` | uuid FK → pcs | ON DELETE CASCADE |
+| `date` | date NOT NULL | |
+| `app_name` | text NOT NULL | Process name (e.g. `chrome.exe`) |
+| `display_name` | text | Friendly name (e.g. `Google Chrome`) |
+| `minutes` | integer | Time spent in foreground |
+| `category` | text | Optional category |
+| `created_at` | timestamptz | |
+| `updated_at` | timestamptz | |
+
+**Unique**: `uq_app_usage_pc_date_app` on `(pc_id, date, app_name)` — desktop uses upsert
+**Index**: `idx_app_usage_pc_date` on `(pc_id, date)`
+
+### `site_visits` — Visited domains per device per day
+
+| Column | Type | Notes |
+|---|---|---|
+| `id` | uuid PK | |
+| `user_id` | text NOT NULL | |
+| `pc_id` | uuid FK → pcs | ON DELETE CASCADE |
+| `date` | date NOT NULL | |
+| `domain` | text NOT NULL | e.g. `youtube.com` |
+| `title` | text | Last seen page title |
+| `visit_count` | integer | Number of visits |
+| `total_seconds` | integer | Time with site in foreground |
+| `source` | text | `window_title`, `browser_history`, or `both` |
+| `created_at` | timestamptz | |
+| `updated_at` | timestamptz | |
+
+**Unique**: `uq_site_visits_pc_date_domain` on `(pc_id, date, domain)` — desktop uses upsert
+**Index**: `idx_site_visits_pc_date` on `(pc_id, date)`
 
 ### `app_version` — Desktop app version tracking
 
@@ -219,6 +257,10 @@ Audio → dB
   ├─ Session start/end ────────► usage_sessions ───────────────► History tab
   │                                                              
   ├─ Daily aggregate ──────────► daily_usage (upsert) ─────────► History chart
+  │                                                              
+  ├─ Foreground window ────────► app_usage (upsert) ──────────► Activity tab (apps)
+  │                                                              
+  ├─ Browser domains ──────────► site_visits (upsert) ────────► Activity tab (sites)
   │                                                              
   └─ Heartbeat (30s) ─────────► pcs (update) ─────────────────► Device card (online/usage/strikes)
                                                                  

@@ -18,7 +18,8 @@ class RemoteSync:
                  strike_manager, screen_locker, actions,
                  on_command: Optional[Callable] = None,
                  app_blocker=None, site_blocker=None,
-                 audio_monitor=None):
+                 audio_monitor=None,
+                 window_tracker=None, browser_history=None):
         self.config = config
         self.logger = logger
         self.activity_tracker = activity_tracker
@@ -30,6 +31,9 @@ class RemoteSync:
         self.app_blocker = app_blocker
         self.site_blocker = site_blocker
         self.audio_monitor = audio_monitor
+        self.window_tracker = window_tracker
+        self.browser_history = browser_history
+        self._sync_count = 0
         
         self._running = Event()
         self._thread: Optional[Thread] = None
@@ -157,6 +161,12 @@ class RemoteSync:
         except Exception as e:
             print(f"Erro ao atualizar daily_usage: {e}")
         
+        # Sync app usage and site visits (every 3rd cycle ~90s to reduce load)
+        self._sync_count += 1
+        if self._sync_count % 3 == 0:
+            self._sync_app_usage(client, pc_id, user_id)
+            self._sync_site_visits(client, pc_id, user_id)
+        
         try:
             pending = self.logger.get_pending_eventos()
             if pending:
@@ -180,6 +190,87 @@ class RemoteSync:
                     self.logger.mark_synced(timestamps)
         except Exception as e:
             print(f"Erro ao enviar eventos: {e}")
+    
+    def _sync_app_usage(self, client, pc_id: str, user_id: str):
+        """Sync app usage data from WindowTracker to Supabase."""
+        if not self.window_tracker:
+            return
+        try:
+            today = date.today().isoformat()
+            app_data = self.window_tracker.get_app_usage()
+            for app in app_data:
+                client.table("app_usage").upsert({
+                    "user_id": user_id,
+                    "pc_id": pc_id,
+                    "date": today,
+                    "app_name": app["app_name"],
+                    "display_name": app["display_name"],
+                    "minutes": app["minutes"],
+                    "updated_at": datetime.now(timezone.utc).isoformat(),
+                }, on_conflict="pc_id,date,app_name").execute()
+        except Exception as e:
+            print(f"Erro ao sincronizar app_usage: {e}")
+    
+    def _sync_site_visits(self, client, pc_id: str, user_id: str):
+        """Sync site visits from WindowTracker + BrowserHistory to Supabase."""
+        if not self.window_tracker:
+            return
+        try:
+            today = date.today().isoformat()
+            
+            # Merge window title data + browser history
+            sites: dict[str, dict] = {}
+            
+            # Window title tracking (has time data)
+            for site in self.window_tracker.get_site_visits():
+                domain = site["domain"]
+                sites[domain] = {
+                    "user_id": user_id,
+                    "pc_id": pc_id,
+                    "date": today,
+                    "domain": domain,
+                    "title": site.get("title", ""),
+                    "visit_count": site.get("visit_count", 1),
+                    "total_seconds": site.get("total_seconds", 0),
+                    "source": "window_title",
+                    "updated_at": datetime.now(timezone.utc).isoformat(),
+                }
+            
+            # Browser history (has visit counts, no time)
+            if self.browser_history:
+                try:
+                    for entry in self.browser_history.read_today():
+                        domain = entry["domain"]
+                        if domain in sites:
+                            # Merge: keep window_title time, add browser visit count
+                            sites[domain]["visit_count"] = max(
+                                sites[domain]["visit_count"],
+                                entry.get("visit_count", 1),
+                            )
+                            if entry.get("title"):
+                                sites[domain]["title"] = entry["title"]
+                            sites[domain]["source"] = "both"
+                        else:
+                            sites[domain] = {
+                                "user_id": user_id,
+                                "pc_id": pc_id,
+                                "date": today,
+                                "domain": domain,
+                                "title": entry.get("title", ""),
+                                "visit_count": entry.get("visit_count", 1),
+                                "total_seconds": 0,
+                                "source": "browser_history",
+                                "updated_at": datetime.now(timezone.utc).isoformat(),
+                            }
+                except Exception as e:
+                    print(f"Erro ao ler browser history: {e}")
+            
+            for site_data in sites.values():
+                client.table("site_visits").upsert(
+                    site_data, on_conflict="pc_id,date,domain"
+                ).execute()
+        except Exception as e:
+            print(f"Erro ao sincronizar site_visits: {e}")
     
     def _sync_inbound(self):
         """Busca comandos e settings do Supabase."""

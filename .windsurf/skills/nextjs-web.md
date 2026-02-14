@@ -19,7 +19,7 @@ Reference guide for the KidsPC web dashboard (`web/`). Use when modifying pages,
 |---|---|---|---|
 | `/` | `app/page.tsx` | Public | Landing page (redirects to `/dispositivos` if logged in) |
 | `/dispositivos` | `app/dispositivos/page.tsx` | Required | Device list |
-| `/dispositivo/[id]` | `app/dispositivo/[id]/page.tsx` | Required | Device dashboard (tabs: history, events, controls) |
+| `/dispositivo/[id]` | `app/dispositivo/[id]/page.tsx` | Required | Device dashboard (tabs: history, events, activity, controls) |
 | `/dispositivo/[id]/settings` | `app/dispositivo/[id]/settings/page.tsx` | Required | Device settings |
 | `/dispositivo/[id]/events` | `app/dispositivo/[id]/events/page.tsx` | Required | Full events view |
 | `/dispositivo/[id]/history` | `app/dispositivo/[id]/history/page.tsx` | Required | Full history view |
@@ -44,6 +44,7 @@ Reference guide for the KidsPC web dashboard (`web/`). Use when modifying pages,
 | `/api/dispositivo/[id]/events` | GET | Paginated events (query: `limit`, `offset`, `type`) |
 | `/api/dispositivo/[id]/history` | GET | Daily usage (query: `days`) |
 | `/api/dispositivo/[id]/token` | POST | Generate new sync token |
+| `/api/dispositivo/[id]/activity` | GET | App usage + site visits (query: `days`, `date`) |
 | `/api/dispositivo/[id]/blocked-apps` | GET, POST, DELETE | Manage blocked apps |
 | `/api/dispositivo/[id]/blocked-sites` | GET, POST, DELETE | Manage blocked sites |
 | `/api/pairing` | POST | Validate pairing code |
@@ -125,6 +126,8 @@ Interfaces mirror Supabase tables exactly:
 - `PCSettings` — matches `pc_settings` table
 - `AppEvent` — matches `events` table
 - `DailyUsage` — matches `daily_usage` table
+- `AppUsage` — matches `app_usage` table
+- `SiteVisit` — matches `site_visits` table
 - `Command` — matches `commands` table
 - `UsageSession` — matches `usage_sessions` table
 - `PairingCode` — matches `pairing_codes` table
