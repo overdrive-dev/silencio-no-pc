@@ -32,6 +32,7 @@ from src.site_blocker import SiteBlocker
 class AudioSignals(QObject):
     """Sinais para comunicação thread-safe entre AudioMonitor e UI."""
     audio_update = pyqtSignal(float, float, float)
+    command_executed = pyqtSignal(str, dict)
 
 
 class KidsPC:
@@ -59,6 +60,7 @@ class KidsPC:
         
         self.audio_signals = AudioSignals()
         self.audio_signals.audio_update.connect(self._on_audio_update_safe)
+        self.audio_signals.command_executed.connect(self._on_command_executed)
         
         self.audio_monitor = AudioMonitor(callback=self._on_audio_update_thread)
         
@@ -215,9 +217,18 @@ class KidsPC:
                 actions=self.actions,
                 app_blocker=self.app_blocker,
                 site_blocker=self.site_blocker,
+                on_command=self._on_remote_command,
             )
             self.remote_sync.start()
     
+    def _on_remote_command(self, command: str, payload: dict):
+        """Callback do RemoteSync (thread separada) — emite sinal Qt."""
+        self.audio_signals.command_executed.emit(command, payload or {})
+
+    def _on_command_executed(self, command: str, payload: dict):
+        """Slot Qt (main thread) — atualiza UI imediatamente após comando remoto."""
+        self._check_time()
+
     def _init_ui(self):
         """Cria widgets de UI após o pairing estar completo."""
         self.noise_meter = NoiseMeterWidget(self.config)

@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QProgressBar
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QProgressBar, QApplication
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QPainter, QColor, QFont
 
@@ -74,11 +74,23 @@ class NoiseMeterWidget(QWidget):
         x = self.config.get("posicao_widget_x", 100)
         y = self.config.get("posicao_widget_y", 100)
         self.move(x, y)
+        self._clamp_to_screen()
     
     def _save_position(self):
         pos = self.pos()
         self.config.set("posicao_widget_x", pos.x())
         self.config.set("posicao_widget_y", pos.y())
+    
+    def _clamp_to_screen(self):
+        """Mantém o widget dentro da área visível da tela."""
+        screen = QApplication.primaryScreen()
+        if not screen:
+            return
+        available = screen.availableGeometry()
+        pos = self.pos()
+        x = max(available.x(), min(pos.x(), available.right() - self.width()))
+        y = max(available.y(), min(pos.y(), available.bottom() - self.height()))
+        self.move(x, y)
     
     def _toggle_pulse(self):
         """Alterna pulso visual quando volume alto."""
@@ -108,6 +120,7 @@ class NoiseMeterWidget(QWidget):
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.LeftButton:
             self._drag_position = None
+            self._clamp_to_screen()
             self._save_position()
             event.accept()
     
