@@ -15,7 +15,7 @@ class AudioMonitor:
         self._nivel_atual = 0.0
         self._pico_atual = 0.0
         
-        self.CHUNK = 1024
+        self.CHUNK = 4410  # ~100ms at 44100Hz — keeps mic access continuous (no flickering)
         self.FORMAT = pyaudio.paInt16
         self.CHANNELS = 1
         self.RATE = 44100
@@ -59,7 +59,6 @@ class AudioMonitor:
                         media = self.get_media()
                         self.callback(db, media, self._pico_atual)
                     
-                    time.sleep(0.1)
                 except Exception:
                     time.sleep(0.1)
                     
