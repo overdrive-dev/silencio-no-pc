@@ -76,7 +76,8 @@ class AutoUpdater:
             
             print(f"AutoUpdater: baixando de {download_url}...")
             
-            with httpx.stream("GET", download_url, follow_redirects=True) as response:
+            timeout = httpx.Timeout(connect=30, read=300, write=300, pool=300)
+            with httpx.stream("GET", download_url, follow_redirects=True, timeout=timeout) as response:
                 response.raise_for_status()
                 with open(temp_path, "wb") as f:
                     for chunk in response.iter_bytes(chunk_size=8192):
@@ -89,20 +90,43 @@ class AutoUpdater:
             return None
     
     def apply_update(self, installer_path: str):
-        """Aplica a atualização executando o instalador Inno Setup silencioso.
+        """Aplica a atualização substituindo o executável atual.
         
-        O instalador lida com:
-        - Substituição de arquivos em uso
-        - Permissões de admin
-        - Reinício do app
+        Usa um script .bat temporário que:
+        1. Espera o processo atual encerrar
+        2. Copia o novo exe sobre o antigo
+        3. Reinicia o app
         """
         try:
+            current_exe = sys.executable if getattr(sys, 'frozen', False) else None
+            
+            if not current_exe:
+                # Dev mode — apenas abre o novo exe
+                subprocess.Popen(
+                    [installer_path],
+                    creationflags=subprocess.DETACHED_PROCESS,
+                )
+                print("AutoUpdater: novo executável iniciado (dev mode)")
+                sys.exit(0)
+                return
+            
+            # Cria script .bat que substitui o exe e reinicia
+            bat_path = os.path.join(tempfile.gettempdir(), "kidspc_update.bat")
+            with open(bat_path, "w") as f:
+                f.write(f'@echo off\n')
+                f.write(f'echo Atualizando KidsPC...\n')
+                f.write(f'timeout /t 3 /nobreak >nul\n')
+                f.write(f'copy /Y "{installer_path}" "{current_exe}"\n')
+                f.write(f'start "" "{current_exe}"\n')
+                f.write(f'del "{installer_path}"\n')
+                f.write(f'del "%~f0"\n')
+            
             subprocess.Popen(
-                [installer_path, "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART"],
-                creationflags=subprocess.DETACHED_PROCESS,
+                ["cmd", "/c", bat_path],
+                creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NO_WINDOW,
             )
             
-            print("AutoUpdater: instalador iniciado, encerrando app...")
+            print("AutoUpdater: script de update iniciado, encerrando app...")
             sys.exit(0)
             
         except Exception as e:
