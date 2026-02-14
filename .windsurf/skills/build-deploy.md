@@ -107,23 +107,38 @@ python publish.py --skip-installer   # skip Inno Setup
 
 ### Desktop-Side Update Flow
 ```
-AutoUpdater.check_update() — called periodically
+AutoUpdater.check_for_update()
   │
   ├── GET https://api.github.com/repos/overdrive-dev/silencio-no-pc/releases/latest
   │     → Compare tag version with local __version__
+  │     → Prefer "setup" asset (is_installer=True), fallback to raw .exe
   │
   ├── If newer version found:
-  │     ├── Download .exe from release assets
-  │     ├── Save to temp directory
-  │     ├── Create temp .bat script that:
-  │     │     1. Waits for current process to exit
-  │     │     2. Copies new exe over old exe
-  │     │     3. Starts new exe
-  │     │     4. Deletes itself
-  │     └── Execute .bat and exit current process
+  │     ├── Download asset to temp directory
+  │     ├── Create temp .bat script:
+  │     │
+  │     │   If is_installer (Inno Setup):
+  │     │     1. Wait 3s for current process to exit
+  │     │     2. Run installer: /VERYSILENT /SUPPRESSMSGBOXES /CLOSEAPPLICATIONS
+  │     │     3. Installer's [Run] section starts the new app (nowait postinstall)
+  │     │     4. Clean up temp files
+  │     │
+  │     │   If raw exe (fallback):
+  │     │     1. Wait 3s for current process to exit
+  │     │     2. Copy new exe over old exe
+  │     │     3. Start new exe
+  │     │     4. Clean up temp files
+  │     │
+  │     └── Execute .bat (DETACHED_PROCESS) and sys.exit(0)
   │
   └── If no update or error → silently continue
 ```
+
+### Inno Setup Silent Install Requirements
+- `setup.iss` `[Run]` section must NOT have `skipifsilent` flag — otherwise app won't restart after silent update
+- `CloseApplications=force` handles closing the running app before install
+- `RestartApplications=yes` uses Windows Restart Manager (backup mechanism)
+- The `.bat` script's 3s timeout gives the app time to exit gracefully before installer runs
 
 ### Version Comparison
 Uses semantic versioning comparison. Tag format: `v1.5.0` → strips `v` prefix → split by `.` → compare numerically.

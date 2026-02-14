@@ -28,4 +28,4 @@ Name: "{commondesktop}\KidsPC"; Filename: "{app}\KidsPC.exe"
 Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "KidsPC"; ValueData: """{app}\KidsPC.exe"""; Flags: uninsdeletevalue
 
 [Run]
-Filename: "{app}\KidsPC.exe"; Description: "Iniciar KidsPC"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\KidsPC.exe"; Description: "Iniciar KidsPC"; Flags: nowait postinstall

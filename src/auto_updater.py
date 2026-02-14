@@ -47,10 +47,12 @@ class AutoUpdater:
             # Prioriza instalador Setup, fallback para qualquer .exe
             download_url = None
             fallback_url = None
+            is_installer = False
             for asset in release.get("assets", []):
                 if asset["name"].endswith(".exe"):
                     if "setup" in asset["name"].lower():
                         download_url = asset["browser_download_url"]
+                        is_installer = True
                         break
                     fallback_url = asset["browser_download_url"]
             if not download_url:
@@ -61,6 +63,7 @@ class AutoUpdater:
                 "download_url": download_url,
                 "changelog": release.get("body", ""),
                 "force_update": False,
+                "is_installer": is_installer,
             }
         except Exception as e:
             print(f"AutoUpdater: erro ao verificar: {e}")
@@ -89,10 +92,15 @@ class AutoUpdater:
             print(f"AutoUpdater: erro ao baixar: {e}")
             return None
     
-    def apply_update(self, installer_path: str):
-        """Aplica a atualização substituindo o executável atual.
+    def apply_update(self, installer_path: str, is_installer: bool = False):
+        """Aplica a atualização via script .bat temporário.
         
-        Usa um script .bat temporário que:
+        Se is_installer=True (Inno Setup):
+        1. Espera o processo atual encerrar
+        2. Executa o instalador em modo silencioso (/VERYSILENT)
+        3. O instalador substitui os arquivos e reinicia o app via [Run]
+        
+        Se is_installer=False (exe avulso):
         1. Espera o processo atual encerrar
         2. Copia o novo exe sobre o antigo
         3. Reinicia o app
@@ -101,7 +109,7 @@ class AutoUpdater:
             current_exe = sys.executable if getattr(sys, 'frozen', False) else None
             
             if not current_exe:
-                # Dev mode — apenas abre o novo exe
+                # Dev mode — apenas abre o instalador/exe
                 subprocess.Popen(
                     [installer_path],
                     creationflags=subprocess.DETACHED_PROCESS,
@@ -110,16 +118,24 @@ class AutoUpdater:
                 sys.exit(0)
                 return
             
-            # Cria script .bat que substitui o exe e reinicia
             bat_path = os.path.join(tempfile.gettempdir(), "kidspc_update.bat")
             with open(bat_path, "w") as f:
-                f.write(f'@echo off\n')
-                f.write(f'echo Atualizando KidsPC...\n')
-                f.write(f'timeout /t 3 /nobreak >nul\n')
-                f.write(f'copy /Y "{installer_path}" "{current_exe}"\n')
-                f.write(f'start "" "{current_exe}"\n')
+                f.write('@echo off\n')
+                f.write('echo Atualizando KidsPC...\n')
+                f.write('timeout /t 3 /nobreak >nul\n')
+                
+                if is_installer:
+                    # Executa o Inno Setup installer silenciosamente.
+                    # O instalador fecha o app via CloseApplications=force,
+                    # instala os novos arquivos e reinicia via seção [Run].
+                    f.write(f'"{installer_path}" /VERYSILENT /SUPPRESSMSGBOXES /CLOSEAPPLICATIONS\n')
+                else:
+                    # Exe avulso — copia sobre o atual e reinicia
+                    f.write(f'copy /Y "{installer_path}" "{current_exe}"\n')
+                    f.write(f'start "" "{current_exe}"\n')
+                
                 f.write(f'del "{installer_path}"\n')
-                f.write(f'del "%~f0"\n')
+                f.write('del "%~f0"\n')
             
             subprocess.Popen(
                 ["cmd", "/c", bat_path],
@@ -156,5 +172,5 @@ class AutoUpdater:
         if not exe_path:
             return False
         
-        self.apply_update(exe_path)
+        self.apply_update(exe_path, is_installer=update.get("is_installer", False))
         return True

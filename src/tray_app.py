@@ -208,7 +208,7 @@ class TrayApp:
                 None, "Atualização",
                 f"Download concluído!\nO programa vai reiniciar para aplicar a v{update['version']}."
             )
-            self.auto_updater.apply_update(exe_path)
+            self.auto_updater.apply_update(exe_path, is_installer=update.get("is_installer", False))
             
         except Exception as e:
             QMessageBox.warning(None, "Erro", f"Erro ao verificar atualização:\n{e}")
