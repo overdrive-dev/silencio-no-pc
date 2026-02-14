@@ -18,13 +18,13 @@ class AudioLevelWidget(QWidget):
     HISTORY_LEN = 80  # barras visíveis
     HANDLE_H = 8      # altura da zona de arraste dos marcadores
 
-    def __init__(self, atencao_db=70, grito_db=85, parent=None):
+    def __init__(self, atencao_db=70, strike_db=85, parent=None):
         super().__init__(parent)
         self.atencao_db = atencao_db
-        self.grito_db = grito_db
+        self.strike_db = strike_db
         self._history = deque([0.0] * self.HISTORY_LEN, maxlen=self.HISTORY_LEN)
         self._current_db = 0.0
-        self._dragging = None  # "atencao" | "grito" | None
+        self._dragging = None  # "atencao" | "strike" | None
         self.setMinimumSize(400, 260)
         self.setMouseTracking(True)
 
@@ -82,7 +82,7 @@ class AudioLevelWidget(QWidget):
             bar_y = self._db_to_y(db)
             bar_h = h - bar_y
 
-            if db >= self.grito_db:
+            if db >= self.strike_db:
                 color = QColor(239, 68, 68)    # red
             elif db >= self.atencao_db:
                 color = QColor(250, 204, 21)   # yellow
@@ -97,7 +97,7 @@ class AudioLevelWidget(QWidget):
 
         # ── Threshold lines ──
         self._draw_threshold(p, self.atencao_db, QColor(250, 204, 21), "⚠ Atenção", w)
-        self._draw_threshold(p, self.grito_db, QColor(239, 68, 68), "🔴 Grito", w)
+        self._draw_threshold(p, self.strike_db, QColor(239, 68, 68), "🔴 Strike", w)
 
         # Current dB readout
         p.setFont(QFont("Segoe UI", 14, QFont.Bold))
@@ -133,8 +133,8 @@ class AudioLevelWidget(QWidget):
     def _hit_test(self, y: int):
         if abs(y - self._db_to_y(self.atencao_db)) < self.HANDLE_H:
             return "atencao"
-        if abs(y - self._db_to_y(self.grito_db)) < self.HANDLE_H:
-            return "grito"
+        if abs(y - self._db_to_y(self.strike_db)) < self.HANDLE_H:
+            return "strike"
         return None
 
     def mousePressEvent(self, event):
@@ -147,9 +147,9 @@ class AudioLevelWidget(QWidget):
         if self._dragging:
             db = self._y_to_db(event.y())
             if self._dragging == "atencao":
-                self.atencao_db = min(db, self.grito_db - 5)
+                self.atencao_db = min(db, self.strike_db - 5)
             else:
-                self.grito_db = max(db, self.atencao_db + 5)
+                self.strike_db = max(db, self.atencao_db + 5)
             self.update()
         else:
             hit = self._hit_test(event.y())
@@ -213,15 +213,15 @@ class ConfigDialog(QDialog):
 
         info = QLabel(
             "Arraste as linhas horizontais para ajustar os limites.\n"
-            "⚠ Atenção: aviso visual  |  🔴 Grito: gera strike (3 = penalidade)"
+            "⚠ Atenção: aviso visual  |  🔴 Strike: gera strike (3 = penalidade)"
         )
         info.setWordWrap(True)
         info.setStyleSheet("color: #888; font-size: 11px;")
         layout.addWidget(info)
 
         atencao = self.config.get("volume_atencao_db", 70)
-        grito = self.config.get("volume_grito_db", 85)
-        self.audio_widget = AudioLevelWidget(atencao, grito)
+        strike = self.config.get("volume_grito_db", 85)
+        self.audio_widget = AudioLevelWidget(atencao, strike)
         layout.addWidget(self.audio_widget, 1)
 
         note = QLabel("Horários, horas por dia, penalidades e senha são configurados pelo painel web.")
@@ -269,18 +269,18 @@ class ConfigDialog(QDialog):
 
     def _load_config(self):
         self.audio_widget.atencao_db = self.config.get("volume_atencao_db", 70)
-        self.audio_widget.grito_db = self.config.get("volume_grito_db", 85)
+        self.audio_widget.strike_db = self.config.get("volume_grito_db", 85)
 
     def _on_salvar(self):
         atencao = int(self.audio_widget.atencao_db)
-        grito = int(self.audio_widget.grito_db)
+        strike = int(self.audio_widget.strike_db)
 
-        if atencao >= grito:
-            QMessageBox.warning(self, "Erro", "O nível de atenção deve ser menor que o de grito.")
+        if atencao >= strike:
+            QMessageBox.warning(self, "Erro", "O nível de atenção deve ser menor que o de strike.")
             return
 
         self.config.set("volume_atencao_db", atencao)
-        self.config.set("volume_grito_db", grito)
+        self.config.set("volume_grito_db", strike)
 
         self.accept()
 

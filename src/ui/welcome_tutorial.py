@@ -10,8 +10,8 @@ class WelcomeTutorial(QDialog):
     """Tutorial de boas-vindas pós-pairing com 4 etapas.
     
     1. Boas-vindas — explica o que o KidsPC faz
-    2. Calibração — inicia calibração automática do microfone
-    3. Strikes — explica o sistema de strikes e que será ativado
+    2. Calibração — inicia calibração automática do microfone (auto_start)
+    3. Strikes — explica o sistema de strikes
     4. Pronto — confirma e ativa strikes
     """
     
@@ -110,9 +110,9 @@ class WelcomeTutorial(QDialog):
         lay.addWidget(self._make_label(
             "Para que o sistema de strikes funcione corretamente, precisamos "
             "calibrar o microfone para o ambiente.\n\n"
-            "A calibração automática monitora o som por 30 segundos e define "
+            "A calibração automática monitora o som por 1 minuto e define "
             "os limites ideais entre som normal e barulho excessivo.\n\n"
-            "Use o computador normalmente durante a calibração.",
+            "Clique no botão abaixo para iniciar.",
             11
         ))
         
@@ -148,16 +148,10 @@ class WelcomeTutorial(QDialog):
         ))
         lay.addStretch()
         
-        if self._calibration_done:
-            lay.addWidget(self._make_label(
-                "✅ Calibração concluída! Os strikes serão ativados.",
-                10, bold=True, center=True
-            ))
-        else:
-            lay.addWidget(self._make_label(
-                "Os strikes ficarão desativados até que a calibração seja feita.",
-                10, center=True
-            ))
+        self.label_strikes_status = QLabel()
+        self.label_strikes_status.setAlignment(Qt.AlignCenter)
+        self.label_strikes_status.setWordWrap(True)
+        lay.addWidget(self.label_strikes_status)
         return page
     
     # ── Page 4: Done ──
@@ -184,7 +178,7 @@ class WelcomeTutorial(QDialog):
     
     def _start_calibration(self):
         from .auto_calibration import AutoCalibrationDialog
-        dialog = AutoCalibrationDialog(self.config, self.logger, self)
+        dialog = AutoCalibrationDialog(self.config, self.logger, self, auto_start=True)
         result = dialog.exec_()
         
         if result == QDialog.Accepted:
@@ -192,7 +186,7 @@ class WelcomeTutorial(QDialog):
             self.config.set("calibration_done", True)
             self.config.set("strikes_enabled", True)
             self.label_calib_status.setText(
-                "✅ Calibração concluída! Limites configurados automaticamente."
+                "✅ Calibração concluída! Limites configurados."
             )
             self.label_calib_status.setStyleSheet("color: #059669; font-weight: bold;")
         else:
@@ -225,11 +219,18 @@ class WelcomeTutorial(QDialog):
                 "background-color: #4f46e5; color: white; border-radius: 8px;"
             )
         
-        # Refresh page 3 (strikes) text when navigating to it
+        # Refresh page 3 (strikes) status when navigating to it
         if idx == 2:
-            page = self.stack.widget(2)
-            # Rebuild page 3 to reflect calibration status
-            pass
+            if self._calibration_done:
+                self.label_strikes_status.setText(
+                    "✅ Calibração concluída! Os strikes serão ativados."
+                )
+                self.label_strikes_status.setStyleSheet("color: #059669; font-weight: bold;")
+            else:
+                self.label_strikes_status.setText(
+                    "Os strikes ficarão desativados até que a calibração seja feita."
+                )
+                self.label_strikes_status.setStyleSheet("color: #d97706;")
         
         # Update page 4 summary
         if idx == 3:

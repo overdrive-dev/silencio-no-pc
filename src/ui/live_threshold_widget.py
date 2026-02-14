@@ -53,7 +53,7 @@ class LiveThresholdWidget(QWidget):
         layout.addLayout(media_layout)
         
         pico_layout = QHBoxLayout()
-        pico_layout.addWidget(QLabel("🔴 Limite Grito:"))
+        pico_layout.addWidget(QLabel("🔴 Limite Strike:"))
         self.slider_pico = QSlider(Qt.Horizontal)
         self.slider_pico.setRange(50, 110)
         self.slider_pico.setValue(int(self._limite_pico))
@@ -92,7 +92,7 @@ class LiveThresholdWidget(QWidget):
             status = "⚠️ Atenção"
         else:
             cor = "#f44336"
-            status = "🚨 GRITO!"
+            status = "🚨 STRIKE!"
         
         self.label_nivel.setText(f"Volume atual: {self._nivel_atual:.0f} dB - {status}")
         self.label_nivel.setStyleSheet(f"font-size: 14px; font-weight: bold; color: {cor};")
@@ -172,7 +172,7 @@ class AudioVisualizer(QWidget):
         pen_pico = QPen(QColor(244, 67, 54), 2, Qt.DashLine)
         painter.setPen(pen_pico)
         painter.drawLine(0, int(y_pico), w, int(y_pico))
-        painter.drawText(5, int(y_pico) - 3, f"Grito: {self._limite_pico} dB")
+        painter.drawText(5, int(y_pico) - 3, f"Strike: {self._limite_pico} dB")
         
         if len(self._historico) > 1:
             pen_audio = QPen(QColor(100, 200, 255), 2)

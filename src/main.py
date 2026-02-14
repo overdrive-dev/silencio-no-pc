@@ -4,7 +4,7 @@ import atexit
 import signal
 from pathlib import Path
 
-__version__ = "2.0.7"
+__version__ = "2.0.8"
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
