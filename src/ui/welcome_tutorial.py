@@ -20,7 +20,7 @@ class WelcomeTutorial(QDialog):
         self.config = config
         self.logger = logger
         self.setWindowTitle("Tutorial KidsPC")
-        self.setFixedSize(520, 420)
+        self.setFixedSize(520, 480)
         self.setWindowFlags(self.windowFlags() | Qt.WindowStaysOnTopHint)
         
         self._calibration_done = False
@@ -110,19 +110,11 @@ class WelcomeTutorial(QDialog):
         lay.addWidget(self._make_label(
             "Para que o sistema de strikes funcione corretamente, precisamos "
             "calibrar o microfone para o ambiente.\n\n"
-            "A calibração automática monitora o som por 30 minutos e define "
-            "os limites ideais entre som normal e barulho excessivo.",
+            "A calibração automática monitora o som por 30 segundos e define "
+            "os limites ideais entre som normal e barulho excessivo.\n\n"
+            "Use o computador normalmente durante a calibração.",
             11
         ))
-        
-        self.btn_calibrar = QPushButton("▶️ Iniciar Calibração (30 min)")
-        self.btn_calibrar.clicked.connect(self._start_calibration)
-        self.btn_calibrar.setFont(QFont("Segoe UI", 11, QFont.Bold))
-        self.btn_calibrar.setFixedHeight(45)
-        self.btn_calibrar.setStyleSheet(
-            "background-color: #059669; color: white; border-radius: 8px;"
-        )
-        lay.addWidget(self.btn_calibrar)
         
         self.label_calib_status = QLabel("")
         self.label_calib_status.setAlignment(Qt.AlignCenter)
@@ -203,13 +195,15 @@ class WelcomeTutorial(QDialog):
                 "✅ Calibração concluída! Limites configurados automaticamente."
             )
             self.label_calib_status.setStyleSheet("color: #059669; font-weight: bold;")
-            self.btn_calibrar.setText("✅ Calibração Concluída")
-            self.btn_calibrar.setEnabled(False)
         else:
             self.label_calib_status.setText(
                 "Calibração cancelada. Você pode fazê-la depois pelo ícone na barra de tarefas."
             )
             self.label_calib_status.setStyleSheet("color: #d97706;")
+        
+        # Advance to next step
+        self.stack.setCurrentIndex(2)
+        self._update_nav()
     
     def _update_nav(self):
         idx = self.stack.currentIndex()
@@ -220,8 +214,16 @@ class WelcomeTutorial(QDialog):
         
         if idx == total - 1:
             self.btn_next.setText("Concluir ✓")
+        elif idx == 1:
+            self.btn_next.setText("🎯 Iniciar Calibração")
+            self.btn_next.setStyleSheet(
+                "background-color: #059669; color: white; border-radius: 8px;"
+            )
         else:
             self.btn_next.setText("Próximo →")
+            self.btn_next.setStyleSheet(
+                "background-color: #4f46e5; color: white; border-radius: 8px;"
+            )
         
         # Refresh page 3 (strikes) text when navigating to it
         if idx == 2:
@@ -244,6 +246,9 @@ class WelcomeTutorial(QDialog):
         idx = self.stack.currentIndex()
         if idx >= self.stack.count() - 1:
             self.accept()
+            return
+        if idx == 1:
+            self._start_calibration()
             return
         self.stack.setCurrentIndex(idx + 1)
         self._update_nav()

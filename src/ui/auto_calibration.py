@@ -13,10 +13,10 @@ class AutoCalibrationThread(QThread):
     progress = pyqtSignal(float, float, dict)  # progresso, nivel_atual, stats
     finished_calibration = pyqtSignal(dict)  # resultado final
     
-    def __init__(self, audio_monitor, duracao_minutos=30):
+    def __init__(self, audio_monitor, duracao_segundos=30):
         super().__init__()
         self.audio_monitor = audio_monitor
-        self.duracao_minutos = duracao_minutos
+        self.duracao_segundos = duracao_segundos
         self._running = True
     
     def stop(self):
@@ -28,7 +28,7 @@ class AutoCalibrationThread(QThread):
         
         amostras = []
         picos = []
-        duracao_segundos = self.duracao_minutos * 60
+        duracao_segundos = self.duracao_segundos
         
         CHUNK = 1024
         FORMAT = pyaudio.paInt16
@@ -151,7 +151,7 @@ class AutoCalibrationThread(QThread):
 
 
 class AutoCalibrationDialog(QDialog):
-    """Diálogo de calibração automática de 30 minutos."""
+    """Diálogo de calibração automática de 30 segundos."""
     
     def __init__(self, config, logger, parent=None):
         super().__init__(parent)
@@ -176,11 +176,8 @@ class AutoCalibrationDialog(QDialog):
         layout.addWidget(self.label_titulo)
         
         self.label_instrucao = QLabel(
-            "O programa irá monitorar o ambiente por 30 minutos.\n\n"
-            "Durante esse tempo, use o computador normalmente:\n"
-            "• Converse\n"
-            "• Jogue\n"
-            "• Assista vídeos\n\n"
+            "O programa irá monitorar o ambiente por 30 segundos.\n\n"
+            "Use o computador normalmente durante a calibração.\n"
             "O sistema irá aprender o que é volume normal\n"
             "e o que são picos/gritos para definir os limites ideais."
         )
@@ -194,7 +191,7 @@ class AutoCalibrationDialog(QDialog):
         self.progress_bar.setFixedHeight(25)
         layout.addWidget(self.progress_bar)
         
-        self.label_tempo = QLabel("Tempo restante: 30:00")
+        self.label_tempo = QLabel("Tempo restante: 0:30")
         self.label_tempo.setAlignment(Qt.AlignCenter)
         self.label_tempo.setFont(QFont("Segoe UI", 12))
         layout.addWidget(self.label_tempo)
@@ -219,7 +216,7 @@ class AutoCalibrationDialog(QDialog):
         
         btn_layout = QHBoxLayout()
         
-        self.btn_iniciar = QPushButton("▶️ Iniciar Calibração (30 min)")
+        self.btn_iniciar = QPushButton("▶️ Iniciar Calibração (30s)")
         self.btn_iniciar.clicked.connect(self._iniciar_calibracao)
         self.btn_iniciar.setFont(QFont("Segoe UI", 11, QFont.Bold))
         self.btn_iniciar.setFixedHeight(40)
@@ -246,7 +243,7 @@ class AutoCalibrationDialog(QDialog):
         from ..audio_monitor import AudioMonitor
         monitor = AudioMonitor()
         
-        self._thread = AutoCalibrationThread(monitor, duracao_minutos=30)
+        self._thread = AutoCalibrationThread(monitor, duracao_segundos=30)
         self._thread.progress.connect(self._on_progress)
         self._thread.finished_calibration.connect(self._on_finished)
         self._thread.start()
@@ -254,9 +251,9 @@ class AutoCalibrationDialog(QDialog):
     def _on_progress(self, progresso: float, nivel_db: float, stats: dict):
         self.progress_bar.setValue(int(progresso * 100))
         
-        minutos_restantes = int((1 - progresso) * 30)
-        segundos_restantes = int(((1 - progresso) * 30 * 60) % 60)
-        self.label_tempo.setText(f"Tempo restante: {minutos_restantes:02d}:{segundos_restantes:02d}")
+        total_seg = (1 - progresso) * self._thread.duracao_segundos
+        segundos_restantes = int(total_seg)
+        self.label_tempo.setText(f"Tempo restante: 0:{segundos_restantes:02d}")
         
         if nivel_db < 60:
             cor = "#4CAF50"
