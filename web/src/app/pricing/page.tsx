@@ -2,13 +2,22 @@
 
 import { useEffect, useState } from "react";
 import { useUser, SignInButton } from "@clerk/nextjs";
-import { PLANS } from "@/lib/stripe";
+import { initMercadoPago, CardPayment } from "@mercadopago/sdk-react";
+import type { ICardPaymentFormData, ICardPaymentBrickPayer } from "@mercadopago/sdk-react/esm/bricks/cardPayment/type";
+import { PLANS } from "@/lib/mercadopago";
 import { CheckIcon } from "@heroicons/react/20/solid";
 import { clearSubscriptionCache } from "@/hooks/use-subscription";
 
+// Initialize MercadoPago client-side SDK
+if (typeof window !== "undefined") {
+  initMercadoPago(process.env.NEXT_PUBLIC_MELI_PUBLIC_KEY || "", { locale: "pt-BR" });
+}
+
 export default function PricingPage() {
-  const { isSignedIn, isLoaded } = useUser();
+  const { isSignedIn, isLoaded, user } = useUser();
   const [loading, setLoading] = useState(false);
+  const [showBrick, setShowBrick] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [subStatus, setSubStatus] = useState<{
     subscribed: boolean;
     status: string;
@@ -18,40 +27,56 @@ export default function PricingPage() {
 
   useEffect(() => {
     if (isSignedIn) {
-      fetch("/api/stripe/status")
+      fetch("/api/mercadopago/status")
         .then((r) => r.json())
         .then(setSubStatus)
         .catch(() => {});
     }
   }, [isSignedIn]);
 
-  const handleSubscribe = async () => {
+  const handleCardSubmit = async (formData: ICardPaymentFormData<ICardPaymentBrickPayer>) => {
     setLoading(true);
+    setError(null);
     try {
-      const res = await fetch("/api/stripe/checkout", { method: "POST" });
+      const res = await fetch("/api/mercadopago/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          card_token_id: formData.token,
+          payer_email: formData.payer?.email || user?.primaryEmailAddress?.emailAddress || "",
+        }),
+      });
       const data = await res.json();
-      if (data.url) {
+
+      if (data.success) {
+        clearSubscriptionCache();
+        window.location.href = "/dispositivos?subscribed=true";
+      } else if (data.url) {
+        // Fallback redirect mode
         clearSubscriptionCache();
         window.location.href = data.url;
+      } else {
+        setError(data.error || "Erro ao processar assinatura. Tente novamente.");
       }
     } catch (err) {
-      console.error("Erro ao criar checkout:", err);
+      console.error("Erro ao criar assinatura:", err);
+      setError("Erro de conexão. Tente novamente.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleManage = async () => {
+  const handleCancel = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/stripe/portal", { method: "POST" });
+      const res = await fetch("/api/mercadopago/cancel", { method: "POST" });
       const data = await res.json();
-      if (data.url) {
+      if (data.success) {
         clearSubscriptionCache();
-        window.location.href = data.url;
+        window.location.reload();
       }
     } catch (err) {
-      console.error("Erro ao abrir portal:", err);
+      console.error("Erro ao cancelar assinatura:", err);
     } finally {
       setLoading(false);
     }
@@ -111,26 +136,48 @@ export default function PricingPage() {
               )}
             </div>
             <button
-              onClick={handleManage}
+              onClick={handleCancel}
               disabled={loading}
               className="w-full rounded-lg bg-white py-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:opacity-50 transition"
             >
-              {loading ? "Abrindo..." : "Gerenciar assinatura"}
+              {loading ? "Cancelando..." : "Cancelar assinatura"}
+            </button>
+          </div>
+        ) : showBrick ? (
+          <div>
+            {error && (
+              <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">
+                {error}
+              </div>
+            )}
+            <CardPayment
+              initialization={{ amount: 19.9 }}
+              onSubmit={handleCardSubmit}
+              onError={(err: unknown) => {
+                console.error("Brick error:", err);
+                setError("Erro no formulário de pagamento.");
+              }}
+            />
+            <button
+              onClick={() => setShowBrick(false)}
+              className="mt-3 w-full text-center text-sm text-gray-500 hover:text-gray-700 transition"
+            >
+              Voltar
             </button>
           </div>
         ) : (
           <button
-            onClick={handleSubscribe}
+            onClick={() => setShowBrick(true)}
             disabled={loading}
             className="w-full rounded-lg bg-indigo-600 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 disabled:opacity-50 transition"
           >
-            {loading ? "Redirecionando..." : "Assinar agora"}
+            Assinar agora
           </button>
         )}
       </div>
 
       <p className="text-center text-xs text-gray-400 mt-6">
-        Cancele a qualquer momento. Sem compromisso.
+        Pagamentos processados com segurança pelo Mercado Pago. Cancele a qualquer momento.
       </p>
     </div>
   );

@@ -10,6 +10,7 @@ export interface SubscriptionStatus {
   cancel_at_period_end: boolean;
   current_period_start: string | null;
   current_period_end: string | null;
+  mp_subscription_id: string | null;
   stripe_subscription_id: string | null;
 }
 
@@ -43,15 +44,15 @@ export function useSubscription() {
 
   const refresh = useCallback(async () => {
     try {
-      const res = await fetch("/api/stripe/status");
+      const res = await fetch("/api/mercadopago/status");
       const data: SubscriptionStatus = await res.json();
 
-      // If no active sub found, try syncing directly from Stripe
+      // If no active sub found, try syncing directly from MercadoPago
       if (!data.subscribed && data.status === "inactive") {
-        const syncRes = await fetch("/api/stripe/sync", { method: "POST" });
+        const syncRes = await fetch("/api/mercadopago/sync", { method: "POST" });
         const syncData = await syncRes.json();
         if (syncData.synced) {
-          const res2 = await fetch("/api/stripe/status");
+          const res2 = await fetch("/api/mercadopago/status");
           const data2: SubscriptionStatus = await res2.json();
           setSub(data2);
           setCache(data2);

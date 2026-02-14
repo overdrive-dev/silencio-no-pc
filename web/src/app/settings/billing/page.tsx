@@ -13,17 +13,17 @@ export default function SettingsBillingPage() {
     setActionLoading(true);
     setPortalError(null);
     try {
-      const res = await fetch("/api/stripe/portal", { method: "POST" });
+      const res = await fetch("/api/mercadopago/cancel", { method: "POST" });
       const data = await res.json();
-      if (data.url) {
+      if (data.success) {
         clearSubscriptionCache();
-        window.location.href = data.url;
+        window.location.reload();
       } else {
-        console.error("Portal response:", data);
-        setPortalError(data.error || "Erro ao abrir portal de pagamento. Tente novamente.");
+        console.error("Cancel response:", data);
+        setPortalError(data.error || "Erro ao cancelar assinatura. Tente novamente.");
       }
     } catch (err) {
-      console.error("Erro ao abrir portal:", err);
+      console.error("Erro ao cancelar:", err);
       setPortalError("Erro de conexão. Tente novamente em alguns segundos.");
     } finally {
       setActionLoading(false);
@@ -33,7 +33,7 @@ export default function SettingsBillingPage() {
   const handleSubscribe = async () => {
     setActionLoading(true);
     try {
-      const res = await fetch("/api/stripe/checkout", { method: "POST" });
+      const res = await fetch("/api/mercadopago/checkout", { method: "POST" });
       const data = await res.json();
       if (data.url) {
         clearSubscriptionCache();
@@ -105,7 +105,7 @@ export default function SettingsBillingPage() {
                     Expirada — {daysUntilBlock}d restantes
                   </span>
                 )}
-                {!isActive && !isInGracePeriod && !subscription?.stripe_subscription_id && (
+                {!isActive && !isInGracePeriod && !subscription?.mp_subscription_id && !subscription?.stripe_subscription_id && (
                   <span className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-600">
                     Sem assinatura
                   </span>
@@ -118,7 +118,7 @@ export default function SettingsBillingPage() {
                   disabled={actionLoading}
                   className="font-semibold text-indigo-600 hover:text-indigo-500 disabled:opacity-50"
                 >
-                  {actionLoading ? "Abrindo..." : "Gerenciar"}
+                  {actionLoading ? "Cancelando..." : "Cancelar assinatura"}
                 </button>
               )}
             </dd>
@@ -172,7 +172,7 @@ export default function SettingsBillingPage() {
               {actionLoading ? "Redirecionando..." : "Assinar agora — R$ 19,90/mês"}
             </button>
             <p className="mt-3 text-xs text-gray-400">
-              Pagamentos processados com segurança pelo Stripe. Cancele a qualquer momento.
+              Pagamentos processados com segurança pelo Mercado Pago. Cancele a qualquer momento.
             </p>
           </div>
         </div>

@@ -42,7 +42,7 @@ const faqs = [
   {
     question: "Quanto custa o KidsPC?",
     answer:
-      "O KidsPC custa R$\u00A019,90/mês e inclui até 2 dispositivos, controle de tempo, monitoramento de barulho, comandos remotos, histórico de uso e atualizações automáticas. Você pode cancelar a qualquer momento. Pagamentos processados com segurança pelo Stripe.",
+      "O KidsPC custa R$\u00A019,90/mês e inclui até 2 dispositivos, controle de tempo, monitoramento de barulho, comandos remotos, histórico de uso e atualizações automáticas. Você pode cancelar a qualquer momento. Pagamentos processados com segurança pelo Mercado Pago.",
   },
 ];
 
