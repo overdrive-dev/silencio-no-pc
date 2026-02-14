@@ -565,6 +565,7 @@ export default async function Home() {
             <a href="#testimonials" className="hover:text-slate-700 transition">Depoimentos</a>
             <a href="#saude-digital" className="hover:text-slate-700 transition">Saúde Digital</a>
             <a href="#faq" className="hover:text-slate-700 transition">FAQ</a>
+            <a href="/politica-privacidade" className="hover:text-slate-700 transition">Privacidade</a>
           </div>
         </div>
       </footer>
