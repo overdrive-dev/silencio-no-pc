@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QProgressBar, QApplication
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QPainter, QColor, QFont
+from src.utils import format_time
 
 
 class NoiseMeterWidget(QWidget):
@@ -78,8 +79,7 @@ class NoiseMeterWidget(QWidget):
     
     def _save_position(self):
         pos = self.pos()
-        self.config.set("posicao_widget_x", pos.x())
-        self.config.set("posicao_widget_y", pos.y())
+        self.config.set_batch({"posicao_widget_x": pos.x(), "posicao_widget_y": pos.y()})
     
     def _clamp_to_screen(self):
         """Mantém o widget dentro da área visível da tela."""
@@ -96,16 +96,6 @@ class NoiseMeterWidget(QWidget):
         """Alterna pulso visual quando volume alto."""
         self._pulse_state = not self._pulse_state
         self.update()
-    
-    def _format_time(self, minutes: int) -> str:
-        """Formata minutos em 'H:MM' ou 'Mm'."""
-        if minutes <= 0:
-            return "0:00"
-        h = minutes // 60
-        m = minutes % 60
-        if h > 0:
-            return f"{h}:{m:02d}"
-        return f"{m}m"
     
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
@@ -127,7 +117,7 @@ class NoiseMeterWidget(QWidget):
     def atualizar_tempo(self, remaining_minutes: int):
         """Atualiza o tempo restante exibido."""
         self._remaining_minutes = remaining_minutes
-        self.label_time.setText(self._format_time(remaining_minutes))
+        self.label_time.setText(format_time(remaining_minutes))
         
         if remaining_minutes <= 5:
             self.label_time.setStyleSheet("background: transparent; color: #f44336;")

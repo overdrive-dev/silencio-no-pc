@@ -89,6 +89,6 @@ def criar_senha(parent, config) -> bool:
     """Abre diálogo para criar nova senha. Retorna True se criada com sucesso."""
     dialog = PasswordDialog(parent, "Criar Senha dos Pais", criar_senha=True)
     if dialog.exec_() == QDialog.Accepted:
-        config.set_senha(dialog.get_senha())
+        config.set("password_hash", config._hash_senha(dialog.get_senha()))
         return True
     return False

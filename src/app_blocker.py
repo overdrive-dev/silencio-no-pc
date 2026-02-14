@@ -82,10 +82,7 @@ class AppBlocker:
                     display = proc.info.get("name", pname)
                     print(f"AppBlocker: encerrado '{display}' (pid={proc.info['pid']})")
                     try:
-                        self.logger.registrar_evento(
-                            tipo="app_bloqueado",
-                            descricao=f"Aplicativo bloqueado: {display}",
-                        )
+                        self.logger.registrar("app_killed", f"Aplicativo bloqueado: {display}")
                     except Exception:
                         pass
                     

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useUser } from "@clerk/nextjs";
 
 export interface SubscriptionStatus {
@@ -38,9 +38,9 @@ export function clearSubscriptionCache() {
 
 export function useSubscription() {
   const { isSignedIn } = useUser();
-  const cached = typeof window !== "undefined" ? getCached() : null;
-  const [sub, setSub] = useState<SubscriptionStatus | null>(cached);
-  const [loading, setLoading] = useState(!cached);
+  const initialCache = useRef(typeof window !== "undefined" ? getCached() : null);
+  const [sub, setSub] = useState<SubscriptionStatus | null>(initialCache.current);
+  const [loading, setLoading] = useState(!initialCache.current);
 
   const refresh = useCallback(async () => {
     try {
@@ -77,13 +77,13 @@ export function useSubscription() {
     }
 
     // If we have a cache hit, skip fetching — show instantly
-    if (cached) {
+    if (initialCache.current) {
       setLoading(false);
       return;
     }
 
     refresh();
-  }, [isSignedIn, cached, refresh]);
+  }, [isSignedIn, refresh]);
 
   const invalidate = useCallback(() => {
     clearSubscriptionCache();

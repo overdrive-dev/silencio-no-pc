@@ -37,17 +37,12 @@ export async function upsertSubscription(
   data: Partial<Subscription>
 ): Promise<void> {
   const supabase = getSupabaseAdmin();
-  const existing = await getUserSubscription(userId);
-
-  if (existing) {
-    await supabase
-      .from("subscriptions")
-      .update({ ...data, updated_at: new Date().toISOString() })
-      .eq("user_id", userId);
-  } else {
-    await supabase.from("subscriptions").insert({
+  await supabase.from("subscriptions").upsert(
+    {
       user_id: userId,
       ...data,
-    });
-  }
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "user_id" }
+  );
 }

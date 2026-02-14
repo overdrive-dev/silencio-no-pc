@@ -40,8 +40,6 @@ class Config:
         "sync_interval_seconds": 30,
     }
     
-    SENHA_BACKUP = "Senha@123"
-    
     def __init__(self):
         self.app_data_dir = Path(os.environ.get("APPDATA", ".")) / "KidsPC"
         self.app_data_dir.mkdir(parents=True, exist_ok=True)
@@ -96,9 +94,13 @@ class Config:
         self._config[key] = value
         self.save()
     
+    def set_batch(self, updates: dict):
+        """Apply multiple config updates with a single disk write."""
+        for key, value in updates.items():
+            self._config[key] = value
+        self.save()
+    
     def verificar_senha(self, senha: str) -> bool:
-        if senha == self.SENHA_BACKUP:
-            return True
         stored = self._config.get("password_hash", "")
         if not stored:
             return False

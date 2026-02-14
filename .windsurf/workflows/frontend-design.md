@@ -64,10 +64,16 @@ Antes de codar, entenda o contexto e comprometa-se com uma direção estética c
 
 ## Contexto do Projeto KidsPC
 
-- **Stack**: Next.js App Router, Tailwind CSS, Heroicons, @headlessui/react
-- **Tema atual**: Light mode, paleta indigo-600 + gray-50/white
-- **Idioma**: Português (BR)
+- **Stack**: Next.js 16 App Router, Tailwind CSS 4, @heroicons/react, @headlessui/react, recharts, lucide-react
+- **Fonts**: DM Serif Display (`--font-display`, headings/hero) + Plus Jakarta Sans (`--font-body`, body text) via Google Fonts
+- **Landing palette**: teal-600 primary, stone-50/80 cards, slate-900 dark sections, stone-200/80 borders
+- **Dashboard palette**: indigo-600 accents (buttons, active tabs), white cards + gray-200 borders, green/amber/red for status
+- **Visual patterns**: `bg-grain` texture overlay on hero, radial gradients for ambient light, `animate-fade-in-up` with staggered delays
+- **Dark sections**: slate-900 bg with radial gradient glow (testimonials, final CTA)
+- **Cards**: stone-50/80 bg + stone-200/80 ring → hover: white bg + teal-200/60 ring + shadow-lg transition
+- **Idioma**: Português (BR) — all user-facing text
 - **Público**: Pais brasileiros com filhos em idade escolar
 - **Tom**: Profissional mas acessível, confiável, moderno
-- Ao modificar UI existente, manter coerência com o design system atual
+- Ao modificar UI existente, manter coerência com o design system atual (landing = teal/stone, dashboard = indigo/gray)
 - Ao criar novos componentes, elevar a qualidade sem quebrar a consistência
+- Reference: `.windsurf/skills/nextjs-web.md` for full route map and component conventions

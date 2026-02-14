@@ -23,11 +23,16 @@ class SiteBlocker:
     
     def update_rules(self, sites: List[Dict[str, Any]]):
         """Atualiza lista de sites bloqueados. Chamado pelo RemoteSync."""
-        self._domains = [
+        new_domains = sorted([
             s.get("domain", "").lower().strip()
             for s in sites
             if s.get("domain")
-        ]
+        ])
+        
+        if new_domains == sorted(self._domains):
+            return
+        
+        self._domains = new_domains
         self._enabled = len(self._domains) > 0
         
         if self._enabled:

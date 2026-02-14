@@ -1,5 +1,6 @@
 import json
 import os
+import threading
 from pathlib import Path
 from datetime import datetime
 from typing import List, Dict
@@ -10,7 +11,12 @@ class EventLogger:
         self.app_data_dir.mkdir(parents=True, exist_ok=True)
         self.log_file = self.app_data_dir / "eventos.json"
         self._eventos = []
+        self._dirty = False
+        self._lock = threading.Lock()
         self.load()
+        self._flush_timer = threading.Timer(5.0, self._flush_loop)
+        self._flush_timer.daemon = True
+        self._flush_timer.start()
     
     def load(self):
         if self.log_file.exists():
@@ -21,8 +27,22 @@ class EventLogger:
         else:
             self._eventos = []
     
+    def _flush_loop(self):
+        """Periodic flush — writes to disk every 5s if dirty."""
+        self.flush()
+        self._flush_timer = threading.Timer(5.0, self._flush_loop)
+        self._flush_timer.daemon = True
+        self._flush_timer.start()
+    
     def save(self):
         self.log_file.write_text(json.dumps(self._eventos, ensure_ascii=False, indent=2), encoding="utf-8")
+        self._dirty = False
+    
+    def flush(self):
+        """Write to disk only if there are pending changes."""
+        with self._lock:
+            if self._dirty:
+                self.save()
     
     def registrar(self, tipo: str, descricao: str, nivel_db: float = 0):
         evento = {
@@ -31,10 +51,11 @@ class EventLogger:
             "descricao": descricao,
             "nivel_db": round(nivel_db, 1)
         }
-        self._eventos.append(evento)
-        if len(self._eventos) > 1000:
-            self._eventos = self._eventos[-1000:]
-        self.save()
+        with self._lock:
+            self._eventos.append(evento)
+            if len(self._eventos) > 1000:
+                self._eventos = self._eventos[-1000:]
+            self._dirty = True
     
     def strike(self, numero: int, nivel_db: float):
         self.registrar("strike", f"Strike {numero} aplicado", nivel_db)
@@ -90,7 +111,8 @@ class EventLogger:
     def mark_synced(self, timestamps: List[str]):
         """Marca eventos como sincronizados."""
         ts_set = set(timestamps)
-        for e in self._eventos:
-            if e["timestamp"] in ts_set:
-                e["synced"] = True
-        self.save()
+        with self._lock:
+            for e in self._eventos:
+                if e["timestamp"] in ts_set:
+                    e["synced"] = True
+            self._dirty = True

@@ -1,28 +1,20 @@
-from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton
+from PyQt5.QtWidgets import QVBoxLayout, QLabel, QPushButton
 from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtGui import QFont, QPainter, QColor
+from PyQt5.QtGui import QFont
+from src.ui.base_popup import BasePopup
 
 
-class TimeWarningPopup(QDialog):
+class TimeWarningPopup(BasePopup):
     """Popup moderno de aviso de tempo restante."""
     
     def __init__(self, minutes_remaining: int, parent=None):
-        super().__init__(parent)
+        super().__init__(340, 180, parent)
         self.minutes_remaining = minutes_remaining
         self._setup_ui()
         
         QTimer.singleShot(10000, self.accept)
     
     def _setup_ui(self):
-        self.setWindowFlags(
-            Qt.FramelessWindowHint |
-            Qt.WindowStaysOnTopHint |
-            Qt.Dialog
-        )
-        self.setAttribute(Qt.WA_TranslucentBackground)
-        self.setFixedSize(340, 180)
-        
-        self._center_on_screen()
         
         layout = QVBoxLayout(self)
         layout.setContentsMargins(24, 20, 24, 20)
@@ -75,44 +67,19 @@ class TimeWarningPopup(QDialog):
         """)
         btn.clicked.connect(self.accept)
         layout.addWidget(btn, alignment=Qt.AlignCenter)
-    
-    def _center_on_screen(self):
-        from PyQt5.QtWidgets import QApplication
-        screen = QApplication.primaryScreen()
-        if screen:
-            geo = screen.geometry()
-            x = (geo.width() - self.width()) // 2
-            y = (geo.height() - self.height()) // 2
-            self.move(x, y)
-    
-    def paintEvent(self, event):
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing)
-        painter.setBrush(QColor(25, 25, 30, 240))
-        painter.setPen(Qt.NoPen)
-        painter.drawRoundedRect(self.rect(), 14, 14)
 
 
-class TimePenaltyPopup(QDialog):
+class TimePenaltyPopup(BasePopup):
     """Popup informando penalidade de tempo por barulho."""
     
     def __init__(self, penalty_minutes: int = 10, parent=None):
-        super().__init__(parent)
+        super().__init__(340, 180, parent)
         self.penalty_minutes = penalty_minutes
         self._setup_ui()
         
         QTimer.singleShot(8000, self.accept)
     
     def _setup_ui(self):
-        self.setWindowFlags(
-            Qt.FramelessWindowHint |
-            Qt.WindowStaysOnTopHint |
-            Qt.Dialog
-        )
-        self.setAttribute(Qt.WA_TranslucentBackground)
-        self.setFixedSize(340, 180)
-        
-        self._center_on_screen()
         
         layout = QVBoxLayout(self)
         layout.setContentsMargins(24, 20, 24, 20)
@@ -152,43 +119,18 @@ class TimePenaltyPopup(QDialog):
         """)
         btn.clicked.connect(self.accept)
         layout.addWidget(btn, alignment=Qt.AlignCenter)
-    
-    def _center_on_screen(self):
-        from PyQt5.QtWidgets import QApplication
-        screen = QApplication.primaryScreen()
-        if screen:
-            geo = screen.geometry()
-            x = (geo.width() - self.width()) // 2
-            y = (geo.height() - self.height()) // 2
-            self.move(x, y)
-    
-    def paintEvent(self, event):
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing)
-        painter.setBrush(QColor(25, 25, 30, 240))
-        painter.setPen(Qt.NoPen)
-        painter.drawRoundedRect(self.rect(), 14, 14)
 
 
-class TimeBlockedPopup(QDialog):
+class TimeBlockedPopup(BasePopup):
     """Popup informando que o tempo acabou."""
     
     def __init__(self, parent=None):
-        super().__init__(parent)
+        super().__init__(340, 180, parent)
         self._setup_ui()
         
         QTimer.singleShot(5000, self.accept)
     
     def _setup_ui(self):
-        self.setWindowFlags(
-            Qt.FramelessWindowHint |
-            Qt.WindowStaysOnTopHint |
-            Qt.Dialog
-        )
-        self.setAttribute(Qt.WA_TranslucentBackground)
-        self.setFixedSize(340, 180)
-        
-        self._center_on_screen()
         
         layout = QVBoxLayout(self)
         layout.setContentsMargins(24, 20, 24, 20)
@@ -211,19 +153,3 @@ class TimeBlockedPopup(QDialog):
         label_msg.setFont(QFont("Segoe UI", 11))
         label_msg.setStyleSheet("color: #ccc; background: transparent;")
         layout.addWidget(label_msg)
-    
-    def _center_on_screen(self):
-        from PyQt5.QtWidgets import QApplication
-        screen = QApplication.primaryScreen()
-        if screen:
-            geo = screen.geometry()
-            x = (geo.width() - self.width()) // 2
-            y = (geo.height() - self.height()) // 2
-            self.move(x, y)
-    
-    def paintEvent(self, event):
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing)
-        painter.setBrush(QColor(25, 25, 30, 240))
-        painter.setPen(Qt.NoPen)
-        painter.drawRoundedRect(self.rect(), 14, 14)

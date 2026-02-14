@@ -6,90 +6,19 @@ import Link from "next/link";
 import type { PC, PCSettings, AppEvent, DailyUsage } from "@/lib/types";
 import { useSubscription } from "@/hooks/use-subscription";
 import PaymentBanner from "@/components/payment-banner";
+import UsageGauge, { formatTime } from "@/components/device/usage-gauge";
+import HistoryTab from "@/components/device/history-tab";
+import EventsTab from "@/components/device/events-tab";
+import ControlsTab from "@/components/device/controls-tab";
 
-function formatTime(minutes: number): string {
-  if (minutes <= 0) return "0min";
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  return h > 0 ? `${h}h ${String(m).padStart(2, "0")}min` : `${m}min`;
-}
+interface BlockedApp { id: string; name: string; display_name: string | null; }
+interface BlockedSite { id: string; domain: string; display_name: string | null; }
 
 function isOnline(pc: PC): boolean {
   if (!pc.app_running || pc.is_online === false) return false;
   if (!pc.last_heartbeat) return false;
   return Date.now() - new Date(pc.last_heartbeat).getTime() < 90_000;
 }
-
-function UsageGauge({ used, limit }: { used: number; limit: number }) {
-  const pct = limit > 0 ? Math.min((used / limit) * 100, 100) : 100;
-  const color = pct >= 100 ? "#ef4444" : pct >= 75 ? "#f59e0b" : "#22c55e";
-  const trackColor = "rgba(0,0,0,0.1)";
-  const darkTrackColor = "rgba(255,255,255,0.1)";
-  const circumference = 2 * Math.PI * 45;
-  const offset = circumference - (pct / 100) * circumference;
-
-  return (
-    <div className="relative w-36 h-36">
-      <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="45" fill="none" className="stroke-gray-200" strokeWidth="8" />
-        <circle
-          cx="50" cy="50" r="45" fill="none"
-          stroke={color} strokeWidth="8" strokeLinecap="round"
-          strokeDasharray={circumference} strokeDashoffset={offset}
-          className="transition-all duration-1000"
-        />
-      </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-2xl font-bold" style={{ color }}>{formatTime(used)}</span>
-        <span className="text-xs text-gray-500">de {formatTime(limit)}</span>
-      </div>
-    </div>
-  );
-}
-
-interface BlockedApp { id: string; name: string; display_name: string | null; }
-interface BlockedSite { id: string; domain: string; display_name: string | null; }
-
-const POPULAR_APPS = [
-  { name: "chrome.exe", display_name: "Google Chrome" },
-  { name: "msedge.exe", display_name: "Microsoft Edge" },
-  { name: "firefox.exe", display_name: "Firefox" },
-  { name: "robloxplayerbeta.exe", display_name: "Roblox" },
-  { name: "minecraft.exe", display_name: "Minecraft" },
-  { name: "fortnite.exe", display_name: "Fortnite" },
-  { name: "discord.exe", display_name: "Discord" },
-  { name: "steam.exe", display_name: "Steam" },
-];
-
-const POPULAR_SITES = [
-  { domain: "youtube.com", display_name: "YouTube" },
-  { domain: "tiktok.com", display_name: "TikTok" },
-  { domain: "instagram.com", display_name: "Instagram" },
-  { domain: "twitter.com", display_name: "Twitter/X" },
-  { domain: "roblox.com", display_name: "Roblox" },
-  { domain: "discord.com", display_name: "Discord" },
-  { domain: "twitch.tv", display_name: "Twitch" },
-  { domain: "reddit.com", display_name: "Reddit" },
-];
-
-const EVENT_BADGES: Record<string, { label: string; color: string }> = {
-  strike: { label: "Strike", color: "bg-amber-100 text-amber-700" },
-  penalidade_tempo: { label: "Penalidade", color: "bg-red-100 text-red-700" },
-  bloqueio: { label: "Bloqueio", color: "bg-red-100 text-red-700" },
-  desbloqueio: { label: "Desbloqueio", color: "bg-green-100 text-green-700" },
-  command: { label: "Comando", color: "bg-blue-100 text-blue-700" },
-  app_started: { label: "Iniciado", color: "bg-green-100 text-green-700" },
-  app_closed: { label: "Encerrado", color: "bg-amber-100 text-amber-700" },
-  app_killed: { label: "Forçado", color: "bg-red-100 text-red-700" },
-  sessao_inicio: { label: "Sessão", color: "bg-indigo-100 text-indigo-700" },
-  sessao_fim: { label: "Sessão Fim", color: "bg-gray-100 text-gray-600" },
-  calibracao: { label: "Calibração", color: "bg-gray-100 text-gray-600" },
-};
-
-const EVENT_TYPES = [
-  "strike", "penalidade_tempo", "bloqueio", "desbloqueio", "command",
-  "app_started", "app_closed", "app_killed", "sessao_inicio", "sessao_fim",
-];
 
 export default function PcDashboard() {
   const { id } = useParams<{ id: string }>();
@@ -117,11 +46,6 @@ export default function PcDashboard() {
   const [blockedSites, setBlockedSites] = useState<BlockedSite[]>([]);
   const [appBlockMode, setAppBlockMode] = useState<string>("blacklist");
   const [siteBlockMode, setSiteBlockMode] = useState<string>("blacklist");
-  const [newAppName, setNewAppName] = useState("");
-  const [newAppDisplay, setNewAppDisplay] = useState("");
-  const [newSiteDomain, setNewSiteDomain] = useState("");
-  const [newSiteDisplay, setNewSiteDisplay] = useState("");
-
   const deletePc = async () => {
     setDeleting(true);
     try {
@@ -210,8 +134,6 @@ export default function PcDashboard() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, display_name }),
       });
-      setNewAppName("");
-      setNewAppDisplay("");
       fetchControls();
     } catch (err) {
       console.error("Erro ao adicionar app:", err);
@@ -234,8 +156,6 @@ export default function PcDashboard() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ domain, display_name }),
       });
-      setNewSiteDomain("");
-      setNewSiteDisplay("");
       fetchControls();
     } catch (err) {
       console.error("Erro ao adicionar site:", err);
@@ -542,312 +462,35 @@ export default function PcDashboard() {
         </div>
 
         <div className="p-5">
-          {activeTab === "history" && (
-            <>
-              {history.length === 0 ? (
-                <p className="text-center text-sm text-gray-400 py-6">Nenhum dado de uso registrado ainda.</p>
-              ) : (
-                <>
-                  <div className="space-y-1.5">
-                    {history.map((day) => {
-                      const maxMin = Math.max(...history.map((d) => d.total_minutes), 1);
-                      const pct = (day.total_minutes / maxMin) * 100;
-                      const dateStr = new Date(day.date + "T12:00:00").toLocaleDateString("pt-BR", {
-                        weekday: "short",
-                        day: "2-digit",
-                        month: "short",
-                      });
-                      return (
-                        <div key={day.date} className="flex items-center gap-3">
-                          <span className="text-xs text-gray-400 w-24 text-right shrink-0">{dateStr}</span>
-                          <div className="flex-1 h-5 bg-gray-100 rounded-md overflow-hidden">
-                            <div
-                              className="h-full bg-indigo-500 rounded-md transition-all duration-500"
-                              style={{ width: `${pct}%` }}
-                            />
-                          </div>
-                          <span className="text-xs text-gray-500 w-14 shrink-0">{formatTime(day.total_minutes)}</span>
-                          <span className="text-xs text-gray-400 w-8 shrink-0">{day.sessions_count}x</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <div className="mt-4 pt-3 border-t border-gray-100 flex gap-6 text-sm text-gray-500">
-                    <div>
-                      <span className="text-gray-400">Média:</span>{" "}
-                      <span className="font-medium text-gray-900">
-                        {formatTime(Math.round(history.reduce((s, d) => s + d.total_minutes, 0) / history.length))}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-gray-400">Total ({history.length}d):</span>{" "}
-                      <span className="font-medium text-gray-900">
-                        {formatTime(history.reduce((s, d) => s + d.total_minutes, 0))}
-                      </span>
-                    </div>
-                  </div>
-                </>
-              )}
-            </>
-          )}
+          {activeTab === "history" && <HistoryTab history={history} />}
 
           {activeTab === "events" && (
-            <>
-              <div className="flex flex-wrap gap-1.5 mb-4">
-                <button
-                  onClick={() => setEventFilter("")}
-                  className={`px-2.5 py-1 rounded-md text-xs font-medium transition ${
-                    !eventFilter ? "bg-indigo-600 text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"
-                  }`}
-                >
-                  Todos
-                </button>
-                {EVENT_TYPES.map((type) => {
-                  const badge = EVENT_BADGES[type] || { label: type, color: "" };
-                  return (
-                    <button
-                      key={type}
-                      onClick={() => setEventFilter(type)}
-                      className={`px-2.5 py-1 rounded-md text-xs font-medium transition ${
-                        eventFilter === type ? "bg-indigo-600 text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"
-                      }`}
-                    >
-                      {badge.label}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {events.length === 0 ? (
-                <p className="text-center text-sm text-gray-400 py-6">Nenhum evento encontrado.</p>
-              ) : (
-                <div className="space-y-1.5">
-                  {events.map((evt) => {
-                    const badge = EVENT_BADGES[evt.type] || { label: evt.type, color: "bg-gray-100 text-gray-600" };
-                    return (
-                      <div
-                        key={evt.id}
-                        className="rounded-lg border border-gray-100 bg-gray-50 px-3 py-2.5 flex items-center gap-3"
-                      >
-                        <span className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${badge.color}`}>
-                          {badge.label}
-                        </span>
-                        <span className="text-sm text-gray-700 flex-1 truncate">{evt.description}</span>
-                        {evt.noise_db > 0 && (
-                          <span className="text-xs text-gray-400 shrink-0">{evt.noise_db.toFixed(0)} dB</span>
-                        )}
-                        <span className="text-xs text-gray-400 shrink-0">
-                          {new Date(evt.timestamp).toLocaleString("pt-BR", {
-                            day: "2-digit", month: "2-digit",
-                            hour: "2-digit", minute: "2-digit",
-                          })}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              {eventsTotal > eventsLimit && (
-                <div className="flex items-center justify-center gap-4 mt-4 pt-3 border-t border-gray-100">
-                  <button
-                    onClick={() => setEventsOffset(Math.max(0, eventsOffset - eventsLimit))}
-                    disabled={eventsOffset === 0}
-                    className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 disabled:opacity-30 rounded-lg text-xs font-medium transition"
-                  >
-                    ← Anterior
-                  </button>
-                  <span className="text-xs text-gray-400">
-                    {eventsOffset + 1}–{Math.min(eventsOffset + eventsLimit, eventsTotal)} de {eventsTotal}
-                  </span>
-                  <button
-                    onClick={() => setEventsOffset(eventsOffset + eventsLimit)}
-                    disabled={eventsOffset + eventsLimit >= eventsTotal}
-                    className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 disabled:opacity-30 rounded-lg text-xs font-medium transition"
-                  >
-                    Próximo →
-                  </button>
-                </div>
-              )}
-            </>
+            <EventsTab
+              events={events}
+              eventsTotal={eventsTotal}
+              eventsOffset={eventsOffset}
+              eventsLimit={eventsLimit}
+              eventFilter={eventFilter}
+              setEventFilter={setEventFilter}
+              setEventsOffset={setEventsOffset}
+            />
           )}
 
           {activeTab === "controls" && (
-            <div className="space-y-8">
-              {/* ── Blocked Apps ── */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-gray-900">Aplicativos</h3>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-400">Modo:</span>
-                    <button
-                      onClick={() => {
-                        const next = appBlockMode === "blacklist" ? "whitelist" : "blacklist";
-                        setAppBlockMode(next);
-                        saveBlockMode("app_block_mode", next);
-                      }}
-                      className={`px-3 py-1 rounded-full text-xs font-medium transition ${
-                        appBlockMode === "blacklist"
-                          ? "bg-red-100 text-red-700"
-                          : "bg-green-100 text-green-700"
-                      }`}
-                    >
-                      {appBlockMode === "blacklist" ? "Bloquear listados" : "Permitir apenas listados"}
-                    </button>
-                  </div>
-                </div>
-
-                <p className="text-xs text-gray-400">
-                  {appBlockMode === "blacklist"
-                    ? "Apps na lista serão fechados automaticamente. Todos os outros são permitidos."
-                    : "Apenas apps na lista poderão rodar. Todos os outros serão fechados."}
-                </p>
-
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder="Processo (ex: chrome.exe)"
-                    value={newAppName}
-                    onChange={(e) => setNewAppName(e.target.value)}
-                    className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Nome (ex: Chrome)"
-                    value={newAppDisplay}
-                    onChange={(e) => setNewAppDisplay(e.target.value)}
-                    className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm"
-                  />
-                  <button
-                    onClick={() => newAppName && addBlockedApp(newAppName, newAppDisplay || newAppName)}
-                    disabled={!newAppName}
-                    className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-500 disabled:opacity-40 transition shrink-0"
-                  >
-                    Adicionar
-                  </button>
-                </div>
-
-                <div className="flex flex-wrap gap-1.5">
-                  {POPULAR_APPS.filter(
-                    (p) => !blockedApps.some((a) => a.name === p.name)
-                  ).map((app) => (
-                    <button
-                      key={app.name}
-                      onClick={() => addBlockedApp(app.name, app.display_name)}
-                      className="px-2.5 py-1 rounded-full text-xs bg-gray-100 text-gray-500 hover:bg-indigo-50 hover:text-indigo-600 transition"
-                    >
-                      + {app.display_name}
-                    </button>
-                  ))}
-                </div>
-
-                {blockedApps.length === 0 ? (
-                  <p className="text-sm text-gray-400 text-center py-3">Nenhum aplicativo na lista.</p>
-                ) : (
-                  <div className="space-y-1">
-                    {blockedApps.map((app) => (
-                      <div
-                        key={app.id}
-                        className="flex items-center justify-between rounded-lg border border-gray-100 bg-gray-50 px-3 py-2"
-                      >
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium text-gray-700">{app.display_name || app.name}</span>
-                          <span className="text-xs text-gray-400">{app.name}</span>
-                        </div>
-                        <button
-                          onClick={() => removeBlockedApp(app.id)}
-                          className="text-xs text-red-500 hover:text-red-700 transition"
-                        >
-                          Remover
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              <hr className="border-gray-100" />
-
-              {/* ── Blocked Sites ── */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-gray-900">Sites</h3>
-                  <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
-                    Bloquear listados
-                  </span>
-                </div>
-
-                <p className="text-xs text-gray-400">
-                  Sites na lista serão bloqueados no navegador via hosts file. Funciona em todos os navegadores.
-                </p>
-
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder="Domínio (ex: youtube.com)"
-                    value={newSiteDomain}
-                    onChange={(e) => setNewSiteDomain(e.target.value)}
-                    className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Nome (ex: YouTube)"
-                    value={newSiteDisplay}
-                    onChange={(e) => setNewSiteDisplay(e.target.value)}
-                    className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm"
-                  />
-                  <button
-                    onClick={() => newSiteDomain && addBlockedSite(newSiteDomain, newSiteDisplay || newSiteDomain)}
-                    disabled={!newSiteDomain}
-                    className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-500 disabled:opacity-40 transition shrink-0"
-                  >
-                    Adicionar
-                  </button>
-                </div>
-
-                <div className="flex flex-wrap gap-1.5">
-                  {POPULAR_SITES.filter(
-                    (p) => !blockedSites.some((s) => s.domain === p.domain)
-                  ).map((site) => (
-                    <button
-                      key={site.domain}
-                      onClick={() => addBlockedSite(site.domain, site.display_name)}
-                      className="px-2.5 py-1 rounded-full text-xs bg-gray-100 text-gray-500 hover:bg-indigo-50 hover:text-indigo-600 transition"
-                    >
-                      + {site.display_name}
-                    </button>
-                  ))}
-                </div>
-
-                {blockedSites.length === 0 ? (
-                  <p className="text-sm text-gray-400 text-center py-3">Nenhum site na lista.</p>
-                ) : (
-                  <div className="space-y-1">
-                    {blockedSites.map((site) => (
-                      <div
-                        key={site.id}
-                        className="flex items-center justify-between rounded-lg border border-gray-100 bg-gray-50 px-3 py-2"
-                      >
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium text-gray-700">{site.display_name || site.domain}</span>
-                          <span className="text-xs text-gray-400">{site.domain}</span>
-                        </div>
-                        <button
-                          onClick={() => removeBlockedSite(site.id)}
-                          className="text-xs text-red-500 hover:text-red-700 transition"
-                        >
-                          Remover
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              <div className="rounded-lg bg-indigo-50 border border-indigo-200 p-3 text-xs text-indigo-700">
-                As regras são sincronizadas automaticamente com o dispositivo a cada 30 segundos.
-              </div>
-            </div>
+            <ControlsTab
+              deviceId={id}
+              blockedApps={blockedApps}
+              blockedSites={blockedSites}
+              appBlockMode={appBlockMode}
+              siteBlockMode={siteBlockMode}
+              setAppBlockMode={setAppBlockMode}
+              setSiteBlockMode={setSiteBlockMode}
+              addBlockedApp={addBlockedApp}
+              removeBlockedApp={removeBlockedApp}
+              addBlockedSite={addBlockedSite}
+              removeBlockedSite={removeBlockedSite}
+              saveBlockMode={saveBlockMode}
+            />
           )}
         </div>
       </div>

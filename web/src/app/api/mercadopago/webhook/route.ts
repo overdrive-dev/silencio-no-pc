@@ -1,23 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PreApproval, Payment } from "mercadopago";
-import { getMercadoPagoClient } from "@/lib/mercadopago";
+import { getMercadoPagoClient, mapMpStatus } from "@/lib/mercadopago";
 import { upsertSubscription } from "@/lib/subscription";
-
-// Map MercadoPago subscription status to our internal status
-function mapStatus(mpStatus: string): string {
-  switch (mpStatus) {
-    case "authorized":
-      return "active";
-    case "paused":
-      return "paused";
-    case "cancelled":
-      return "canceled";
-    case "pending":
-      return "pending";
-    default:
-      return mpStatus;
-  }
-}
+import crypto from "crypto";
 
 const SUBSCRIPTION_TYPES = new Set([
   "subscription_preapproval",
@@ -38,7 +23,7 @@ async function handleSubscriptionNotification(id: string) {
   }
 
   const userId = externalRef;
-  const status = mapStatus(preapproval.status || "pending");
+  const status = mapMpStatus(preapproval.status || "pending");
   const now = new Date().toISOString();
 
   await upsertSubscription(userId, {
@@ -76,7 +61,7 @@ async function handlePaymentNotification(id: string) {
   if (!externalRef) return;
 
   const userId = externalRef;
-  const status = mapStatus(preapproval.status || "pending");
+  const status = mapMpStatus(preapproval.status || "pending");
   const now = new Date().toISOString();
 
   await upsertSubscription(userId, {
@@ -96,6 +81,35 @@ async function handlePaymentNotification(id: string) {
   console.log(`[mp-webhook] Payment ${id} → subscription updated for user ${userId}: ${status}`);
 }
 
+function verifyWebhookSignature(request: NextRequest, dataId: string): boolean {
+  const secret = process.env.MELI_WEBHOOK_SECRET || process.env.MP_WEBHOOK_SECRET;
+  if (!secret) {
+    console.warn("[mp-webhook] MELI_WEBHOOK_SECRET not set, skipping signature verification");
+    return true;
+  }
+
+  const xSignature = request.headers.get("x-signature");
+  const xRequestId = request.headers.get("x-request-id");
+  if (!xSignature || !xRequestId) {
+    return false;
+  }
+
+  let ts: string | undefined;
+  let hash: string | undefined;
+  for (const part of xSignature.split(",")) {
+    const [key, value] = part.split("=", 2);
+    if (key?.trim() === "ts") ts = value?.trim();
+    else if (key?.trim() === "v1") hash = value?.trim();
+  }
+
+  if (!ts || !hash) return false;
+
+  const manifest = `id:${dataId};request-id:${xRequestId};ts:${ts};`;
+  const expected = crypto.createHmac("sha256", secret).update(manifest).digest("hex");
+
+  return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(hash));
+}
+
 export async function POST(request: NextRequest) {
   let body: { data: { id: string }; type: string };
   try {
@@ -105,6 +119,11 @@ export async function POST(request: NextRequest) {
   }
 
   console.log(`[mp-webhook] Received: type=${body.type} id=${body.data?.id}`);
+
+  if (!verifyWebhookSignature(request, body.data?.id)) {
+    console.warn("[mp-webhook] Invalid signature");
+    return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
+  }
 
   try {
     if (SUBSCRIPTION_TYPES.has(body.type)) {

@@ -17,7 +17,8 @@ class RemoteSync:
     def __init__(self, config, logger, activity_tracker, time_manager, 
                  strike_manager, screen_locker, actions,
                  on_command: Optional[Callable] = None,
-                 app_blocker=None, site_blocker=None):
+                 app_blocker=None, site_blocker=None,
+                 audio_monitor=None):
         self.config = config
         self.logger = logger
         self.activity_tracker = activity_tracker
@@ -28,6 +29,7 @@ class RemoteSync:
         self.on_command = on_command
         self.app_blocker = app_blocker
         self.site_blocker = site_blocker
+        self.audio_monitor = audio_monitor
         
         self._running = Event()
         self._thread: Optional[Thread] = None
@@ -71,17 +73,24 @@ class RemoteSync:
             self._thread.join(timeout=5)
     
     def _sync_loop(self):
-        """Loop principal de sincronização."""
-        interval = self.config.get("sync_interval_seconds", 30)
+        """Loop principal de sincronização com backoff exponencial."""
+        base_interval = self.config.get("sync_interval_seconds", 30)
+        max_interval = 300  # 5 minutes
+        current_interval = base_interval
+        consecutive_failures = 0
         
         while self._running.is_set():
             try:
                 self._sync_outbound()
                 self._sync_inbound()
+                consecutive_failures = 0
+                current_interval = base_interval
             except Exception as e:
-                print(f"Erro no sync: {e}")
+                consecutive_failures += 1
+                current_interval = min(base_interval * (2 ** consecutive_failures), max_interval)
+                print(f"Erro no sync ({consecutive_failures}x, próximo em {current_interval}s): {e}")
             
-            for _ in range(interval * 2):
+            for _ in range(current_interval * 2):
                 if not self._running.is_set():
                     break
                 time.sleep(0.5)
@@ -98,10 +107,10 @@ class RemoteSync:
             return
         
         try:
-            from src.audio_monitor import AudioMonitor
             noise_db = 0
             try:
-                noise_db = self.activity_tracker._nivel_atual if hasattr(self.activity_tracker, '_nivel_atual') else 0
+                if self.audio_monitor:
+                    noise_db = self.audio_monitor.get_nivel_atual()
             except Exception:
                 pass
             
@@ -138,21 +147,13 @@ class RemoteSync:
             usage_min = self.activity_tracker.get_effective_usage_minutes()
             sessions_today = len(self.activity_tracker.get_sessions_today())
             
-            existing = client.table("daily_usage").select("id").eq("pc_id", pc_id).eq("date", today).execute()
-            
-            if existing.data:
-                client.table("daily_usage").update({
-                    "total_minutes": usage_min,
-                    "sessions_count": sessions_today,
-                }).eq("id", existing.data[0]["id"]).execute()
-            else:
-                client.table("daily_usage").insert({
-                    "user_id": user_id,
-                    "pc_id": pc_id,
-                    "date": today,
-                    "total_minutes": usage_min,
-                    "sessions_count": sessions_today,
-                }).execute()
+            client.table("daily_usage").upsert({
+                "user_id": user_id,
+                "pc_id": pc_id,
+                "date": today,
+                "total_minutes": usage_min,
+                "sessions_count": sessions_today,
+            }, on_conflict="pc_id,date").execute()
         except Exception as e:
             print(f"Erro ao atualizar daily_usage: {e}")
         
@@ -173,7 +174,9 @@ class RemoteSync:
                     timestamps.append(evt["timestamp"])
                 
                 if rows:
-                    client.table("events").insert(rows).execute()
+                    client.table("events").upsert(
+                        rows, on_conflict="pc_id,timestamp,type", ignore_duplicates=True
+                    ).execute()
                     self.logger.mark_synced(timestamps)
         except Exception as e:
             print(f"Erro ao enviar eventos: {e}")
@@ -296,14 +299,18 @@ class RemoteSync:
             "password_hash",
         ]
         
+        updates = {}
         for key in sync_fields:
             if key in settings and settings[key] is not None:
                 current = self.config.get(key)
                 new_val = settings[key]
                 if current != new_val:
-                    self.config.set(key, new_val)
+                    updates[key] = new_val
                     if key == "password_hash":
                         print("RemoteSync: password_hash atualizado via sync")
+        
+        if updates:
+            self.config.set_batch(updates)
     
     def send_shutdown_event(self, shutdown_type: str = "graceful"):
         """Envia evento de encerramento (chamado no atexit)."""

@@ -4,7 +4,7 @@ import atexit
 import signal
 from pathlib import Path
 
-__version__ = "2.0.9"
+__version__ = "2.1.0"
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -92,6 +92,7 @@ class KidsPC:
             self.activity_tracker.stop()
             self.site_blocker.cleanup()
             self.logger.app_encerrado()
+            self.logger.flush()
             if self.remote_sync:
                 self.remote_sync.send_shutdown_event("graceful")
                 self.remote_sync.stop()
@@ -218,6 +219,7 @@ class KidsPC:
                 app_blocker=self.app_blocker,
                 site_blocker=self.site_blocker,
                 on_command=self._on_remote_command,
+                audio_monitor=self.audio_monitor,
             )
             self.remote_sync.start()
     

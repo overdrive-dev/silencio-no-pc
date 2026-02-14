@@ -16,6 +16,21 @@ export function getMercadoPagoClient(): MercadoPagoConfig {
   return _client;
 }
 
+export function mapMpStatus(mpStatus: string): string {
+  switch (mpStatus) {
+    case "authorized":
+      return "active";
+    case "paused":
+      return "paused";
+    case "cancelled":
+      return "canceled";
+    case "pending":
+      return "pending";
+    default:
+      return mpStatus;
+  }
+}
+
 export const PLANS = {
   monthly: {
     name: "Mensal",

@@ -66,16 +66,6 @@ export async function DELETE(
   const { id } = await params;
   const supabaseAdmin = getSupabaseAdmin();
 
-  // Delete related data first (foreign keys) - ignore errors from missing tables
-  const relatedTables = ["pc_settings", "commands", "events", "daily_usage", "usage_sessions", "pairing_codes"];
-  for (const table of relatedTables) {
-    try {
-      await supabaseAdmin.from(table).delete().eq("pc_id", id);
-    } catch {
-      // Table may not exist, skip
-    }
-  }
-
   const { error } = await supabaseAdmin
     .from("pcs")
     .delete()

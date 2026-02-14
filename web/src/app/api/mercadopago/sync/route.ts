@@ -1,23 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { PreApproval } from "mercadopago";
-import { getMercadoPagoClient } from "@/lib/mercadopago";
+import { getMercadoPagoClient, mapMpStatus } from "@/lib/mercadopago";
 import { upsertSubscription, getUserSubscription } from "@/lib/subscription";
-
-function mapStatus(mpStatus: string): string {
-  switch (mpStatus) {
-    case "authorized":
-      return "active";
-    case "paused":
-      return "paused";
-    case "cancelled":
-      return "canceled";
-    case "pending":
-      return "pending";
-    default:
-      return mpStatus;
-  }
-}
 
 export async function POST() {
   const { userId } = await auth();
@@ -56,7 +41,7 @@ export async function POST() {
     }
 
     const sub = subscriptions[0];
-    const status = mapStatus(sub.status || "pending");
+    const status = mapMpStatus(sub.status || "pending");
 
     const now = new Date().toISOString();
     const nextChargeDate = sub.next_payment_date

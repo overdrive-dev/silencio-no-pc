@@ -24,7 +24,7 @@ class AudioMonitor:
         self._stream = None
     
     def _calcular_db(self, data: bytes) -> float:
-        audio_data = np.frombuffer(data, dtype=np.int16).astype(np.float64)
+        audio_data = np.frombuffer(data, dtype=np.int16).astype(np.float32)
         if len(audio_data) == 0:
             return 0.0
         rms = np.sqrt(np.mean(audio_data ** 2))
@@ -52,7 +52,9 @@ class AudioMonitor:
                     self._nivel_atual = db
                     self._historico_db.append(db)
                     
-                    if len(self._historico_db) > 0:
+                    if db >= self._pico_atual:
+                        self._pico_atual = db
+                    elif len(self._historico_db) == self._historico_db.maxlen:
                         self._pico_atual = max(self._historico_db)
                     
                     if self.callback:
