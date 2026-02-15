@@ -4,7 +4,7 @@ import atexit
 import signal
 from pathlib import Path
 
-__version__ = "2.1.3"
+__version__ = "2.1.4"
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -288,7 +288,7 @@ def adicionar_ao_startup():
         key_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
         
         if getattr(sys, 'frozen', False):
-            app_path = sys.executable
+            app_path = f'"{sys.executable}"'
         else:
             app_path = f'"{sys.executable}" "{Path(__file__).resolve()}"'
         
