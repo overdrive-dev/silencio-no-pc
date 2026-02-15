@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { PreApproval } from "mercadopago";
 import { getMercadoPagoClient } from "@/lib/mercadopago";
@@ -10,6 +10,12 @@ export async function POST() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const user = await currentUser();
+  const payerEmail = user?.emailAddresses?.[0]?.emailAddress;
+  if (!payerEmail) {
+    return NextResponse.json({ error: "E-mail não encontrado na sua conta." }, { status: 400 });
+  }
+
   const existing = await getUserSubscription(userId);
   if (existing && (existing.status === "active" || existing.status === "authorized")) {
     return NextResponse.json({ error: "Você já possui uma assinatura ativa." }, { status: 400 });
@@ -17,13 +23,14 @@ export async function POST() {
 
   const client = getMercadoPagoClient();
   const preApproval = new PreApproval(client);
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.kidspc.com.br";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://kidspc.com.br";
 
   try {
     const subscription = await preApproval.create({
       body: {
         reason: "KidsPC — Plano Mensal",
         external_reference: userId,
+        payer_email: payerEmail,
         auto_recurring: {
           frequency: 1,
           frequency_type: "months",
