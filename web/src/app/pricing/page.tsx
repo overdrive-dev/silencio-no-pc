@@ -2,24 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useUser, SignInButton } from "@clerk/nextjs";
-import { initMercadoPago, CardPayment } from "@mercadopago/sdk-react";
-import type { ICardPaymentFormData, ICardPaymentBrickPayer } from "@mercadopago/sdk-react/esm/bricks/cardPayment/type";
 import { PLANS } from "@/lib/mercadopago";
 import { CheckIcon } from "@heroicons/react/20/solid";
 import { clearSubscriptionCache } from "@/hooks/use-subscription";
 
-// Initialize MercadoPago client-side SDK
-if (typeof window !== "undefined") {
-  initMercadoPago(process.env.NEXT_PUBLIC_MELI_PUBLIC_KEY || "", { locale: "pt-BR" });
-}
-
 export default function PricingPage() {
-  const { isSignedIn, isLoaded, user } = useUser();
+  const { isSignedIn, isLoaded } = useUser();
   const [loading, setLoading] = useState(false);
-  const [showBrick, setShowBrick] = useState(false);
-  const [brickReady, setBrickReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [redirectLoading, setRedirectLoading] = useState(false);
   const [subStatus, setSubStatus] = useState<{
     subscribed: boolean;
     status: string;
@@ -36,40 +26,8 @@ export default function PricingPage() {
     }
   }, [isSignedIn]);
 
-  const handleCardSubmit = async (formData: ICardPaymentFormData<ICardPaymentBrickPayer>) => {
+  const handleSubscribe = async () => {
     setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/mercadopago/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          card_token_id: formData.token,
-          payer_email: formData.payer?.email || user?.primaryEmailAddress?.emailAddress || "",
-        }),
-      });
-      const data = await res.json();
-
-      if (data.success) {
-        clearSubscriptionCache();
-        window.location.href = "/dispositivos?subscribed=true";
-      } else if (data.url) {
-        // Fallback redirect mode
-        clearSubscriptionCache();
-        window.location.href = data.url;
-      } else {
-        setError(data.error || "Erro ao processar assinatura. Tente novamente.");
-      }
-    } catch (err) {
-      console.error("Erro ao criar assinatura:", err);
-      setError("Erro de conexão. Tente novamente.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleRedirectCheckout = async () => {
-    setRedirectLoading(true);
     setError(null);
     try {
       const res = await fetch("/api/mercadopago/checkout", { method: "POST" });
@@ -83,7 +41,7 @@ export default function PricingPage() {
     } catch {
       setError("Erro de conexão. Tente novamente.");
     } finally {
-      setRedirectLoading(false);
+      setLoading(false);
     }
   };
 
@@ -134,6 +92,12 @@ export default function PricingPage() {
           ))}
         </ul>
 
+        {error && (
+          <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">
+            {error}
+          </div>
+        )}
+
         {!isLoaded ? (
           <div className="text-center text-gray-400 text-sm">Carregando...</div>
         ) : !isSignedIn ? (
@@ -164,48 +128,13 @@ export default function PricingPage() {
               {loading ? "Cancelando..." : "Cancelar assinatura"}
             </button>
           </div>
-        ) : showBrick ? (
-          <div>
-            {error && (
-              <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">
-                {error}
-              </div>
-            )}
-            <CardPayment
-              initialization={{ amount: 19.9 }}
-              onSubmit={handleCardSubmit}
-              onReady={() => setBrickReady(true)}
-              onError={(err: unknown) => {
-                console.error("Brick error:", err);
-                setError("Erro no formulário de pagamento.");
-              }}
-            />
-            {!brickReady && (
-              <div className="mt-4 text-center">
-                <p className="text-sm text-gray-500 mb-3">Carregando formulário de pagamento...</p>
-                <button
-                  onClick={handleRedirectCheckout}
-                  disabled={redirectLoading}
-                  className="text-sm font-medium text-indigo-600 hover:text-indigo-500 underline disabled:opacity-50"
-                >
-                  {redirectLoading ? "Redirecionando..." : "Ou pague direto pelo Mercado Pago →"}
-                </button>
-              </div>
-            )}
-            <button
-              onClick={() => setShowBrick(false)}
-              className="mt-3 w-full text-center text-sm text-gray-500 hover:text-gray-700 transition"
-            >
-              Voltar
-            </button>
-          </div>
         ) : (
           <button
-            onClick={() => setShowBrick(true)}
+            onClick={handleSubscribe}
             disabled={loading}
             className="w-full rounded-lg bg-indigo-600 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 disabled:opacity-50 transition"
           >
-            Assinar agora
+            {loading ? "Redirecionando para o Mercado Pago..." : "Assinar agora"}
           </button>
         )}
       </div>

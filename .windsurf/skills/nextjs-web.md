@@ -103,11 +103,13 @@ if (!pc) return NextResponse.json({ error: "Not found" }, { status: 404 });
 ## Subscription System (MercadoPago)
 
 ### Flow
-1. User clicks "Assinar" on `/pricing` → shows CardPayment brick (inline card form)
-2. **Primary path (Bricks)**: Card tokenized client-side → `POST /api/mercadopago/checkout` with `card_token_id` + `payer_email` → creates authorized PreApproval immediately → saves to DB
-3. **Fallback path (Redirect)**: `POST /api/mercadopago/checkout` without body → creates pending PreApproval → returns `init_point` URL → user pays on MercadoPago site
+1. User clicks "Assinar agora" on `/pricing` → `POST /api/mercadopago/checkout` creates a pending PreApproval
+2. API returns MercadoPago `init_point` URL → user is **redirected to MercadoPago's page** to pay
+3. After payment, MercadoPago redirects back to `/dispositivos?subscribed=true`
 4. Webhook `POST /api/mercadopago/webhook` handles `subscription_preapproval`, `subscription_authorized_payment`, and `payment` events → upserts `subscriptions` table
 5. Client checks access via `useSubscription()` hook → `GET /api/mercadopago/status`
+
+> **No CardPayment brick / client-side SDK** — all payment happens on MercadoPago's hosted page. `@mercadopago/sdk-react` is still a dependency but not used for checkout.
 
 ### Plan
 - Single plan: **R$ 19,90/mês** (defined in `lib/mercadopago.ts`)
@@ -126,8 +128,8 @@ Actions (commands, settings changes) are disabled when `!hasAccess`.
 - Call `clearSubscriptionCache()` before any redirect after subscription state change
 
 ### Subscribe Button Pattern
-- `/settings/billing` "Assinar" button → redirects to `/pricing` (full brick experience)
-- `/pricing` "Assinar agora" → shows CardPayment brick with fallback redirect link
+- `/settings/billing` "Assinar" button → redirects to `/pricing`
+- `/pricing` "Assinar agora" → calls checkout API → redirects to MercadoPago
 - `PaymentBanner` "Assinar" → links to `/pricing`
 
 ## Type System (`lib/types.ts`)
