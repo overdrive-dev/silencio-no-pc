@@ -35,7 +35,7 @@ export async function POST() {
     // 4. Create MercadoPago PreApproval
     const client = getMercadoPagoClient();
     const preApproval = new PreApproval(client);
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://kidspc.com.br";
+    const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://kidspc.com.br").trim();
 
     const subscription = await preApproval.create({
       body: {
