@@ -80,6 +80,13 @@ export async function POST(request: NextRequest) {
         },
       });
 
+      if (!subscription.init_point) {
+        console.error("[mp-checkout] MercadoPago did not return init_point", subscription);
+        return NextResponse.json(
+          { error: "MercadoPago não retornou URL de pagamento. Tente novamente." },
+          { status: 502 }
+        );
+      }
       return NextResponse.json({ url: subscription.init_point });
     }
   } catch (err: unknown) {

@@ -62,7 +62,12 @@ export function useSubscription() {
       }
 
       setSub(data);
-      setCache(data);
+      // Only cache positive states to avoid stale data after user migration
+      if (data.subscribed) {
+        setCache(data);
+      } else {
+        clearSubscriptionCache();
+      }
     } catch {
       // ignore
     } finally {

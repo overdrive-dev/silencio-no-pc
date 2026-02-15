@@ -103,10 +103,11 @@ if (!pc) return NextResponse.json({ error: "Not found" }, { status: 404 });
 ## Subscription System (MercadoPago)
 
 ### Flow
-1. User clicks "Assine" → `POST /api/mercadopago/checkout` creates a preference
-2. User pays on MercadoPago → webhook hits `POST /api/mercadopago/webhook`
-3. Webhook upserts `subscriptions` table via `lib/subscription.ts`
-4. Client checks access via `useSubscription()` hook → `GET /api/mercadopago/status`
+1. User clicks "Assinar" on `/pricing` → shows CardPayment brick (inline card form)
+2. **Primary path (Bricks)**: Card tokenized client-side → `POST /api/mercadopago/checkout` with `card_token_id` + `payer_email` → creates authorized PreApproval immediately → saves to DB
+3. **Fallback path (Redirect)**: `POST /api/mercadopago/checkout` without body → creates pending PreApproval → returns `init_point` URL → user pays on MercadoPago site
+4. Webhook `POST /api/mercadopago/webhook` handles `subscription_preapproval`, `subscription_authorized_payment`, and `payment` events → upserts `subscriptions` table
+5. Client checks access via `useSubscription()` hook → `GET /api/mercadopago/status`
 
 ### Plan
 - Single plan: **R$ 19,90/mês** (defined in `lib/mercadopago.ts`)
@@ -115,9 +116,19 @@ if (!pc) return NextResponse.json({ error: "Not found" }, { status: 404 });
 ### Hook Usage
 ```typescript
 const { hasAccess, loading } = useSubscription();
-// hasAccess = true if status is "active" or "trialing"
+// hasAccess = true if status is "active" or within 7-day grace period
 ```
 Actions (commands, settings changes) are disabled when `!hasAccess`.
+
+### Caching
+- `useSubscription` caches **only positive states** (subscribed=true) in sessionStorage
+- Inactive/no-subscription states are never cached to prevent stale data after account migration
+- Call `clearSubscriptionCache()` before any redirect after subscription state change
+
+### Subscribe Button Pattern
+- `/settings/billing` "Assinar" button → redirects to `/pricing` (full brick experience)
+- `/pricing` "Assinar agora" → shows CardPayment brick with fallback redirect link
+- `PaymentBanner` "Assinar" → links to `/pricing`
 
 ## Type System (`lib/types.ts`)
 

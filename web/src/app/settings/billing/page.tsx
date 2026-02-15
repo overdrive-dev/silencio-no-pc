@@ -30,20 +30,8 @@ export default function SettingsBillingPage() {
     }
   };
 
-  const handleSubscribe = async () => {
-    setActionLoading(true);
-    try {
-      const res = await fetch("/api/mercadopago/checkout", { method: "POST" });
-      const data = await res.json();
-      if (data.url) {
-        clearSubscriptionCache();
-        window.location.href = data.url;
-      }
-    } catch (err) {
-      console.error("Erro ao criar checkout:", err);
-    } finally {
-      setActionLoading(false);
-    }
+  const handleSubscribe = () => {
+    window.location.href = "/pricing";
   };
 
   if (loading) {
@@ -166,10 +154,9 @@ export default function SettingsBillingPage() {
           <div className="mt-6 border-t border-gray-200 pt-6">
             <button
               onClick={handleSubscribe}
-              disabled={actionLoading}
-              className="rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 disabled:opacity-50 transition"
+              className="rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 transition"
             >
-              {actionLoading ? "Redirecionando..." : "Assinar agora — R$ 19,90/mês"}
+              Assinar agora — R$ 19,90/mês
             </button>
             <p className="mt-3 text-xs text-gray-400">
               Pagamentos processados com segurança pelo Mercado Pago. Cancele a qualquer momento.

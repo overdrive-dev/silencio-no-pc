@@ -17,7 +17,9 @@ export default function PricingPage() {
   const { isSignedIn, isLoaded, user } = useUser();
   const [loading, setLoading] = useState(false);
   const [showBrick, setShowBrick] = useState(false);
+  const [brickReady, setBrickReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [redirectLoading, setRedirectLoading] = useState(false);
   const [subStatus, setSubStatus] = useState<{
     subscribed: boolean;
     status: string;
@@ -63,6 +65,25 @@ export default function PricingPage() {
       setError("Erro de conexão. Tente novamente.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRedirectCheckout = async () => {
+    setRedirectLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/mercadopago/checkout", { method: "POST" });
+      const data = await res.json();
+      if (data.url) {
+        clearSubscriptionCache();
+        window.location.href = data.url;
+      } else {
+        setError(data.error || "Erro ao criar checkout. Tente novamente.");
+      }
+    } catch {
+      setError("Erro de conexão. Tente novamente.");
+    } finally {
+      setRedirectLoading(false);
     }
   };
 
@@ -153,11 +174,24 @@ export default function PricingPage() {
             <CardPayment
               initialization={{ amount: 19.9 }}
               onSubmit={handleCardSubmit}
+              onReady={() => setBrickReady(true)}
               onError={(err: unknown) => {
                 console.error("Brick error:", err);
                 setError("Erro no formulário de pagamento.");
               }}
             />
+            {!brickReady && (
+              <div className="mt-4 text-center">
+                <p className="text-sm text-gray-500 mb-3">Carregando formulário de pagamento...</p>
+                <button
+                  onClick={handleRedirectCheckout}
+                  disabled={redirectLoading}
+                  className="text-sm font-medium text-indigo-600 hover:text-indigo-500 underline disabled:opacity-50"
+                >
+                  {redirectLoading ? "Redirecionando..." : "Ou pague direto pelo Mercado Pago →"}
+                </button>
+              </div>
+            )}
             <button
               onClick={() => setShowBrick(false)}
               className="mt-3 w-full text-center text-sm text-gray-500 hover:text-gray-700 transition"
