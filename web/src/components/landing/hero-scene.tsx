@@ -29,13 +29,13 @@ function ShieldOrb() {
           distort={0.2}
           speed={2}
           transparent
-          opacity={0.12}
+          opacity={0.18}
         />
       </mesh>
       {/* Inner glow sphere */}
       <mesh scale={1.3}>
         <sphereGeometry args={[1, 32, 32]} />
-        <meshBasicMaterial color="#ec4899" transparent opacity={0.03} />
+        <meshBasicMaterial color="#ec4899" transparent opacity={0.05} />
       </mesh>
     </Float>
   );
@@ -74,7 +74,7 @@ function Particles() {
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
       <sphereGeometry args={[1, 8, 8]} />
-      <meshBasicMaterial color="#c084fc" transparent opacity={0.15} />
+      <meshBasicMaterial color="#c084fc" transparent opacity={0.22} />
     </instancedMesh>
   );
 }
@@ -92,7 +92,7 @@ function OrbitalRing({ radius, speed, color }: { radius: number; speed: number; 
   return (
     <mesh ref={ringRef}>
       <torusGeometry args={[radius, 0.008, 16, 100]} />
-      <meshBasicMaterial color={color} transparent opacity={0.08} />
+      <meshBasicMaterial color={color} transparent opacity={0.12} />
     </mesh>
   );
 }
