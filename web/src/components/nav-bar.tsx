@@ -24,7 +24,7 @@ export default function NavBar() {
   const { isInGracePeriod, isPastDue, daysUntilBlock } = useSubscription();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const isLanding = pathname === "/" || pathname === "/pricing" || pathname === "/politica-privacidade" || pathname === "/download";
+  const isLanding = pathname === "/" || pathname === "/politica-privacidade";
 
   const navigation = [
     { name: "Dispositivos", href: "/dispositivos", current: pathname.startsWith("/dispositivos") || pathname.startsWith("/dispositivo/") },
@@ -43,29 +43,21 @@ export default function NavBar() {
     <nav className={cn(
       "sticky top-0 z-50 transition-all duration-300",
       isLanding
-        ? "bg-background/60 backdrop-blur-xl border-b border-white/[0.06]"
-        : "bg-white border-b border-zinc-200"
+        ? "bg-white/70 backdrop-blur-xl border-b border-slate-200/60"
+        : "bg-white/80 backdrop-blur-xl border-b border-slate-200"
     )}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className={cn(
-              "flex items-center justify-center size-8 rounded-lg transition",
-              isLanding
-                ? "bg-violet-500/20 group-hover:bg-violet-500/30"
-                : "bg-violet-100 group-hover:bg-violet-200"
-            )}>
-              <svg className={cn("size-4", isLanding ? "text-violet-400" : "text-violet-600")} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <div className="flex items-center justify-center size-8 rounded-lg bg-gradient-to-br from-violet-500 to-pink-500 shadow-md shadow-violet-500/20 group-hover:shadow-lg group-hover:shadow-violet-500/30 transition">
+              <svg className="size-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="2" y="3" width="20" height="14" rx="2" />
                 <line x1="8" y1="21" x2="16" y2="21" />
                 <line x1="12" y1="17" x2="12" y2="21" />
               </svg>
             </div>
-            <span className={cn(
-              "text-lg font-display font-bold tracking-tight",
-              isLanding ? "text-white" : "text-zinc-900"
-            )}>
+            <span className="text-lg font-display font-bold tracking-tight text-slate-900">
               KidsPC
             </span>
           </Link>
@@ -79,13 +71,9 @@ export default function NavBar() {
                   href={item.href}
                   className={cn(
                     "px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
-                    isLanding
-                      ? item.current
-                        ? "text-white bg-white/10"
-                        : "text-zinc-400 hover:text-white hover:bg-white/[0.06]"
-                      : item.current
-                        ? "text-violet-700 bg-violet-50"
-                        : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100"
+                    item.current
+                      ? "text-violet-700 bg-violet-50"
+                      : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
                   )}
                 >
                   {item.name}
@@ -97,7 +85,7 @@ export default function NavBar() {
                 <a
                   key={item.name}
                   href={item.href}
-                  className="px-3 py-1.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-white hover:bg-white/[0.06] transition-all"
+                  className="px-3 py-1.5 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-all"
                 >
                   {item.name}
                 </a>
@@ -110,12 +98,12 @@ export default function NavBar() {
             {/* Payment warnings */}
             <SignedIn>
               {isPastDue && (
-                <span className="hidden sm:inline-flex items-center rounded-full bg-red-500/10 border border-red-500/20 px-2.5 py-0.5 text-xs font-medium text-red-400">
+                <span className="hidden sm:inline-flex items-center rounded-full bg-red-50 border border-red-200 px-2.5 py-0.5 text-xs font-medium text-red-600">
                   Pagamento pendente
                 </span>
               )}
               {isInGracePeriod && daysUntilBlock !== null && (
-                <span className="hidden sm:inline-flex items-center rounded-full bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 text-xs font-medium text-amber-400">
+                <span className="hidden sm:inline-flex items-center rounded-full bg-amber-50 border border-amber-200 px-2.5 py-0.5 text-xs font-medium text-amber-600">
                   {daysUntilBlock}d restantes
                 </span>
               )}
@@ -125,17 +113,12 @@ export default function NavBar() {
             <div className="hidden sm:flex items-center gap-2">
               <SignedOut>
                 <SignInButton mode="modal">
-                  <button className={cn(
-                    "px-4 py-2 rounded-lg text-sm font-medium transition-all",
-                    isLanding
-                      ? "text-zinc-400 hover:text-white"
-                      : "text-zinc-600 hover:text-zinc-900"
-                  )}>
+                  <button className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 transition-all">
                     Entrar
                   </button>
                 </SignInButton>
                 <SignUpButton mode="modal">
-                  <button className="px-4 py-2 rounded-lg text-sm font-semibold bg-violet-600 text-white hover:bg-violet-500 transition-all shadow-lg shadow-violet-600/20 hover:shadow-violet-500/30">
+                  <button className="px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-violet-600 to-pink-500 text-white hover:from-violet-500 hover:to-pink-400 transition-all shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40">
                     Começar grátis
                   </button>
                 </SignUpButton>
@@ -146,7 +129,7 @@ export default function NavBar() {
                   afterSignOutUrl="/"
                   appearance={{
                     elements: {
-                      avatarBox: "size-8 rounded-full ring-2 ring-white/10",
+                      avatarBox: "size-8 rounded-full ring-2 ring-violet-100",
                     },
                   }}
                 >
@@ -169,12 +152,7 @@ export default function NavBar() {
             {/* Mobile menu button */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className={cn(
-                "md:hidden p-2 rounded-lg transition",
-                isLanding
-                  ? "text-zinc-400 hover:text-white hover:bg-white/10"
-                  : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100"
-              )}
+              className="md:hidden p-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition"
             >
               {mobileOpen ? <XMarkIcon className="size-5" /> : <Bars3Icon className="size-5" />}
             </button>
@@ -184,10 +162,7 @@ export default function NavBar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className={cn(
-          "md:hidden border-t",
-          isLanding ? "bg-background/95 backdrop-blur-xl border-white/[0.06]" : "bg-white border-zinc-200"
-        )}>
+        <div className="md:hidden border-t bg-white/95 backdrop-blur-xl border-slate-200">
           <div className="px-4 py-3 space-y-1">
             <SignedIn>
               {navigation.map((item) => (
@@ -197,9 +172,7 @@ export default function NavBar() {
                   onClick={() => setMobileOpen(false)}
                   className={cn(
                     "block px-3 py-2.5 rounded-lg text-sm font-medium transition",
-                    isLanding
-                      ? item.current ? "text-white bg-white/10" : "text-zinc-400 hover:text-white"
-                      : item.current ? "text-violet-700 bg-violet-50" : "text-zinc-600 hover:bg-zinc-50"
+                    item.current ? "text-violet-700 bg-violet-50" : "text-slate-600 hover:bg-slate-50"
                   )}
                 >
                   {item.name}
@@ -212,19 +185,19 @@ export default function NavBar() {
                   key={item.name}
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
-                  className="block px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-white transition"
+                  className="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-900 transition"
                 >
                   {item.name}
                 </a>
               ))}
-              <div className="pt-3 border-t border-white/[0.06] flex flex-col gap-2">
+              <div className="pt-3 border-t border-slate-200 flex flex-col gap-2">
                 <SignInButton mode="modal">
-                  <button className="w-full px-3 py-2.5 rounded-lg text-sm font-medium text-zinc-400 hover:text-white transition text-left">
+                  <button className="w-full px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 transition text-left">
                     Entrar
                   </button>
                 </SignInButton>
                 <SignUpButton mode="modal">
-                  <button className="w-full px-3 py-2.5 rounded-lg text-sm font-semibold bg-violet-600 text-white hover:bg-violet-500 transition">
+                  <button className="w-full px-3 py-2.5 rounded-lg text-sm font-semibold bg-gradient-to-r from-violet-600 to-pink-500 text-white hover:from-violet-500 hover:to-pink-400 transition">
                     Começar grátis
                   </button>
                 </SignUpButton>
@@ -232,19 +205,16 @@ export default function NavBar() {
             </SignedOut>
           </div>
           <SignedIn>
-            <div className={cn(
-              "px-4 py-3 border-t",
-              isLanding ? "border-white/[0.06]" : "border-zinc-200"
-            )}>
+            <div className="px-4 py-3 border-t border-slate-200">
               <div className="flex items-center gap-3">
                 {user?.imageUrl && (
                   <img className="size-9 rounded-full" src={user.imageUrl} alt="" />
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className={cn("text-sm font-medium truncate", isLanding ? "text-white" : "text-zinc-900")}>
+                  <p className="text-sm font-medium truncate text-slate-900">
                     {user?.fullName || user?.firstName || "Usuário"}
                   </p>
-                  <p className={cn("text-xs truncate", isLanding ? "text-zinc-500" : "text-zinc-500")}>
+                  <p className="text-xs truncate text-slate-500">
                     {user?.primaryEmailAddress?.emailAddress}
                   </p>
                 </div>

@@ -118,7 +118,7 @@ export default function PcsPage() {
   if (loading || subLoading) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="flex items-center gap-2 text-zinc-400">
+        <div className="flex items-center gap-2 text-slate-400">
           <ArrowPathIcon className="size-5 animate-spin" />
           <span>Carregando...</span>
         </div>
@@ -131,10 +131,10 @@ export default function PcsPage() {
       {/* Page header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-display font-bold tracking-tight text-zinc-900">
+          <h1 className="text-2xl font-display font-bold tracking-tight text-slate-900">
             Dispositivos
           </h1>
-          <p className="mt-1 text-sm text-zinc-500">
+          <p className="mt-1 text-sm text-slate-500">
             {pcs.length === 0
               ? "Nenhum dispositivo vinculado ainda."
               : `${pcs.length} dispositivo${pcs.length > 1 ? "s" : ""} vinculado${pcs.length > 1 ? "s" : ""}`}
@@ -143,7 +143,7 @@ export default function PcsPage() {
         {hasAccess ? (
           <button
             onClick={() => setShowAddModal(true)}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-violet-600/10 hover:bg-violet-500 transition-all hover:-translate-y-0.5"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-pink-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-violet-500/20 hover:shadow-lg hover:shadow-violet-500/30 transition-all hover:-translate-y-0.5"
           >
             <PlusIcon className="size-4" />
             Adicionar
@@ -151,7 +151,7 @@ export default function PcsPage() {
         ) : (
           <Link
             href="/pricing"
-            className="inline-flex items-center gap-1.5 rounded-lg bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-violet-500 transition"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-pink-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:shadow-lg transition"
           >
             Assinar
           </Link>
@@ -163,11 +163,11 @@ export default function PcsPage() {
       {/* Add PC Modal */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-6 shadow-2xl">
+          <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl">
             {!newToken ? (
               <>
-                <h2 className="text-lg font-display font-bold text-zinc-900">Adicionar Dispositivo</h2>
-                <p className="mt-1 text-sm text-zinc-500">
+                <h2 className="text-lg font-display font-bold text-slate-900">Adicionar Dispositivo</h2>
+                <p className="mt-1 text-sm text-slate-500">
                   Dê um nome para identificar o dispositivo.
                 </p>
                 <input
@@ -175,21 +175,21 @@ export default function PcsPage() {
                   value={newPcName}
                   onChange={(e) => setNewPcName(e.target.value)}
                   placeholder="Ex: PC do Quarto, Notebook da Sala..."
-                  className="mt-4 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-500 transition"
+                  className="mt-4 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-500 transition"
                   autoFocus
                   onKeyDown={(e) => e.key === "Enter" && createPc()}
                 />
                 <div className="mt-5 flex gap-3 justify-end">
                   <button
                     onClick={closeAddModal}
-                    className="rounded-lg px-4 py-2.5 text-sm font-medium text-zinc-600 hover:bg-zinc-100 transition"
+                    className="rounded-lg px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 transition"
                   >
                     Cancelar
                   </button>
                   <button
                     onClick={createPc}
                     disabled={creating || !newPcName.trim()}
-                    className="rounded-lg bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-violet-500 disabled:opacity-50 transition"
+                    className="rounded-lg bg-gradient-to-r from-violet-600 to-pink-500 px-5 py-2.5 text-sm font-semibold text-white hover:shadow-lg disabled:opacity-50 transition"
                   >
                     {creating ? "Criando..." : "Criar"}
                   </button>
@@ -200,10 +200,10 @@ export default function PcsPage() {
                 <div className="inline-flex items-center justify-center size-14 rounded-2xl bg-emerald-50">
                   <svg className="size-7 text-emerald-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
                 </div>
-                <h2 className="text-lg font-display font-bold text-zinc-900">
+                <h2 className="text-lg font-display font-bold text-slate-900">
                   Dispositivo criado!
                 </h2>
-                <p className="text-sm text-zinc-500">
+                <p className="text-sm text-slate-500">
                   Cole este token no app KidsPC para vincular:
                 </p>
                 <div
@@ -220,7 +220,7 @@ export default function PcsPage() {
                 </p>
                 <button
                   onClick={closeAddModal}
-                  className="w-full rounded-lg bg-violet-600 py-2.5 text-sm font-semibold text-white hover:bg-violet-500 transition"
+                  className="w-full rounded-lg bg-gradient-to-r from-violet-600 to-pink-500 py-2.5 text-sm font-semibold text-white hover:shadow-lg transition"
                 >
                   Fechar
                 </button>
@@ -233,13 +233,13 @@ export default function PcsPage() {
       {/* Regenerate token modal */}
       {regenToken && regenPcId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-6 shadow-2xl">
+          <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl">
             <div className="text-center space-y-4">
-              <h2 className="text-lg font-display font-bold text-zinc-900">Novo Token</h2>
-              <p className="text-sm text-zinc-500">Cole no programa KidsPC:</p>
+              <h2 className="text-lg font-display font-bold text-slate-900">Novo Token</h2>
+              <p className="text-sm text-slate-500">Cole no programa KidsPC:</p>
               <div
                 onClick={() => copyToken(regenToken)}
-                className="rounded-xl bg-zinc-50 border border-zinc-200 p-4 cursor-pointer hover:bg-zinc-100 transition"
+                className="rounded-xl bg-slate-50 border border-slate-200 p-4 cursor-pointer hover:bg-slate-100 transition"
                 title="Clique para copiar"
               >
                 <code className="text-lg font-mono font-bold text-violet-600 break-all">
@@ -260,19 +260,19 @@ export default function PcsPage() {
 
       {/* Empty state */}
       {pcs.length === 0 && !showAddModal && (
-        <div className="rounded-2xl border-2 border-dashed border-zinc-200 p-12 text-center">
+        <div className="rounded-2xl border-2 border-dashed border-slate-200 p-12 text-center">
           <div className="inline-flex items-center justify-center size-14 rounded-2xl bg-violet-50 mb-4">
             <ComputerDesktopIcon className="size-7 text-violet-500" />
           </div>
-          <h3 className="text-sm font-semibold text-zinc-900">Nenhum dispositivo vinculado</h3>
-          <p className="mt-1 text-sm text-zinc-500 max-w-sm mx-auto">
+          <h3 className="text-sm font-semibold text-slate-900">Nenhum dispositivo vinculado</h3>
+          <p className="mt-1 text-sm text-slate-500 max-w-sm mx-auto">
             Adicione um dispositivo, instale o app e vincule com o token de pareamento.
           </p>
           <div className="mt-6 flex items-center justify-center gap-3">
             {hasAccess && (
               <button
                 onClick={() => setShowAddModal(true)}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-violet-500 transition"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-pink-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:shadow-lg transition"
               >
                 <PlusIcon className="size-4" />
                 Adicionar Dispositivo
@@ -280,7 +280,7 @@ export default function PcsPage() {
             )}
             <Link
               href="/download"
-              className="inline-flex items-center rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-zinc-700 shadow-sm ring-1 ring-inset ring-zinc-200 hover:bg-zinc-50 transition"
+              className="inline-flex items-center rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-200 hover:bg-slate-50 transition"
             >
               Baixar app
             </Link>

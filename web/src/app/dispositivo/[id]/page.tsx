@@ -253,7 +253,7 @@ export default function PcDashboard() {
   if (loading || !pc) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="flex items-center gap-2 text-zinc-400">
+        <div className="flex items-center gap-2 text-slate-400">
           <svg className="size-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
           Carregando...
         </div>
@@ -270,10 +270,10 @@ export default function PcDashboard() {
   return (
     <div className="space-y-6">
       {/* Breadcrumb */}
-      <nav className="flex items-center text-sm text-zinc-500">
-        <Link href="/dispositivos" className="hover:text-zinc-900 transition">Dispositivos</Link>
-        <svg className="size-4 mx-1 text-zinc-300" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
-        <span className="text-zinc-900 font-medium">{pc.name}</span>
+      <nav className="flex items-center text-sm text-slate-500">
+        <Link href="/dispositivos" className="hover:text-slate-900 transition">Dispositivos</Link>
+        <svg className="size-4 mx-1 text-slate-300" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+        <span className="text-slate-900 font-medium">{pc.name}</span>
       </nav>
 
       {/* Header */}
@@ -283,13 +283,13 @@ export default function PcDashboard() {
             <svg className="size-5 text-violet-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /></svg>
           </div>
           <div>
-            <h1 className="text-xl font-display font-bold tracking-tight text-zinc-900">{pc.name}</h1>
+            <h1 className="text-xl font-display font-bold tracking-tight text-slate-900">{pc.name}</h1>
             <div className="flex items-center gap-2 mt-0.5">
-              <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${online ? "text-emerald-600" : "text-zinc-400"}`}>
-                <span className={`size-1.5 rounded-full ${online ? "bg-emerald-500 animate-pulse" : "bg-zinc-400"}`} />
+              <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${online ? "text-emerald-600" : "text-slate-400"}`}>
+                <span className={`size-1.5 rounded-full ${online ? "bg-emerald-500 animate-pulse" : "bg-slate-400"}`} />
                 {online ? "Online" : "Offline"}
               </span>
-              {pc.app_version && <span className="text-xs text-zinc-400">v{pc.app_version}</span>}
+              {pc.app_version && <span className="text-xs text-slate-400">v{pc.app_version}</span>}
             </div>
           </div>
         </div>
@@ -297,13 +297,13 @@ export default function PcDashboard() {
           <button
             onClick={generateToken}
             disabled={tokenLoading}
-            className="rounded-lg bg-violet-600 px-3.5 py-2 text-sm font-medium text-white shadow-sm hover:bg-violet-500 disabled:opacity-50 transition"
+            className="rounded-lg bg-gradient-to-r from-violet-600 to-pink-500 px-3.5 py-2 text-sm font-medium text-white shadow-sm shadow-violet-500/20 hover:shadow-lg disabled:opacity-50 transition"
           >
             {tokenLoading ? "Gerando..." : "Vincular"}
           </button>
           <Link
             href={`/dispositivo/${id}/settings`}
-            className="rounded-lg bg-white px-3.5 py-2 text-sm font-medium text-zinc-700 shadow-sm ring-1 ring-inset ring-zinc-200 hover:bg-zinc-50 transition"
+            className="rounded-lg bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-sm ring-1 ring-inset ring-slate-200 hover:bg-slate-50 transition"
           >
             Configurações
           </Link>
@@ -335,9 +335,9 @@ export default function PcDashboard() {
       {/* Main grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Usage */}
-        <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-medium text-zinc-500">Uso Hoje</h3>
+            <h3 className="text-sm font-medium text-slate-500">Uso Hoje</h3>
             <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
               usagePct >= 90 ? "bg-red-50 text-red-600" : usagePct >= 70 ? "bg-amber-50 text-amber-600" : "bg-emerald-50 text-emerald-600"
             }`}>
@@ -346,7 +346,7 @@ export default function PcDashboard() {
           </div>
           <UsageGauge used={pc.usage_today_minutes} limit={limit} />
           <div className="mt-4 flex items-center justify-between text-sm">
-            <span className="text-zinc-500">Restam</span>
+            <span className="text-slate-500">Restam</span>
             <span className={`font-bold ${remaining <= 5 ? "text-red-500" : remaining <= 15 ? "text-amber-500" : "text-emerald-500"}`}>
               {formatTime(remaining)}
             </span>
@@ -354,24 +354,24 @@ export default function PcDashboard() {
         </div>
 
         {/* Strikes */}
-        <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-          <h3 className="text-sm font-medium text-zinc-500 mb-4">Strikes</h3>
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h3 className="text-sm font-medium text-slate-500 mb-4">Strikes</h3>
           <div className="flex items-center justify-center gap-3 mb-3">
             {[0, 1, 2].map((i) => {
               const cyclePos = pc.strikes % 3;
               const filled = cyclePos === 0 && pc.strikes > 0 ? 3 : cyclePos;
               return (
-                <div key={i} className={`size-10 rounded-xl flex items-center justify-center transition ${i < filled ? "bg-amber-100 border border-amber-200" : "bg-zinc-50 border border-zinc-200"}`}>
-                  <svg className={`size-5 ${i < filled ? "text-amber-500" : "text-zinc-300"}`} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126Z" /></svg>
+                <div key={i} className={`size-10 rounded-xl flex items-center justify-center transition ${i < filled ? "bg-amber-100 border border-amber-200" : "bg-slate-50 border border-slate-200"}`}>
+                  <svg className={`size-5 ${i < filled ? "text-amber-500" : "text-slate-300"}`} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126Z" /></svg>
                 </div>
               );
             })}
           </div>
           <div className="text-center">
-            <span className={`text-2xl font-bold ${pc.strikes > 0 ? "text-amber-500" : "text-zinc-900"}`}>
+            <span className={`text-2xl font-bold ${pc.strikes > 0 ? "text-amber-500" : "text-slate-900"}`}>
               {pc.strikes}
             </span>
-            <p className="text-xs text-zinc-400 mt-1">
+            <p className="text-xs text-slate-400 mt-1">
               {pc.strikes > 0
                 ? `${(pc.strikes % 3) || 3}/3 para penalidade`
                 : "Nenhum strike"}
@@ -386,8 +386,8 @@ export default function PcDashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-          <h3 className="text-sm font-medium text-zinc-500 mb-3">Ações Rápidas</h3>
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <h3 className="text-sm font-medium text-slate-500 mb-3">Ações Rápidas</h3>
           {!hasAccess && (
             <p className="text-xs text-red-500 mb-3 flex items-center gap-1">
               <svg className="size-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
@@ -417,7 +417,7 @@ export default function PcDashboard() {
           >
             {cmdLoading === "remove_time" ? "..." : "-15min"}
           </button>
-          <div className="grid grid-cols-2 gap-2 pt-3 border-t border-zinc-100">
+          <div className="grid grid-cols-2 gap-2 pt-3 border-t border-slate-100">
             <button
               onClick={() => sendCommand("lock")}
               disabled={actionsDisabled}
@@ -435,14 +435,14 @@ export default function PcDashboard() {
             <button
               onClick={() => sendCommand("reset_strikes")}
               disabled={actionsDisabled}
-              className="bg-zinc-50 text-zinc-700 border border-zinc-200 hover:bg-zinc-100 rounded-xl py-2 text-sm font-medium transition disabled:opacity-40"
+              className="bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100 rounded-xl py-2 text-sm font-medium transition disabled:opacity-40"
             >
               Resetar Strikes
             </button>
             <button
               onClick={() => { if (confirm("Desligar o PC?")) sendCommand("shutdown"); }}
               disabled={actionsDisabled}
-              className="bg-zinc-50 text-red-600 border border-zinc-200 hover:bg-zinc-100 rounded-xl py-2 text-sm font-medium transition disabled:opacity-40"
+              className="bg-slate-50 text-red-600 border border-slate-200 hover:bg-slate-100 rounded-xl py-2 text-sm font-medium transition disabled:opacity-40"
             >
               Desligar
             </button>
@@ -451,15 +451,15 @@ export default function PcDashboard() {
       </div>
 
       {/* Info footer */}
-      <div className="text-xs text-zinc-400 flex gap-4">
+      <div className="text-xs text-slate-400 flex gap-4">
         {pc.last_heartbeat && (
           <span>Último ping: {new Date(pc.last_heartbeat).toLocaleString("pt-BR")}</span>
         )}
       </div>
 
       {/* Tabs */}
-      <div className="rounded-2xl border border-zinc-200 bg-white shadow-sm overflow-hidden">
-        <div className="flex border-b border-zinc-200">
+      <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+        <div className="flex border-b border-slate-200">
           {(["history", "events", "activity", "controls"] as const).map((tab) => {
             const labels = { history: "Histórico", events: "Eventos", activity: "Atividade", controls: "Controles" };
             return (
@@ -469,7 +469,7 @@ export default function PcDashboard() {
                 className={`flex-1 py-3.5 text-sm font-medium transition-all relative ${
                   activeTab === tab
                     ? "text-violet-600"
-                    : "text-zinc-400 hover:text-zinc-700"
+                    : "text-slate-400 hover:text-slate-700"
                 }`}
               >
                 {labels[tab]}{tab === "events" && eventsTotal > 0 ? ` (${eventsTotal})` : ""}
@@ -501,10 +501,10 @@ export default function PcDashboard() {
               <div className="inline-flex items-center justify-center size-14 rounded-2xl bg-red-50 mb-3">
                 <svg className="size-7 text-red-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg>
               </div>
-              <h2 className="text-lg font-display font-bold text-zinc-900">
+              <h2 className="text-lg font-display font-bold text-slate-900">
                 Remover &ldquo;{pc.name}&rdquo;?
               </h2>
-              <p className="mt-1 text-sm text-zinc-500">
+              <p className="mt-1 text-sm text-slate-500">
                 Todas as configurações, histórico e eventos serão apagados.
               </p>
             </div>
@@ -515,7 +515,7 @@ export default function PcDashboard() {
               </div>
             )}
             <div className="flex gap-3 justify-end pt-2">
-              <button onClick={() => setShowDeleteModal(false)} className="rounded-lg px-4 py-2.5 text-sm font-medium text-zinc-600 hover:bg-zinc-100 transition">
+              <button onClick={() => setShowDeleteModal(false)} className="rounded-lg px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 transition">
                 Cancelar
               </button>
               <button onClick={() => deletePc()} disabled={deleting} className="rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-500 disabled:opacity-50 transition">
@@ -536,8 +536,8 @@ export default function PcDashboard() {
                   <div className="inline-flex items-center justify-center size-16 rounded-2xl bg-emerald-50">
                     <svg className="size-8 text-emerald-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
                   </div>
-                  <h2 className="text-xl font-display font-bold text-zinc-900">Vinculado!</h2>
-                  <p className="text-sm text-zinc-500">O app KidsPC se conectou com sucesso.</p>
+                  <h2 className="text-xl font-display font-bold text-slate-900">Vinculado!</h2>
+                  <p className="text-sm text-slate-500">O app KidsPC se conectou com sucesso.</p>
                 </div>
                 <div className="flex items-center justify-center gap-2 text-sm text-emerald-600 font-medium">
                   <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -556,25 +556,25 @@ export default function PcDashboard() {
                   <div className="inline-flex items-center justify-center size-14 rounded-2xl bg-violet-50 mb-3">
                     <svg className="size-7 text-violet-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m9.86-1.06 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" /></svg>
                   </div>
-                  <h2 className="text-xl font-display font-bold text-zinc-900">Token de Vinculação</h2>
-                  <p className="text-sm text-zinc-500 mt-1">Cole no app KidsPC para vincular.</p>
+                  <h2 className="text-xl font-display font-bold text-slate-900">Token de Vinculação</h2>
+                  <p className="text-sm text-slate-500 mt-1">Cole no app KidsPC para vincular.</p>
                 </div>
                 <div
                   onClick={() => copyToken(generatedToken)}
-                  className="rounded-xl bg-zinc-50 border border-zinc-200 p-4 text-center font-mono text-sm tracking-wide text-zinc-900 cursor-pointer hover:bg-zinc-100 transition select-all break-all"
+                  className="rounded-xl bg-slate-50 border border-slate-200 p-4 text-center font-mono text-sm tracking-wide text-slate-900 cursor-pointer hover:bg-slate-100 transition select-all break-all"
                 >
                   {generatedToken}
                 </div>
                 <p className="text-center text-xs font-medium">
                   {tokenCopied ? <span className="text-emerald-600">Copiado!</span> : <span className="text-amber-600">Clique para copiar. Válido por 30min.</span>}
                 </p>
-                <div className="flex items-center justify-center gap-2 text-xs text-zinc-400">
+                <div className="flex items-center justify-center gap-2 text-xs text-slate-400">
                   <span className="size-1.5 rounded-full bg-zinc-400 animate-pulse" />
                   Aguardando vinculação...
                 </div>
                 <button
                   onClick={() => { setTokenModal(false); setGeneratedToken(null); setTokenCopied(false); setTokenClaimed(false); }}
-                  className="w-full py-2.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-medium transition"
+                  className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition"
                 >
                   Cancelar
                 </button>

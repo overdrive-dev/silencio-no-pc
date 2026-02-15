@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Outfit, Plus_Jakarta_Sans } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
-import { dark } from "@clerk/themes";
+
 import { ptBR } from "@clerk/localizations";
 import NavBar from "@/components/nav-bar";
 import MainWrapper from "@/components/main-wrapper";
@@ -33,12 +33,11 @@ export default function RootLayout({
     <ClerkProvider
       localization={ptBR}
       appearance={{
-        baseTheme: dark,
         variables: {
           colorPrimary: "#8b5cf6",
-          colorBackground: "#18181b",
-          colorInputBackground: "#27272a",
-          colorText: "#fafafa",
+          colorBackground: "#ffffff",
+          colorInputBackground: "#f8fafc",
+          colorText: "#0f172a",
         },
       }}
     >

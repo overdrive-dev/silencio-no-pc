@@ -21,21 +21,21 @@ function ShieldOrb() {
       <mesh ref={meshRef} scale={2.2}>
         <icosahedronGeometry args={[1, 8]} />
         <MeshDistortMaterial
-          color="#8b5cf6"
-          emissive="#4c1d95"
-          emissiveIntensity={0.4}
-          roughness={0.2}
-          metalness={0.8}
+          color="#c084fc"
+          emissive="#7c3aed"
+          emissiveIntensity={0.3}
+          roughness={0.15}
+          metalness={0.9}
           distort={0.25}
           speed={2}
           transparent
-          opacity={0.85}
+          opacity={0.7}
         />
       </mesh>
       {/* Inner glow sphere */}
       <mesh scale={1.8}>
         <sphereGeometry args={[1, 32, 32]} />
-        <meshBasicMaterial color="#06b6d4" transparent opacity={0.08} />
+        <meshBasicMaterial color="#ec4899" transparent opacity={0.06} />
       </mesh>
     </Float>
   );
@@ -74,7 +74,7 @@ function Particles() {
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
       <sphereGeometry args={[1, 8, 8]} />
-      <meshBasicMaterial color="#a78bfa" transparent opacity={0.5} />
+      <meshBasicMaterial color="#c084fc" transparent opacity={0.4} />
     </instancedMesh>
   );
 }
@@ -106,15 +106,15 @@ export default function HeroScene() {
         style={{ background: "transparent" }}
         dpr={[1, 1.5]}
       >
-        <ambientLight intensity={0.3} />
-        <pointLight position={[5, 5, 5]} intensity={1} color="#8b5cf6" />
-        <pointLight position={[-5, -3, 3]} intensity={0.6} color="#06b6d4" />
-        <spotLight position={[0, 8, 4]} angle={0.3} intensity={0.8} color="#a78bfa" penumbra={1} />
+        <ambientLight intensity={0.5} />
+        <pointLight position={[5, 5, 5]} intensity={1.2} color="#c084fc" />
+        <pointLight position={[-5, -3, 3]} intensity={0.8} color="#f472b6" />
+        <spotLight position={[0, 8, 4]} angle={0.3} intensity={1} color="#a78bfa" penumbra={1} />
 
         <ShieldOrb />
         <Particles />
-        <OrbitalRing radius={3.2} speed={0.15} color="#8b5cf6" />
-        <OrbitalRing radius={3.8} speed={-0.1} color="#06b6d4" />
+        <OrbitalRing radius={3.2} speed={0.15} color="#c084fc" />
+        <OrbitalRing radius={3.8} speed={-0.1} color="#f472b6" />
       </Canvas>
     </div>
   );

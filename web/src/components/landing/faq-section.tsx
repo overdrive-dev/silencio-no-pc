@@ -51,27 +51,27 @@ export default function FaqSection() {
     <section id="faq" className="py-24 sm:py-32">
       <div className="mx-auto max-w-4xl px-6">
         <div className="text-center mb-14">
-          <p className="text-sm font-semibold tracking-widest uppercase text-violet-400">FAQ</p>
-          <p className="mt-3 font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
+          <p className="text-sm font-semibold tracking-widest uppercase text-violet-500">FAQ</p>
+          <p className="mt-3 font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
             Perguntas frequentes
           </p>
-          <p className="mt-4 text-lg text-zinc-400">
+          <p className="mt-4 text-lg text-slate-500">
             Tudo que você precisa saber sobre o KidsPC.
           </p>
         </div>
 
         <dl className="space-y-3">
           {faqs.map((faq, index) => (
-            <Disclosure key={index} as="div" className="rounded-xl bg-white/[0.03] border border-white/[0.06] hover:border-white/[0.1] transition-colors">
+            <Disclosure key={index} as="div" className="rounded-xl bg-white border border-slate-200 hover:border-violet-200 shadow-sm transition-colors">
               {({ open }) => (
                 <>
                   <DisclosureButton className="flex w-full items-center justify-between px-6 py-5 text-left">
-                    <span className="text-base font-medium text-zinc-200">{faq.question}</span>
+                    <span className="text-base font-medium text-slate-800">{faq.question}</span>
                     <ChevronDownIcon
-                      className={`size-5 text-zinc-500 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+                      className={`size-5 text-slate-400 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
                     />
                   </DisclosureButton>
-                  <DisclosurePanel className="px-6 pb-5 text-sm leading-relaxed text-zinc-400">
+                  <DisclosurePanel className="px-6 pb-5 text-sm leading-relaxed text-slate-500">
                     {faq.answer}
                   </DisclosurePanel>
                 </>
