@@ -4,7 +4,7 @@ let _client: MercadoPagoConfig | null = null;
 
 export function getMercadoPagoClient(): MercadoPagoConfig {
   if (!_client) {
-    const token = process.env.MELI_ACCESS_TOKEN;
+    const token = process.env.MELI_ACCESS_TOKEN?.trim();
     if (!token) {
       throw new Error("Missing MELI_ACCESS_TOKEN env var");
     }
