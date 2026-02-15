@@ -124,31 +124,51 @@ class TimePenaltyPopup(BasePopup):
 class TimeBlockedPopup(BasePopup):
     """Popup informando que o tempo acabou."""
     
-    def __init__(self, parent=None):
-        super().__init__(340, 180, parent)
+    REASONS = {
+        "daily_limit": {
+            "icon": "\ud83d\udeab",
+            "title": "Tempo esgotado!",
+            "message": "Seu tempo de uso acabou por hoje.\nO computador ser\u00e1 bloqueado.",
+        },
+        "outside_hours": {
+            "icon": "\U0001f319",
+            "title": "Fora do hor\u00e1rio!",
+            "message": "O hor\u00e1rio de uso permitido acabou.\nO computador ser\u00e1 bloqueado.",
+        },
+        "manual_lock": {
+            "icon": "\U0001f512",
+            "title": "Bloqueio manual",
+            "message": "O computador foi bloqueado remotamente\npor um respons\u00e1vel.",
+        },
+    }
+    
+    def __init__(self, reason: str = "daily_limit", parent=None):
+        super().__init__(340, 200, parent)
+        self.reason = reason
         self._setup_ui()
         
         QTimer.singleShot(5000, self.accept)
     
     def _setup_ui(self):
+        info = self.REASONS.get(self.reason, self.REASONS["daily_limit"])
         
         layout = QVBoxLayout(self)
         layout.setContentsMargins(24, 20, 24, 20)
         layout.setSpacing(8)
         
-        label_icon = QLabel("\ud83d\udeab")
+        label_icon = QLabel(info["icon"])
         label_icon.setAlignment(Qt.AlignCenter)
         label_icon.setFont(QFont("Segoe UI Emoji", 28))
         label_icon.setStyleSheet("background: transparent;")
         layout.addWidget(label_icon)
         
-        label_title = QLabel("Tempo esgotado!")
+        label_title = QLabel(info["title"])
         label_title.setAlignment(Qt.AlignCenter)
         label_title.setFont(QFont("Segoe UI", 14, QFont.Bold))
         label_title.setStyleSheet("color: #f44336; background: transparent;")
         layout.addWidget(label_title)
         
-        label_msg = QLabel("Seu tempo de uso acabou por hoje.\nO computador ser\u00e1 bloqueado.")
+        label_msg = QLabel(info["message"])
         label_msg.setAlignment(Qt.AlignCenter)
         label_msg.setFont(QFont("Segoe UI", 11))
         label_msg.setStyleSheet("color: #ccc; background: transparent;")

@@ -4,7 +4,7 @@ import atexit
 import signal
 from pathlib import Path
 
-__version__ = "2.1.2"
+__version__ = "2.1.3"
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -129,14 +129,14 @@ class KidsPC:
                 popup.exec_()
             
             elif action == TimeAction.BLOCK:
-                self.logger.uso_bloqueado("Limite di\u00e1rio atingido")
-                popup = TimeBlockedPopup()
+                self.logger.uso_bloqueado("Limite diário atingido")
+                popup = TimeBlockedPopup("daily_limit")
                 popup.exec_()
                 self.screen_locker.start_enforcement()
             
             elif action == TimeAction.OUTSIDE_HOURS:
-                self.logger.uso_bloqueado("Fora do hor\u00e1rio permitido")
-                popup = TimeBlockedPopup()
+                self.logger.uso_bloqueado("Fora do horário permitido")
+                popup = TimeBlockedPopup("outside_hours")
                 popup.exec_()
                 self.screen_locker.start_enforcement()
             
@@ -236,6 +236,9 @@ class KidsPC:
 
     def _on_command_executed(self, command: str, payload: dict):
         """Slot Qt (main thread) — atualiza UI imediatamente após comando remoto."""
+        if command == "lock":
+            popup = TimeBlockedPopup("manual_lock")
+            popup.exec_()
         self._check_time()
 
     def _init_ui(self):
