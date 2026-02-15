@@ -264,12 +264,9 @@ export function StepsScene({ className }: { className?: string }) {
         <div className="absolute bottom-1/4 left-1/3 w-40 h-40 rounded-full bg-[#D6F5E0] opacity-30 blur-xl" />
       </div>
 
-      {/* Main phone — centered with padding */}
-      <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-        style={parallaxStyle(scrollY, -0.03, offset)}
-      >
-        <svg viewBox="0 0 260 460" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-52 sm:w-56 drop-shadow-2xl">
+      {/* Main phone — perfectly centered */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <svg viewBox="0 0 260 460" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-48 sm:w-52 drop-shadow-2xl">
           {/* Phone body */}
           <rect x="8" y="8" width="244" height="444" rx="28" fill="#1a1a2e" />
           <rect x="18" y="44" width="224" height="370" rx="6" fill="#FAF7F2" />
