@@ -2,14 +2,15 @@
 
 import { useState } from "react";
 import { useSubscription, clearSubscriptionCache } from "@/hooks/use-subscription";
-import { CheckIcon } from "@heroicons/react/20/solid";
+import { CheckIcon, ExclamationTriangleIcon } from "@heroicons/react/20/solid";
 
 export default function SettingsBillingPage() {
   const { subscription, loading, isActive, isInGracePeriod, isPastDue, isCanceled, daysUntilBlock } = useSubscription();
   const [actionLoading, setActionLoading] = useState(false);
   const [portalError, setPortalError] = useState<string | null>(null);
+  const [showCancelModal, setShowCancelModal] = useState(false);
 
-  const handleManagePortal = async () => {
+  const handleCancel = async () => {
     setActionLoading(true);
     setPortalError(null);
     try {
@@ -27,6 +28,7 @@ export default function SettingsBillingPage() {
       setPortalError("Erro de conexão. Tente novamente em alguns segundos.");
     } finally {
       setActionLoading(false);
+      setShowCancelModal(false);
     }
   };
 
@@ -50,7 +52,7 @@ export default function SettingsBillingPage() {
           <div className="flex-1">
             <p className="text-sm font-medium text-red-800">{portalError}</p>
             <button
-              onClick={handleManagePortal}
+              onClick={handleCancel}
               className="mt-2 text-sm font-semibold text-red-700 hover:text-red-600 underline"
             >
               Tentar novamente
@@ -102,11 +104,11 @@ export default function SettingsBillingPage() {
               {(isActive || isInGracePeriod) && (
                 <button
                   type="button"
-                  onClick={handleManagePortal}
+                  onClick={() => setShowCancelModal(true)}
                   disabled={actionLoading}
                   className="font-semibold text-indigo-600 hover:text-indigo-500 disabled:opacity-50"
                 >
-                  {actionLoading ? "Cancelando..." : "Cancelar assinatura"}
+                  Cancelar assinatura
                 </button>
               )}
             </dd>
@@ -161,6 +163,49 @@ export default function SettingsBillingPage() {
             <p className="mt-3 text-xs text-gray-400">
               Pagamentos processados com segurança pelo Mercado Pago. Cancele a qualquer momento.
             </p>
+          </div>
+        </div>
+      )}
+      {/* Cancel confirmation modal */}
+      {showCancelModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="fixed inset-0 bg-gray-900/50 transition-opacity"
+            onClick={() => !actionLoading && setShowCancelModal(false)}
+          />
+          <div className="relative z-10 w-full max-w-md rounded-2xl bg-white p-6 shadow-xl mx-4">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-red-100">
+                <ExclamationTriangleIcon className="size-5 text-red-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900">
+                Cancelar assinatura?
+              </h3>
+            </div>
+            <p className="text-sm text-gray-500 mb-2">
+              Tem certeza que deseja cancelar sua assinatura do plano KidsPC?
+            </p>
+            <ul className="text-sm text-gray-500 mb-6 space-y-1">
+              <li>• Você perderá o acesso ao monitoramento remoto</li>
+              <li>• Seus dispositivos não poderão ser controlados</li>
+              <li>• O acesso continua até o fim do período atual</li>
+            </ul>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setShowCancelModal(false)}
+                disabled={actionLoading}
+                className="rounded-lg px-4 py-2.5 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:opacity-50 transition"
+              >
+                Manter assinatura
+              </button>
+              <button
+                onClick={handleCancel}
+                disabled={actionLoading}
+                className="rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-500 disabled:opacity-50 transition"
+              >
+                {actionLoading ? "Cancelando..." : "Sim, cancelar"}
+              </button>
+            </div>
           </div>
         </div>
       )}

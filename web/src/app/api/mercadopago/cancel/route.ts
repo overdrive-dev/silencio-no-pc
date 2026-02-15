@@ -11,28 +11,34 @@ export async function POST() {
   }
 
   const sub = await getUserSubscription(userId);
-  if (!sub?.mp_subscription_id) {
-    return NextResponse.json({ error: "No MercadoPago subscription found" }, { status: 404 });
+
+  // No subscription in DB — nothing to cancel
+  if (!sub) {
+    return NextResponse.json({ success: true, message: "Nenhuma assinatura encontrada." });
   }
 
-  try {
-    const client = getMercadoPagoClient();
-    const preApprovalApi = new PreApproval(client);
+  // Has MP subscription — cancel on MercadoPago first
+  if (sub.mp_subscription_id) {
+    try {
+      const client = getMercadoPagoClient();
+      const preApprovalApi = new PreApproval(client);
 
-    await preApprovalApi.update({
-      id: sub.mp_subscription_id,
-      body: { status: "cancelled" },
-    });
-
-    await upsertSubscription(userId, {
-      status: "canceled",
-      cancel_at_period_end: true,
-    });
-
-    return NextResponse.json({ success: true });
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    console.error("[mp-cancel] Error:", message);
-    return NextResponse.json({ error: message }, { status: 500 });
+      await preApprovalApi.update({
+        id: sub.mp_subscription_id,
+        body: { status: "cancelled" },
+      });
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Unknown error";
+      console.error("[mp-cancel] Error cancelling on MercadoPago:", message);
+      return NextResponse.json({ error: "Erro ao cancelar no Mercado Pago. Tente novamente." }, { status: 500 });
+    }
   }
+
+  // Update local DB
+  await upsertSubscription(userId, {
+    status: "canceled",
+    cancel_at_period_end: true,
+  });
+
+  return NextResponse.json({ success: true });
 }
