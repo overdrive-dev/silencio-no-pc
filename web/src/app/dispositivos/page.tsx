@@ -21,6 +21,22 @@ function isOnline(pc: PC): boolean {
   return diff < 90_000;
 }
 
+function PlatformIcon({ platform }: { platform?: string }) {
+  if (platform === "android") {
+    return (
+      <svg className="size-4 text-green-600 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M17.523 2.246a.75.75 0 0 0-1.046.177l-1.09 1.57A7.973 7.973 0 0 0 12 3c-1.2 0-2.342.265-3.387.993l-1.09-1.57a.75.75 0 1 0-1.223.87l1.044 1.504A7.98 7.98 0 0 0 4 11h16a7.98 7.98 0 0 0-3.344-5.203l1.044-1.504a.75.75 0 0 0-.177-1.047ZM9 9a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm6 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2ZM4 12v6a4 4 0 0 0 4 4h8a4 4 0 0 0 4-4v-6H4Z" />
+      </svg>
+    );
+  }
+  // Default: Windows icon
+  return (
+    <svg className="size-4 text-blue-600 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M3 5.548l7.065-0.966v6.829H3V5.548zm0 12.904l7.065 0.966v-6.829H3v5.863zM11.065 4.38L22 2.75v8.661h-10.935V4.38zm0 15.24L22 21.25v-8.661h-10.935v7.031z" />
+    </svg>
+  );
+}
+
 export default function PcsPage() {
   const { user } = useUser();
   const { hasAccess, loading: subLoading } = useSubscription();
@@ -306,7 +322,10 @@ export default function PcsPage() {
                 {pendingSetup ? (
                   <div className="block rounded-xl border border-amber-200 bg-amber-50 p-5">
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-semibold text-lg text-gray-900">{pc.name}</h3>
+                      <h3 className="font-semibold text-lg text-gray-900 flex items-center gap-1.5">
+                        <PlatformIcon platform={pc.platform} />
+                        {pc.name}
+                      </h3>
                       <span className="inline-flex items-center text-xs font-medium px-2.5 py-1 rounded-full bg-amber-100 text-amber-700">
                         Aguardando conexão
                       </span>
@@ -328,7 +347,10 @@ export default function PcsPage() {
                     className="block rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md"
                   >
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-semibold text-lg text-gray-900">{pc.name}</h3>
+                      <h3 className="font-semibold text-lg text-gray-900 flex items-center gap-1.5">
+                        <PlatformIcon platform={pc.platform} />
+                        {pc.name}
+                      </h3>
                       <span
                         className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${
                           online

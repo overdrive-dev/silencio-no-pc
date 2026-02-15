@@ -15,6 +15,7 @@ export interface PC {
   last_heartbeat: string | null;
   last_activity: string | null;
   app_version: string;
+  platform: "windows" | "android" | string;
 }
 
 export interface PairingCode {

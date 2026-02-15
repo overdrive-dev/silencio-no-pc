@@ -24,6 +24,8 @@ export async function POST(request: Request) {
 
   const body = await request.json();
   const token = (body.token || "").trim();
+  const platform = (body.platform || "windows").trim();
+  const deviceName = (body.name || "").trim();
 
   if (!token) {
     return NextResponse.json({ error: "Token é obrigatório" }, { status: 400 });
@@ -51,15 +53,19 @@ export async function POST(request: Request) {
   }
 
   // Consume token (clear it so it can't be reused)
+  const updateData: Record<string, unknown> = {
+    sync_token: null,
+    sync_token_expires_at: null,
+    is_online: true,
+    app_running: true,
+    paired_at: new Date().toISOString(),
+    platform,
+  };
+  if (deviceName) updateData.name = deviceName;
+
   const { error: updateError } = await supabaseAdmin
     .from("pcs")
-    .update({
-      sync_token: null,
-      sync_token_expires_at: null,
-      is_online: true,
-      app_running: true,
-      paired_at: new Date().toISOString(),
-    })
+    .update(updateData)
     .eq("id", pc.id);
 
   if (updateError) {

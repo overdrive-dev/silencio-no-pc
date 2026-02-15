@@ -22,6 +22,31 @@ KidsPC is a parental control SaaS for Windows PCs. Parents manage screen time, n
 
 ```
 silencio-no-pc/
+├── android/                # Kotlin Android app (child device)
+│   ├── app/src/main/
+│   │   ├── java/com/kidspc/app/
+│   │   │   ├── MainActivity.kt          # Entry point, screen routing
+│   │   │   ├── KidspcApp.kt             # Application class (Hilt, notifications)
+│   │   │   ├── di/AppModule.kt          # Hilt DI module
+│   │   │   ├── data/
+│   │   │   │   ├── AppConfig.kt         # EncryptedSharedPreferences
+│   │   │   │   ├── SyncRepository.kt    # Supabase sync + pairing
+│   │   │   │   └── models/Models.kt     # Kotlin data classes (mirrors Supabase)
+│   │   │   ├── service/
+│   │   │   │   ├── KidspcService.kt     # Foreground service (sync + usage tracking)
+│   │   │   │   └── AppBlockerService.kt # Accessibility service (app blocking)
+│   │   │   ├── receiver/
+│   │   │   │   ├── BootReceiver.kt      # Auto-start on boot
+│   │   │   │   └── KidspcDeviceAdmin.kt # Prevent uninstall
+│   │   │   └── ui/
+│   │   │       ├── theme/Theme.kt       # Material3 theme (indigo/teal)
+│   │   │       ├── viewmodels/PairingViewModel.kt
+│   │   │       └── screens/             # PairingScreen, StatusScreen, LockScreen, PermissionsScreen
+│   │   ├── res/                         # Android resources
+│   │   └── AndroidManifest.xml
+│   ├── build.gradle.kts
+│   └── gradle/libs.versions.toml       # Version catalog
+│
 ├── src/                    # Python desktop app (17 modules)
 │   ├── main.py             # Entry point — KidsPC class orchestrates everything
 │   ├── config.py           # Encrypted JSON config (Fernet)
@@ -123,6 +148,15 @@ silencio-no-pc/
 - **cryptography** (Fernet encryption for config), **pycaw + comtypes** (Windows audio)
 - **supabase-py** (database sync), **httpx** (HTTP for auto-updater)
 - **ctypes** (Win32 API: GetLastInputInfo, LockWorkStation, OpenInputDesktop)
+
+### Android App
+- **Kotlin 2.1** + **Jetpack Compose** (Material3 UI)
+- **Hilt** (DI), **KSP** (annotation processing)
+- **supabase-kt 3.x** + **Ktor OkHttp** (database sync)
+- **EncryptedSharedPreferences** (secure local config)
+- **Foreground Service** (persistent monitoring), **AccessibilityService** (app blocking)
+- **UsageStatsManager** (screen time tracking), **DeviceAdminReceiver** (prevent uninstall)
+- Package: `com.kidspc.app`, minSdk 26, targetSdk 35
 
 ### Web Dashboard
 - **Next.js 16** (App Router), **React 19**, **TypeScript 5**

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">KidsPC</string>
+    <string name="notification_channel_name">KidsPC Monitoramento</string>
+    <string name="notification_channel_desc">Notificação persistente do serviço de monitoramento</string>
+    <string name="notification_title">KidsPC ativo</string>
+    <string name="notification_text">Monitorando uso do dispositivo</string>
+    <string name="pairing_title">Vincular dispositivo</string>
+    <string name="pairing_subtitle">Digite o código de 6 dígitos exibido no painel web</string>
+    <string name="pairing_button">Vincular</string>
+    <string name="pairing_error">Código inválido ou expirado</string>
+    <string name="time_up_title">Tempo esgotado!</string>
+    <string name="time_up_message">O tempo de uso diário acabou. Peça mais tempo ao responsável.</string>
+    <string name="device_admin_description">KidsPC precisa de permissão de administrador para evitar desinstalação não autorizada.</string>
+    <string name="accessibility_description">KidsPC precisa de acessibilidade para bloquear aplicativos restritos.</string>
+</resources>
