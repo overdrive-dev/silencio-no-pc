@@ -8,6 +8,7 @@ export interface PC {
   app_running: boolean;
   shutdown_type: string | null;
   usage_today_minutes: number;
+  effective_limit_minutes: number;
   current_noise_db: number;
   strikes: number;
   last_heartbeat: string | null;

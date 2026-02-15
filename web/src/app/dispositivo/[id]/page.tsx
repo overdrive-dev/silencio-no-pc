@@ -259,7 +259,7 @@ export default function PcDashboard() {
   }
 
   const online = isOnline(pc);
-  const limit = settings?.daily_limit_minutes || 120;
+  const limit = pc.effective_limit_minutes || settings?.daily_limit_minutes || 120;
   const remaining = Math.max(0, limit - pc.usage_today_minutes);
   const actionsDisabled = cmdLoading !== null || !hasAccess;
 

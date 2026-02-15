@@ -45,8 +45,10 @@ class TimeManager:
         dia_semana = str(now.weekday())  # "0"=Monday .. "6"=Sunday
         
         schedule = self.config.get("schedule", {})
-        if not schedule or dia_semana not in schedule:
+        if not schedule:
             return True
+        if dia_semana not in schedule:
+            return False
         
         day_config = schedule[dia_semana]
         horario_inicio = day_config.get("start", "08:00")
@@ -129,6 +131,12 @@ class TimeManager:
         if remaining <= 0 and not self._blocked:
             self._blocked = True
             return TimeAction.BLOCK
+        
+        if self._blocked and remaining > 0:
+            self._blocked = False
+            self._warned_15 = False
+            self._warned_5 = False
+            return TimeAction.NONE
         
         if self._blocked:
             return TimeAction.NONE

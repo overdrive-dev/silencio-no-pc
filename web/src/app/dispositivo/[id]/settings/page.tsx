@@ -81,7 +81,7 @@ export default function SettingsPage() {
     if (!settings) return;
     setSaving(true);
     try {
-      await fetch(`/api/dispositivo/${id}/settings`, {
+      const res = await fetch(`/api/dispositivo/${id}/settings`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -91,6 +91,11 @@ export default function SettingsPage() {
           ...(password ? { password } : {}),
         }),
       });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        alert(`Erro ao salvar: ${data.error || "Erro desconhecido"}`);
+        return;
+      }
       setSaved(true);
       if (password) {
         setHasPassword(true);

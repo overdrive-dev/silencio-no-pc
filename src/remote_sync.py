@@ -124,6 +124,7 @@ class RemoteSync:
                 "shutdown_type": None,
                 "is_locked": self.screen_locker.is_enforcing(),
                 "usage_today_minutes": self.activity_tracker.get_effective_usage_minutes(),
+                "effective_limit_minutes": self.time_manager.get_daily_limit_minutes(),
                 "current_noise_db": round(noise_db, 1),
                 "strikes": self.strike_manager.get_strikes(),
                 "last_heartbeat": datetime.now(timezone.utc).isoformat(),

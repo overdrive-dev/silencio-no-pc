@@ -33,3 +33,5 @@ web/.env*
 
 # App data
 *.log
+
+.vercel
