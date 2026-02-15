@@ -132,6 +132,13 @@ Actions (commands, settings changes) are disabled when `!hasAccess`.
 - `/pricing` "Assinar agora" → calls checkout API → redirects to MercadoPago
 - `PaymentBanner` "Assinar" → links to `/pricing`
 
+## Device Management
+
+### Danger Zone (device settings page)
+- **Desvincular**: Sends `unpair` command → desktop app clears local config → shows PairingDialog. History is kept.
+- **Excluir**: `DELETE /api/dispositivo/[id]` → removes PC + all related data. Desktop auto-detects on next heartbeat (3 consecutive orphan checks).
+- Both actions have confirmation modals.
+
 ## Type System (`lib/types.ts`)
 
 Interfaces mirror Supabase tables exactly:

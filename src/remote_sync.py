@@ -17,6 +17,7 @@ class RemoteSync:
     def __init__(self, config, logger, activity_tracker, time_manager, 
                  strike_manager, screen_locker, actions,
                  on_command: Optional[Callable] = None,
+                 on_unpair: Optional[Callable] = None,
                  app_blocker=None, site_blocker=None,
                  audio_monitor=None,
                  window_tracker=None, browser_history=None):
@@ -28,12 +29,14 @@ class RemoteSync:
         self.screen_locker = screen_locker
         self.actions = actions
         self.on_command = on_command
+        self.on_unpair = on_unpair
         self.app_blocker = app_blocker
         self.site_blocker = site_blocker
         self.audio_monitor = audio_monitor
         self.window_tracker = window_tracker
         self.browser_history = browser_history
         self._sync_count = 0
+        self._orphan_checks = 0
         
         self._running = Event()
         self._thread: Optional[Thread] = None
@@ -118,7 +121,7 @@ class RemoteSync:
             except Exception:
                 pass
             
-            client.table("pcs").update({
+            result = client.table("pcs").update({
                 "is_online": True,
                 "app_running": True,
                 "shutdown_type": None,
@@ -132,6 +135,17 @@ class RemoteSync:
                 "last_activity": datetime.now(timezone.utc).isoformat() if self.activity_tracker.is_active() else None,
                 "app_version": self.config.get("app_version", "2.0.0"),
             }).eq("id", pc_id).execute()
+            
+            # Pairing validation: if heartbeat updated 0 rows, PC was deleted from DB
+            if not result.data:
+                self._orphan_checks += 1
+                print(f"RemoteSync: PC não encontrado no servidor ({self._orphan_checks}/3)")
+                if self._orphan_checks >= 3:
+                    print("RemoteSync: PC removido do servidor — desvinculando...")
+                    self._trigger_unpair()
+                    return
+            else:
+                self._orphan_checks = 0
         except Exception as e:
             print(f"Erro ao atualizar pc_status: {e}")
         
@@ -345,6 +359,16 @@ class RemoteSync:
                 self.strike_manager.reset_strikes()
                 self.logger.comando_remoto("reset_strikes")
             
+            elif command == "unpair":
+                self.logger.comando_remoto("unpair")
+                # Mark command as executed before unpairing
+                client.table("commands").update({
+                    "status": "executed",
+                    "executed_at": datetime.now(timezone.utc).isoformat(),
+                }).eq("id", cmd["id"]).execute()
+                self._trigger_unpair()
+                return
+            
             elif command == "update_settings":
                 self.logger.comando_remoto("update_settings", payload)
             
@@ -404,6 +428,16 @@ class RemoteSync:
         
         if updates:
             self.config.set_batch(updates)
+    
+    def _trigger_unpair(self):
+        """Desvincular o PC: limpa config local e notifica o app."""
+        self._running.clear()
+        self.config.set("paired", False)
+        self.config.set("pc_id", "")
+        self.config.set("user_id", "")
+        print("RemoteSync: Config de pareamento limpa")
+        if self.on_unpair:
+            self.on_unpair()
     
     def send_shutdown_event(self, shutdown_type: str = "graceful"):
         """Envia evento de encerramento (chamado no atexit)."""

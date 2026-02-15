@@ -161,6 +161,13 @@ Schedule uses weekday keys `"0"`=Monday through `"6"`=Sunday with `{start, end}`
 | `unlock` | — | `force_unlock()` + `screen_locker.stop_enforcement()` |
 | `shutdown` | `{delay_seconds: N}` | `actions.shutdown_pc(N)` |
 | `reset_strikes` | — | `strike_manager.reset_strikes()` |
+| `unpair` | — | Clears local pairing config, stops sync, shows PairingDialog |
+
+### Pairing Validation
+- Every sync cycle, the heartbeat checks if the PC record still exists in the DB
+- If the update returns 0 rows for **3 consecutive cycles**, the app auto-unpairs
+- `RemoteSync._trigger_unpair()` clears config and calls `on_unpair` callback
+- `main.py` handles this via Qt signal (`unpair_triggered`) → stops all services → shows PairingDialog → restarts if re-paired
 
 ## App/Site Blocking
 

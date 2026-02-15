@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import type { PCSettings, WeekSchedule } from "@/lib/types";
 
@@ -27,6 +27,7 @@ const DEFAULT_SCHEDULE: WeekSchedule = {
 
 export default function SettingsPage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const [settings, setSettings] = useState<PCSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -34,6 +35,10 @@ export default function SettingsPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [hasPassword, setHasPassword] = useState(false);
+  const [showUnpairModal, setShowUnpairModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [dangerLoading, setDangerLoading] = useState(false);
+  const [dangerError, setDangerError] = useState<string | null>(null);
 
   const fetchSettings = useCallback(async () => {
     try {
@@ -107,6 +112,48 @@ export default function SettingsPage() {
       console.error("Erro ao salvar:", err);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleUnpair = async () => {
+    setDangerLoading(true);
+    setDangerError(null);
+    try {
+      const res = await fetch(`/api/dispositivo/${id}/commands`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ command: "unpair" }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setDangerError(data.error || "Erro ao desvincular.");
+        return;
+      }
+      setShowUnpairModal(false);
+      router.push("/dispositivos");
+    } catch {
+      setDangerError("Erro de conexão. Tente novamente.");
+    } finally {
+      setDangerLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    setDangerLoading(true);
+    setDangerError(null);
+    try {
+      const res = await fetch(`/api/dispositivo/${id}`, { method: "DELETE" });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setDangerError(data.error || "Erro ao excluir dispositivo.");
+        return;
+      }
+      setShowDeleteModal(false);
+      router.push("/dispositivos");
+    } catch {
+      setDangerError("Erro de conexão. Tente novamente.");
+    } finally {
+      setDangerLoading(false);
     }
   };
 
@@ -335,6 +382,117 @@ export default function SettingsPage() {
           <span className="text-green-600 text-sm">✓ Salvo com sucesso!</span>
         )}
       </div>
+
+      {/* ── Zona de perigo ── */}
+      <div className="rounded-xl border border-red-200 bg-red-50/50 p-6 shadow-sm space-y-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="text-xl">🗑</span>
+            <h3 className="font-semibold text-red-900 text-lg">Zona de perigo</h3>
+          </div>
+          <p className="text-sm text-red-700/70 mt-1">
+            Ações irreversíveis sobre este dispositivo.
+          </p>
+        </div>
+
+        {dangerError && (
+          <div className="rounded-lg bg-red-100 border border-red-200 p-3 text-sm text-red-800">
+            {dangerError}
+          </div>
+        )}
+
+        <div className="space-y-3">
+          <div className="flex items-center justify-between rounded-lg bg-white border border-red-100 p-4">
+            <div>
+              <p className="text-sm font-medium text-gray-900">Desvincular dispositivo</p>
+              <p className="text-xs text-gray-500">O programa no PC será desvinculado e precisará de novo pareamento. O histórico é mantido.</p>
+            </div>
+            <button
+              onClick={() => setShowUnpairModal(true)}
+              className="shrink-0 ml-4 px-4 py-2 text-sm font-semibold text-red-600 ring-1 ring-inset ring-red-300 rounded-lg hover:bg-red-50 transition"
+            >
+              Desvincular
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between rounded-lg bg-white border border-red-100 p-4">
+            <div>
+              <p className="text-sm font-medium text-gray-900">Excluir dispositivo</p>
+              <p className="text-xs text-gray-500">Remove o dispositivo e todo o histórico (eventos, uso, sessões). Irreversível.</p>
+            </div>
+            <button
+              onClick={() => setShowDeleteModal(true)}
+              className="shrink-0 ml-4 px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-lg hover:bg-red-500 transition"
+            >
+              Excluir
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Unpair confirmation modal */}
+      {showUnpairModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="fixed inset-0 bg-gray-900/50" onClick={() => !dangerLoading && setShowUnpairModal(false)} />
+          <div className="relative z-10 w-full max-w-md rounded-2xl bg-white p-6 shadow-xl mx-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Desvincular dispositivo?</h3>
+            <p className="text-sm text-gray-500 mb-1">O programa KidsPC no computador será desvinculado.</p>
+            <ul className="text-sm text-gray-500 mb-6 space-y-1">
+              <li>• O programa mostrará a tela de pareamento novamente</li>
+              <li>• Todo o histórico de uso e eventos será mantido</li>
+              <li>• Você pode vincular novamente com um novo token</li>
+            </ul>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setShowUnpairModal(false)}
+                disabled={dangerLoading}
+                className="rounded-lg px-4 py-2.5 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:opacity-50 transition"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleUnpair}
+                disabled={dangerLoading}
+                className="rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-500 disabled:opacity-50 transition"
+              >
+                {dangerLoading ? "Desvinculando..." : "Sim, desvincular"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete confirmation modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="fixed inset-0 bg-gray-900/50" onClick={() => !dangerLoading && setShowDeleteModal(false)} />
+          <div className="relative z-10 w-full max-w-md rounded-2xl bg-white p-6 shadow-xl mx-4">
+            <h3 className="text-lg font-semibold text-red-900 mb-2">Excluir dispositivo permanentemente?</h3>
+            <p className="text-sm text-gray-500 mb-1">Esta ação não pode ser desfeita.</p>
+            <ul className="text-sm text-gray-500 mb-6 space-y-1">
+              <li>• O dispositivo será removido do painel</li>
+              <li>• Todo o histórico de eventos, uso e sessões será apagado</li>
+              <li>• O programa no PC será desvinculado automaticamente</li>
+            </ul>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                disabled={dangerLoading}
+                className="rounded-lg px-4 py-2.5 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:opacity-50 transition"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={dangerLoading}
+                className="rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-500 disabled:opacity-50 transition"
+              >
+                {dangerLoading ? "Excluindo..." : "Excluir permanentemente"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

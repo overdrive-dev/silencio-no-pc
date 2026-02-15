@@ -36,6 +36,7 @@ class AudioSignals(QObject):
     """Sinais para comunicação thread-safe entre AudioMonitor e UI."""
     audio_update = pyqtSignal(float, float, float)
     command_executed = pyqtSignal(str, dict)
+    unpair_triggered = pyqtSignal()
 
 
 class KidsPC:
@@ -66,6 +67,7 @@ class KidsPC:
         self.audio_signals = AudioSignals()
         self.audio_signals.audio_update.connect(self._on_audio_update_safe)
         self.audio_signals.command_executed.connect(self._on_command_executed)
+        self.audio_signals.unpair_triggered.connect(self._on_unpair)
         
         self.audio_monitor = AudioMonitor(callback=self._on_audio_update_thread)
         
@@ -228,6 +230,7 @@ class KidsPC:
                 app_blocker=self.app_blocker,
                 site_blocker=self.site_blocker,
                 on_command=self._on_remote_command,
+                on_unpair=self._on_unpair_from_thread,
                 audio_monitor=self.audio_monitor,
                 window_tracker=self.window_tracker,
                 browser_history=self.browser_history,
@@ -248,6 +251,56 @@ class KidsPC:
         elif command == "unlock" and not self.time_manager.is_responsible_mode():
             pass
         self._check_time()
+    
+    def _on_unpair_from_thread(self):
+        """Chamado da thread do RemoteSync — emite sinal para thread principal."""
+        self.audio_signals.unpair_triggered.emit()
+    
+    def _on_unpair(self):
+        """Slot Qt (main thread) — para serviços, mostra diálogo de pareamento."""
+        print("KidsPC: Desvinculado — parando serviços e aguardando novo pareamento...")
+        
+        # Stop services
+        if self.remote_sync:
+            self.remote_sync.stop()
+            self.remote_sync = None
+        self.audio_monitor.stop()
+        self.activity_tracker.stop()
+        self.window_tracker.stop()
+        self.screen_locker.stop_enforcement()
+        if hasattr(self, 'time_check_timer'):
+            self.time_check_timer.stop()
+        if hasattr(self, 'app_blocker_timer'):
+            self.app_blocker_timer.stop()
+        
+        # Hide UI
+        if self.noise_meter:
+            self.noise_meter.hide()
+        if self.tray:
+            self.tray.hide()
+        
+        # Show pairing dialog
+        from src.pairing import PairingDialog
+        QMessageBox.warning(
+            None, "Dispositivo desvinculado",
+            "Este PC foi desvinculado do painel.\n"
+            "Vincule novamente para continuar usando o KidsPC."
+        )
+        dialog = PairingDialog(self.config)
+        dialog.exec_()
+        
+        if not dialog.is_paired():
+            sys.exit(0)
+        
+        # Re-paired — restart services
+        print("KidsPC: Re-pareado — reiniciando serviços...")
+        self._init_ui()
+        self.noise_meter.show()
+        self.audio_monitor.start()
+        self.activity_tracker.start()
+        self.window_tracker.start()
+        self._start_remote_sync()
+        self._setup_app_blocker_timer()
 
     def _init_ui(self):
         """Cria widgets de UI após o pairing estar completo."""
