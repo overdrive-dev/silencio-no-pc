@@ -13,7 +13,7 @@ import {
   CheckIcon,
 } from "@heroicons/react/24/outline";
 import FaqSection from "@/components/landing/faq-section";
-import { HeroIllustration, ParentPhoneIllustration, FamilyIllustration } from "@/components/landing/illustrations";
+import { HeroScene, StepsScene, FamilyScene } from "@/components/landing/parallax-illustrations";
 
 const features = [
   {
@@ -123,15 +123,11 @@ export default async function Home() {
   return (
     <div className="bg-background overflow-hidden">
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden py-20 sm:py-28 lg:py-32">
-        {/* Decorative blobs */}
-        <div className="absolute top-20 -left-20 w-72 h-72 blob-blue opacity-40 animate-float-slow" />
-        <div className="absolute bottom-10 right-0 w-56 h-56 blob-coral opacity-30 animate-float" />
-        <div className="absolute top-40 right-40 w-32 h-32 blob-yellow opacity-30 animate-float-delay" />
-
+      <section className="relative overflow-hidden py-20 sm:py-28 lg:py-36">
         <div className="relative mx-auto max-w-7xl px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center min-h-[520px]">
+            {/* Text — 5 cols */}
+            <div className="lg:col-span-5 relative z-10">
               <div className="animate-fade-in-up delay-0 inline-flex items-center gap-2 rounded-full bg-[#EDF2FF] px-4 py-1.5 text-sm font-medium text-[#4A7AFF] mb-8">
                 <span className="relative flex size-2">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#4A7AFF] opacity-50" />
@@ -180,8 +176,11 @@ export default async function Home() {
               </div>
             </div>
 
-            <div className="animate-fade-in-up delay-2 hidden lg:block">
-              <HeroIllustration className="w-full max-w-lg mx-auto" />
+            {/* Illustration — 7 cols, oversized, bleeds right */}
+            <div className="lg:col-span-7 hidden lg:block relative animate-fade-in-up delay-2">
+              <div className="relative -mr-24 xl:-mr-32">
+                <HeroScene className="w-full" />
+              </div>
             </div>
           </div>
         </div>
@@ -222,10 +221,10 @@ export default async function Home() {
       </section>
 
       {/* ── How it works ── */}
-      <section className="py-20 sm:py-28 bg-[#EDF2FF]/40 relative">
-        <div className="relative mx-auto max-w-6xl px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div>
+      <section className="py-20 sm:py-28 bg-[#EDF2FF]/40 relative overflow-hidden">
+        <div className="relative mx-auto max-w-7xl px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div className="lg:col-span-5">
               <p className="text-sm font-semibold tracking-widest uppercase text-[#FF6B6B]">Super fácil</p>
               <h2 className="mt-3 font-display text-3xl tracking-tight text-[#1a1a2e] sm:text-4xl">
                 Funciona em 3 passinhos
@@ -249,8 +248,9 @@ export default async function Home() {
               </div>
             </div>
 
-            <div className="hidden lg:block">
-              <ParentPhoneIllustration className="w-full max-w-sm mx-auto" />
+            {/* Giant tilted phone with floating cards — 7 cols */}
+            <div className="lg:col-span-7 hidden lg:flex items-center justify-center">
+              <StepsScene className="w-full max-w-xl" />
             </div>
           </div>
         </div>
@@ -345,34 +345,32 @@ export default async function Home() {
       <FaqSection />
 
       {/* ── Final CTA ── */}
-      <section className="relative py-20 sm:py-28 overflow-hidden">
-        <div className="absolute top-10 -left-10 w-48 h-48 blob-yellow opacity-30" />
-        <div className="absolute bottom-10 right-10 w-40 h-40 blob-blue opacity-30" />
-        <div className="relative mx-auto max-w-3xl px-6">
-          <div className="card-flat p-10 sm:p-14 text-center relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-24 h-24 blob-coral opacity-20" />
-            <div className="absolute bottom-0 right-0 w-32 h-32 blob-mint opacity-20" />
-            <div className="relative">
-              <FamilyIllustration className="w-48 mx-auto mb-8" />
-              <h2 className="font-display text-3xl tracking-tight text-[#1a1a2e] sm:text-4xl">
-                Que tal menos briga e mais tranquilidade?
-              </h2>
-              <p className="mt-5 text-lg text-gray-500 max-w-lg mx-auto">
-                Você merece não precisar gritar pra seu filho sair do computador.
-                Comece agora e sinta a diferença já no primeiro dia.
-              </p>
-              <div className="mt-10 flex items-center justify-center gap-4 flex-wrap">
-                <SignUpButton mode="modal">
-                  <button className="btn-pill btn-pill-primary">
-                    Quero começar agora — R$&nbsp;19,90/mês
-                  </button>
-                </SignUpButton>
-                <SignInButton mode="modal">
-                  <button className="btn-pill btn-pill-outline">
-                    Já tenho conta
-                  </button>
-                </SignInButton>
-              </div>
+      <section className="relative py-24 sm:py-32 overflow-hidden">
+        <div className="relative mx-auto max-w-6xl px-6">
+          {/* Large family illustration behind the CTA text */}
+          <div className="relative">
+            <FamilyScene className="mb-8 sm:mb-12" />
+          </div>
+
+          <div className="relative text-center max-w-2xl mx-auto">
+            <h2 className="font-display text-3xl tracking-tight text-[#1a1a2e] sm:text-5xl">
+              Que tal menos briga e mais tranquilidade?
+            </h2>
+            <p className="mt-5 text-lg text-gray-500 max-w-lg mx-auto">
+              Você merece não precisar gritar pra seu filho sair do computador.
+              Comece agora e sinta a diferença já no primeiro dia.
+            </p>
+            <div className="mt-10 flex items-center justify-center gap-4 flex-wrap">
+              <SignUpButton mode="modal">
+                <button className="btn-pill btn-pill-primary text-base px-8 py-4">
+                  Quero começar agora — R$&nbsp;19,90/mês
+                </button>
+              </SignUpButton>
+              <SignInButton mode="modal">
+                <button className="btn-pill btn-pill-outline">
+                  Já tenho conta
+                </button>
+              </SignInButton>
             </div>
           </div>
         </div>
