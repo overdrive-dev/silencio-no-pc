@@ -136,6 +136,7 @@ AutoUpdater.check_for_update()
 
 ### Inno Setup Silent Install Requirements
 - `setup.iss` `[Run]` section must NOT have `skipifsilent` flag — otherwise app won't restart after silent update
+- `setup.iss` `[Run]` section MUST have `runascurrentuser` flag — otherwise app launches as admin (broken UI, wrong user context)
 - `CloseApplications=force` handles closing the running app before install
 - `RestartApplications=yes` uses Windows Restart Manager (backup mechanism)
 - The `.bat` script's 3s timeout gives the app time to exit gracefully before installer runs
