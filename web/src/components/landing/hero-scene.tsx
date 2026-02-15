@@ -18,24 +18,24 @@ function ShieldOrb() {
 
   return (
     <Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.8}>
-      <mesh ref={meshRef} scale={2.2}>
+      <mesh ref={meshRef} scale={1.6}>
         <icosahedronGeometry args={[1, 8]} />
         <MeshDistortMaterial
           color="#c084fc"
           emissive="#7c3aed"
-          emissiveIntensity={0.3}
-          roughness={0.15}
-          metalness={0.9}
-          distort={0.25}
+          emissiveIntensity={0.15}
+          roughness={0.2}
+          metalness={0.8}
+          distort={0.2}
           speed={2}
           transparent
-          opacity={0.7}
+          opacity={0.12}
         />
       </mesh>
       {/* Inner glow sphere */}
-      <mesh scale={1.8}>
+      <mesh scale={1.3}>
         <sphereGeometry args={[1, 32, 32]} />
-        <meshBasicMaterial color="#ec4899" transparent opacity={0.06} />
+        <meshBasicMaterial color="#ec4899" transparent opacity={0.03} />
       </mesh>
     </Float>
   );
@@ -74,7 +74,7 @@ function Particles() {
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
       <sphereGeometry args={[1, 8, 8]} />
-      <meshBasicMaterial color="#c084fc" transparent opacity={0.4} />
+      <meshBasicMaterial color="#c084fc" transparent opacity={0.15} />
     </instancedMesh>
   );
 }
@@ -92,7 +92,7 @@ function OrbitalRing({ radius, speed, color }: { radius: number; speed: number; 
   return (
     <mesh ref={ringRef}>
       <torusGeometry args={[radius, 0.008, 16, 100]} />
-      <meshBasicMaterial color={color} transparent opacity={0.2} />
+      <meshBasicMaterial color={color} transparent opacity={0.08} />
     </mesh>
   );
 }
@@ -106,10 +106,10 @@ export default function HeroScene() {
         style={{ background: "transparent" }}
         dpr={[1, 1.5]}
       >
-        <ambientLight intensity={0.5} />
-        <pointLight position={[5, 5, 5]} intensity={1.2} color="#c084fc" />
-        <pointLight position={[-5, -3, 3]} intensity={0.8} color="#f472b6" />
-        <spotLight position={[0, 8, 4]} angle={0.3} intensity={1} color="#a78bfa" penumbra={1} />
+        <ambientLight intensity={0.3} />
+        <pointLight position={[5, 5, 5]} intensity={0.6} color="#c084fc" />
+        <pointLight position={[-5, -3, 3]} intensity={0.4} color="#f472b6" />
+        <spotLight position={[0, 8, 4]} angle={0.3} intensity={0.5} color="#a78bfa" penumbra={1} />
 
         <ShieldOrb />
         <Particles />

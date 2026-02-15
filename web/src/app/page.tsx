@@ -132,7 +132,7 @@ export default async function Home() {
       {/* ── Hero ── */}
       <section className="relative isolate overflow-hidden min-h-[90vh] flex items-center bg-grain">
         <div className="absolute inset-0 gradient-hero" />
-        <div className="absolute inset-0 dot-grid opacity-40" />
+        <div className="absolute inset-0 dot-grid opacity-20" />
         <HeroScene />
 
         <div className="relative z-10 mx-auto max-w-5xl px-6 py-32 sm:py-40 text-center">
