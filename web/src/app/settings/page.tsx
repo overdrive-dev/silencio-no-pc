@@ -6,35 +6,27 @@ export default function SettingsProfilePage() {
   const { user } = useUser();
 
   return (
-    <div className="space-y-16">
+    <div className="space-y-8">
       <div>
-        <h2 className="text-base/7 font-semibold text-gray-900">Perfil</h2>
-        <p className="mt-1 text-sm/6 text-gray-500">
-          Informações da sua conta.
-        </p>
+        <h1 className="text-2xl font-display font-bold tracking-tight text-zinc-900">Perfil</h1>
+        <p className="mt-1 text-sm text-zinc-500">Informações da sua conta.</p>
+      </div>
 
-        <dl className="mt-6 divide-y divide-gray-100 border-t border-gray-200 text-sm/6">
-          <div className="py-6 sm:flex">
-            <dt className="font-medium text-gray-900 sm:w-64 sm:flex-none sm:pr-6">Nome</dt>
-            <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
-              <div className="text-gray-900">{user?.fullName || "—"}</div>
-            </dd>
-          </div>
-          <div className="py-6 sm:flex">
-            <dt className="font-medium text-gray-900 sm:w-64 sm:flex-none sm:pr-6">Email</dt>
-            <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
-              <div className="text-gray-900">{user?.primaryEmailAddress?.emailAddress || "—"}</div>
-            </dd>
-          </div>
-          <div className="py-6 sm:flex">
-            <dt className="font-medium text-gray-900 sm:w-64 sm:flex-none sm:pr-6">Membro desde</dt>
-            <dd className="mt-1 flex justify-between gap-x-6 sm:mt-0 sm:flex-auto">
-              <div className="text-gray-900">
-                {user?.createdAt ? new Date(user.createdAt).toLocaleDateString("pt-BR") : "—"}
-              </div>
-            </dd>
-          </div>
-        </dl>
+      <div className="rounded-2xl border border-zinc-200 bg-white shadow-sm divide-y divide-zinc-100">
+        <div className="px-6 py-5 sm:flex sm:items-center">
+          <dt className="text-sm font-medium text-zinc-500 sm:w-48 sm:flex-none">Nome</dt>
+          <dd className="mt-1 text-sm text-zinc-900 sm:mt-0 sm:flex-auto font-medium">{user?.fullName || "—"}</dd>
+        </div>
+        <div className="px-6 py-5 sm:flex sm:items-center">
+          <dt className="text-sm font-medium text-zinc-500 sm:w-48 sm:flex-none">E-mail</dt>
+          <dd className="mt-1 text-sm text-zinc-900 sm:mt-0 sm:flex-auto font-medium">{user?.primaryEmailAddress?.emailAddress || "—"}</dd>
+        </div>
+        <div className="px-6 py-5 sm:flex sm:items-center">
+          <dt className="text-sm font-medium text-zinc-500 sm:w-48 sm:flex-none">Conta criada em</dt>
+          <dd className="mt-1 text-sm text-zinc-900 sm:mt-0 sm:flex-auto font-medium">
+            {user?.createdAt ? new Date(user.createdAt).toLocaleDateString("pt-BR") : "—"}
+          </dd>
+        </div>
       </div>
     </div>
   );

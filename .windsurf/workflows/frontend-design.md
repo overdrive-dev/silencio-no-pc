@@ -1,5 +1,5 @@
 ---
-description: Guidelines de design frontend para criar interfaces distintas e polidas, evitando estética genérica de IA. Usar sempre que construir ou modificar componentes web.
+description: Guidelines de design frontend "Obsidian" para criar interfaces distintas e polidas. Usar sempre que construir ou modificar componentes web.
 ---
 
 # Frontend Design Skill
@@ -62,18 +62,31 @@ Antes de codar, entenda o contexto e comprometa-se com uma direção estética c
 - Design cookie-cutter sem caráter específico ao contexto
 - Convergir para as mesmas escolhas em cada geração
 
-## Contexto do Projeto KidsPC
+## Contexto do Projeto KidsPC — Design System "Obsidian"
 
-- **Stack**: Next.js 16 App Router, Tailwind CSS 4, @heroicons/react, @headlessui/react, recharts, lucide-react
-- **Fonts**: DM Serif Display (`--font-display`, headings/hero) + Plus Jakarta Sans (`--font-body`, body text) via Google Fonts
-- **Landing palette**: teal-600 primary, stone-50/80 cards, slate-900 dark sections, stone-200/80 borders
-- **Dashboard palette**: indigo-600 accents (buttons, active tabs), white cards + gray-200 borders, green/amber/red for status
-- **Visual patterns**: `bg-grain` texture overlay on hero, radial gradients for ambient light, `animate-fade-in-up` with staggered delays
-- **Dark sections**: slate-900 bg with radial gradient glow (testimonials, final CTA)
-- **Cards**: stone-50/80 bg + stone-200/80 ring → hover: white bg + teal-200/60 ring + shadow-lg transition
+- **Stack**: Next.js 16 App Router, Tailwind CSS 4, @heroicons/react, @headlessui/react, recharts, lucide-react, three.js (@react-three/fiber, @react-three/drei), framer-motion
+- **Fonts**: Outfit (`--font-display`, headings) + Plus Jakarta Sans (`--font-body`, body text) via Google Fonts
+- **Design philosophy**: Dark-first landing, light dashboard content area. Inspired by Linear, Raycast, Vercel, Arc Browser.
+- **Landing/public pages palette** (dark):
+  - Background: `#09090b` (zinc-950) → `#18181b` (zinc-900)
+  - Accent: violet-600 (`#8b5cf6`) primary, cyan-400 (`#06b6d4`) secondary
+  - Text: white headings, zinc-400 body, zinc-500 muted
+  - Cards: `bg-white/[0.03]` + `border-white/[0.06]` glassmorphism
+  - Hover: `border-violet-500/20` + subtle gradient reveal
+  - Glow: `glow-violet` / `glow-cyan` box-shadow utilities
+- **Dashboard palette** (light content):
+  - Background: `#fafafa` (dash-bg), white cards
+  - Accent: violet-600 buttons/tabs, emerald for status, amber for warnings, red for danger
+  - Cards: `rounded-2xl border-zinc-200 bg-white shadow-sm`
+  - Hover: `hover:border-violet-200 hover:-translate-y-0.5`
+- **Visual patterns**: `bg-grain` texture, `gradient-mesh` radial gradients, `dot-grid` pattern, `text-gradient` violet→cyan, `animate-fade-in-up` with staggered delays
+- **Three.js hero**: Floating distorted icosahedron with orbital rings and particles (hero-scene.tsx)
+- **NavBar**: Glassmorphism on landing (`bg-background/60 backdrop-blur-xl`), white on dashboard
+- **Modals**: `rounded-2xl border-zinc-200 bg-white shadow-2xl` with icon headers
+- **Clerk theme**: dark base theme with violet primary
 - **Idioma**: Português (BR) — all user-facing text
 - **Público**: Pais brasileiros com filhos em idade escolar
-- **Tom**: Profissional mas acessível, confiável, moderno
-- Ao modificar UI existente, manter coerência com o design system atual (landing = teal/stone, dashboard = indigo/gray)
-- Ao criar novos componentes, elevar a qualidade sem quebrar a consistência
+- **Tom**: Bold, premium, tech-forward — inspirado em startups gringas
+- Ao modificar UI existente, manter coerência com Obsidian system (landing = dark/violet/cyan, dashboard = light/violet/zinc)
+- Ao criar novos componentes, usar `font-display` para headings, `rounded-2xl` para cards, violet-600 para CTAs
 - Reference: `.windsurf/skills/nextjs-web.md` for full route map and component conventions

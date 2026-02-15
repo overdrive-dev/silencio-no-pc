@@ -1,10 +1,29 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #fafaf9;
-  --color-foreground: #1e293b;
+  /* ── Obsidian Design System ── */
+  --color-background: #09090b;
+  --color-foreground: #fafafa;
+  --color-surface: #18181b;
+  --color-surface-hover: #27272a;
+  --color-border: #27272a;
+  --color-border-subtle: #1f1f23;
+  --color-accent: #8b5cf6;
+  --color-accent-hover: #a78bfa;
+  --color-cyan: #06b6d4;
+  --color-cyan-hover: #22d3ee;
+  --color-muted: #71717a;
+  --color-muted-foreground: #a1a1aa;
+
+  /* Dashboard (light content area) */
+  --color-dash-bg: #fafafa;
+  --color-dash-surface: #ffffff;
+  --color-dash-border: #e4e4e7;
+  --color-dash-text: #09090b;
+  --color-dash-muted: #71717a;
+
   --font-sans: var(--font-body), system-ui, sans-serif;
-  --font-display: var(--font-display), Georgia, serif;
+  --font-display: var(--font-display), system-ui, sans-serif;
 }
 
 body {
@@ -41,15 +60,85 @@ body {
 .delay-6 { animation-delay: 480ms; }
 .delay-7 { animation-delay: 560ms; }
 
+/* ── Glassmorphism utilities ── */
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(139, 92, 246, 0.2);
+  box-shadow: 0 8px 32px rgba(139, 92, 246, 0.08);
+}
+
+/* ── Gradient mesh backgrounds ── */
+.gradient-mesh {
+  background-image:
+    radial-gradient(at 27% 37%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
+    radial-gradient(at 97% 21%, rgba(6, 182, 212, 0.12) 0px, transparent 50%),
+    radial-gradient(at 52% 99%, rgba(139, 92, 246, 0.08) 0px, transparent 50%),
+    radial-gradient(at 10% 29%, rgba(6, 182, 212, 0.06) 0px, transparent 50%);
+}
+
 /* ── Subtle grain overlay ── */
 .bg-grain::after {
   content: "";
   position: absolute;
   inset: 0;
   z-index: 0;
-  opacity: 0.03;
+  opacity: 0.025;
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 256px 256px;
+}
+
+/* ── Glow effects ── */
+.glow-violet {
+  box-shadow: 0 0 40px rgba(139, 92, 246, 0.15), 0 0 80px rgba(139, 92, 246, 0.05);
+}
+
+.glow-cyan {
+  box-shadow: 0 0 40px rgba(6, 182, 212, 0.15), 0 0 80px rgba(6, 182, 212, 0.05);
+}
+
+/* ── Text gradient ── */
+.text-gradient {
+  background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Dot grid pattern ── */
+.dot-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* ── Scrollbar styling ── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }

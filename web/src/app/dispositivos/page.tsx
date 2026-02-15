@@ -6,6 +6,7 @@ import Link from "next/link";
 import type { PC } from "@/lib/types";
 import { useSubscription } from "@/hooks/use-subscription";
 import PaymentBanner from "@/components/payment-banner";
+import { PlusIcon, ComputerDesktopIcon, DevicePhoneMobileIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
 
 function formatTime(minutes: number): string {
   if (minutes <= 0) return "0min";
@@ -17,23 +18,23 @@ function formatTime(minutes: number): string {
 function isOnline(pc: PC): boolean {
   if (!pc.app_running || pc.is_online === false) return false;
   if (!pc.last_heartbeat) return false;
-  const diff = Date.now() - new Date(pc.last_heartbeat).getTime();
-  return diff < 90_000;
+  return Date.now() - new Date(pc.last_heartbeat).getTime() < 90_000;
 }
 
 function PlatformIcon({ platform }: { platform?: string }) {
   if (platform === "android") {
-    return (
-      <svg className="size-4 text-green-600 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M17.523 2.246a.75.75 0 0 0-1.046.177l-1.09 1.57A7.973 7.973 0 0 0 12 3c-1.2 0-2.342.265-3.387.993l-1.09-1.57a.75.75 0 1 0-1.223.87l1.044 1.504A7.98 7.98 0 0 0 4 11h16a7.98 7.98 0 0 0-3.344-5.203l1.044-1.504a.75.75 0 0 0-.177-1.047ZM9 9a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm6 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2ZM4 12v6a4 4 0 0 0 4 4h8a4 4 0 0 0 4-4v-6H4Z" />
-      </svg>
-    );
+    return <DevicePhoneMobileIcon className="size-5 text-emerald-500" />;
   }
-  // Default: Windows icon
+  return <ComputerDesktopIcon className="size-5 text-violet-500" />;
+}
+
+function UsageBar({ used, limit }: { used: number; limit: number }) {
+  const pct = Math.min(100, (used / limit) * 100);
+  const color = pct >= 90 ? "bg-red-500" : pct >= 70 ? "bg-amber-500" : "bg-violet-500";
   return (
-    <svg className="size-4 text-blue-600 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M3 5.548l7.065-0.966v6.829H3V5.548zm0 12.904l7.065 0.966v-6.829H3v5.863zM11.065 4.38L22 2.75v8.661h-10.935V4.38zm0 15.24L22 21.25v-8.661h-10.935v7.031z" />
-    </svg>
+    <div className="w-full h-1.5 rounded-full bg-zinc-100 overflow-hidden">
+      <div className={`h-full rounded-full ${color} transition-all duration-500`} style={{ width: `${pct}%` }} />
+    </div>
   );
 }
 
@@ -42,18 +43,13 @@ export default function PcsPage() {
   const { hasAccess, loading: subLoading } = useSubscription();
   const [pcs, setPcs] = useState<PC[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // Add PC modal state
   const [showAddModal, setShowAddModal] = useState(false);
   const [newPcName, setNewPcName] = useState("");
   const [creating, setCreating] = useState(false);
   const [newToken, setNewToken] = useState<string | null>(null);
-
-  // Regenerate token state
   const [regenPcId, setRegenPcId] = useState<string | null>(null);
   const [regenToken, setRegenToken] = useState<string | null>(null);
   const [regenerating, setRegenerating] = useState(false);
-
 
   const fetchPcs = useCallback(async () => {
     if (!user) return;
@@ -101,9 +97,7 @@ export default function PcsPage() {
     try {
       const res = await fetch(`/api/dispositivo/${pcId}/token`, { method: "POST" });
       const data = await res.json();
-      if (data.sync_token) {
-        setRegenToken(data.sync_token);
-      }
+      if (data.sync_token) setRegenToken(data.sync_token);
     } catch (err) {
       console.error("Erro ao regenerar token:", err);
     } finally {
@@ -121,11 +115,13 @@ export default function PcsPage() {
     setNewToken(null);
   };
 
-
   if (loading || subLoading) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="text-gray-400 text-lg">Carregando...</div>
+        <div className="flex items-center gap-2 text-zinc-400">
+          <ArrowPathIcon className="size-5 animate-spin" />
+          <span>Carregando...</span>
+        </div>
       </div>
     );
   }
@@ -133,106 +129,102 @@ export default function PcsPage() {
   return (
     <div className="space-y-6">
       {/* Page header */}
-      <div className="md:flex md:items-center md:justify-between">
-        <div className="min-w-0 flex-1">
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-            Meus Dispositivos
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-2xl font-display font-bold tracking-tight text-zinc-900">
+            Dispositivos
           </h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-zinc-500">
             {pcs.length === 0
-              ? "Nenhum dispositivo vinculado. Adicione um para começar."
+              ? "Nenhum dispositivo vinculado ainda."
               : `${pcs.length} dispositivo${pcs.length > 1 ? "s" : ""} vinculado${pcs.length > 1 ? "s" : ""}`}
           </p>
         </div>
-        <div className="mt-4 flex md:ml-4 md:mt-0">
-          {hasAccess ? (
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="inline-flex items-center rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 transition"
-            >
-              <svg className="mr-1.5 -ml-0.5 size-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
-              Adicionar Dispositivo
-            </button>
-          ) : (
-            <Link
-              href="/pricing"
-              className="inline-flex items-center rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 transition"
-            >
-              Assinar para adicionar
-            </Link>
-          )}
-        </div>
+        {hasAccess ? (
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="inline-flex items-center gap-1.5 rounded-lg bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-violet-600/10 hover:bg-violet-500 transition-all hover:-translate-y-0.5"
+          >
+            <PlusIcon className="size-4" />
+            Adicionar
+          </button>
+        ) : (
+          <Link
+            href="/pricing"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-violet-500 transition"
+          >
+            Assinar
+          </Link>
+        )}
       </div>
 
       <PaymentBanner />
 
       {/* Add PC Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 shadow-xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-6 shadow-2xl">
             {!newToken ? (
               <>
-                <h2 className="text-lg font-semibold text-gray-900">Adicionar Dispositivo</h2>
-                <p className="mt-1 text-sm text-gray-500">
-                  Dê um nome para identificar o dispositivo do seu filho.
+                <h2 className="text-lg font-display font-bold text-zinc-900">Adicionar Dispositivo</h2>
+                <p className="mt-1 text-sm text-zinc-500">
+                  Dê um nome para identificar o dispositivo.
                 </p>
                 <input
                   type="text"
                   value={newPcName}
                   onChange={(e) => setNewPcName(e.target.value)}
                   placeholder="Ex: PC do Quarto, Notebook da Sala..."
-                  className="mt-4 w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400"
+                  className="mt-4 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-500 transition"
                   autoFocus
                   onKeyDown={(e) => e.key === "Enter" && createPc()}
                 />
-                <div className="mt-4 flex gap-3 justify-end">
+                <div className="mt-5 flex gap-3 justify-end">
                   <button
                     onClick={closeAddModal}
-                    className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition"
+                    className="rounded-lg px-4 py-2.5 text-sm font-medium text-zinc-600 hover:bg-zinc-100 transition"
                   >
                     Cancelar
                   </button>
                   <button
                     onClick={createPc}
                     disabled={creating || !newPcName.trim()}
-                    className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500 disabled:opacity-50 transition"
+                    className="rounded-lg bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-violet-500 disabled:opacity-50 transition"
                   >
                     {creating ? "Criando..." : "Criar"}
                   </button>
                 </div>
               </>
             ) : (
-              <>
-                <div className="text-center space-y-4">
-                  <div className="text-3xl">✅</div>
-                  <h2 className="text-lg font-semibold text-gray-900">
-                    Dispositivo &ldquo;{newPcName}&rdquo; criado!
-                  </h2>
-                  <p className="text-sm text-gray-500">
-                    Cole este token no app KidsPC para vincular:
-                  </p>
-                  <div
-                    onClick={() => copyToken(newToken)}
-                    className="rounded-lg bg-gray-100 p-4 cursor-pointer hover:bg-gray-200 transition"
-                    title="Clique para copiar"
-                  >
-                    <code className="text-lg font-mono font-bold text-indigo-600 break-all">
-                      {newToken}
-                    </code>
-                  </div>
-                  <p className="text-xs text-amber-600 font-medium">
-                    Válido por 30 minutos. Uso único.
-                  </p>
+              <div className="text-center space-y-4">
+                <div className="inline-flex items-center justify-center size-14 rounded-2xl bg-emerald-50">
+                  <svg className="size-7 text-emerald-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
                 </div>
-                <div className="mt-6 flex justify-center">
-                  <button
-                    onClick={closeAddModal}
-                    className="rounded-lg bg-indigo-600 px-6 py-2 text-sm font-semibold text-white hover:bg-indigo-500 transition"
-                  >
-                    Fechar
-                  </button>
+                <h2 className="text-lg font-display font-bold text-zinc-900">
+                  Dispositivo criado!
+                </h2>
+                <p className="text-sm text-zinc-500">
+                  Cole este token no app KidsPC para vincular:
+                </p>
+                <div
+                  onClick={() => copyToken(newToken)}
+                  className="rounded-xl bg-zinc-50 border border-zinc-200 p-4 cursor-pointer hover:bg-zinc-100 transition group"
+                  title="Clique para copiar"
+                >
+                  <code className="text-lg font-mono font-bold text-violet-600 break-all group-hover:text-violet-500 transition">
+                    {newToken}
+                  </code>
                 </div>
-              </>
+                <p className="text-xs text-amber-600 font-medium">
+                  Válido por 30 minutos. Uso único.
+                </p>
+                <button
+                  onClick={closeAddModal}
+                  className="w-full rounded-lg bg-violet-600 py-2.5 text-sm font-semibold text-white hover:bg-violet-500 transition"
+                >
+                  Fechar
+                </button>
+              </div>
             )}
           </div>
         </div>
@@ -240,30 +232,24 @@ export default function PcsPage() {
 
       {/* Regenerate token modal */}
       {regenToken && regenPcId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 shadow-xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-6 shadow-2xl">
             <div className="text-center space-y-4">
-              <h2 className="text-lg font-semibold text-gray-900">Novo Token</h2>
-              <p className="text-sm text-gray-500">
-                Cole este token no programa KidsPC:
-              </p>
+              <h2 className="text-lg font-display font-bold text-zinc-900">Novo Token</h2>
+              <p className="text-sm text-zinc-500">Cole no programa KidsPC:</p>
               <div
                 onClick={() => copyToken(regenToken)}
-                className="rounded-lg bg-gray-100 p-4 cursor-pointer hover:bg-gray-200 transition"
+                className="rounded-xl bg-zinc-50 border border-zinc-200 p-4 cursor-pointer hover:bg-zinc-100 transition"
                 title="Clique para copiar"
               >
-                <code className="text-lg font-mono font-bold text-indigo-600 break-all">
+                <code className="text-lg font-mono font-bold text-violet-600 break-all">
                   {regenToken}
                 </code>
               </div>
-              <p className="text-xs text-amber-600 font-medium">
-                Válido por 30 minutos. Uso único.
-              </p>
-            </div>
-            <div className="mt-6 flex justify-center">
+              <p className="text-xs text-amber-600 font-medium">Válido por 30 minutos. Uso único.</p>
               <button
                 onClick={() => { setRegenToken(null); setRegenPcId(null); }}
-                className="rounded-lg bg-indigo-600 px-6 py-2 text-sm font-semibold text-white hover:bg-indigo-500 transition"
+                className="w-full rounded-lg bg-violet-600 py-2.5 text-sm font-semibold text-white hover:bg-violet-500 transition"
               >
                 Fechar
               </button>
@@ -272,29 +258,29 @@ export default function PcsPage() {
         </div>
       )}
 
-      {/* Blank state */}
+      {/* Empty state */}
       {pcs.length === 0 && !showAddModal && (
-        <div className="rounded-xl border-2 border-dashed border-gray-300 p-12 text-center">
-          <svg className="mx-auto size-12 text-gray-400" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25A2.25 2.25 0 0 1 5.25 3h13.5A2.25 2.25 0 0 1 21 5.25Z" />
-          </svg>
-          <h3 className="mt-4 text-sm font-semibold text-gray-900">Nenhum dispositivo vinculado</h3>
-          <p className="mt-1 text-sm text-gray-500">
-            Adicione um dispositivo, instale o app e vincule com o token.
+        <div className="rounded-2xl border-2 border-dashed border-zinc-200 p-12 text-center">
+          <div className="inline-flex items-center justify-center size-14 rounded-2xl bg-violet-50 mb-4">
+            <ComputerDesktopIcon className="size-7 text-violet-500" />
+          </div>
+          <h3 className="text-sm font-semibold text-zinc-900">Nenhum dispositivo vinculado</h3>
+          <p className="mt-1 text-sm text-zinc-500 max-w-sm mx-auto">
+            Adicione um dispositivo, instale o app e vincule com o token de pareamento.
           </p>
           <div className="mt-6 flex items-center justify-center gap-3">
             {hasAccess && (
               <button
                 onClick={() => setShowAddModal(true)}
-                className="inline-flex items-center rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 transition"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-violet-500 transition"
               >
-                <svg className="mr-1.5 -ml-0.5 size-5" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                <PlusIcon className="size-4" />
                 Adicionar Dispositivo
               </button>
             )}
             <Link
               href="/download"
-              className="inline-flex items-center rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 transition"
+              className="inline-flex items-center rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-zinc-700 shadow-sm ring-1 ring-inset ring-zinc-200 hover:bg-zinc-50 transition"
             >
               Baixar app
             </Link>
@@ -302,7 +288,7 @@ export default function PcsPage() {
         </div>
       )}
 
-      {/* PC grid */}
+      {/* Device grid */}
       {pcs.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {pcs.map((pc) => {
@@ -310,33 +296,35 @@ export default function PcsPage() {
             const blocked = !hasAccess;
             const pendingSetup = !pc.paired_at && !online;
             return (
-              <div key={pc.id} className="relative">
+              <div key={pc.id} className="relative group">
                 {blocked && (
-                  <div className="absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-gray-900/60 backdrop-blur-sm">
+                  <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-zinc-900/60 backdrop-blur-sm">
                     <div className="text-center">
-                      <div className="text-2xl mb-1">🔒</div>
+                      <div className="inline-flex items-center justify-center size-10 rounded-xl bg-white/10 mb-2">
+                        <svg className="size-5 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
+                      </div>
                       <p className="text-sm text-white font-medium">Assine para controlar</p>
                     </div>
                   </div>
                 )}
                 {pendingSetup ? (
-                  <div className="block rounded-xl border border-amber-200 bg-amber-50 p-5">
+                  <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-semibold text-lg text-gray-900 flex items-center gap-1.5">
+                      <div className="flex items-center gap-2">
                         <PlatformIcon platform={pc.platform} />
-                        {pc.name}
-                      </h3>
-                      <span className="inline-flex items-center text-xs font-medium px-2.5 py-1 rounded-full bg-amber-100 text-amber-700">
-                        Aguardando conexão
+                        <h3 className="font-semibold text-zinc-900">{pc.name}</h3>
+                      </div>
+                      <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 border border-amber-200">
+                        Aguardando
                       </span>
                     </div>
-                    <p className="text-sm text-gray-500 mb-3">
-                      Instale o app KidsPC e cole o token para vincular.
+                    <p className="text-sm text-zinc-500 mb-3">
+                      Instale o app e cole o token para vincular.
                     </p>
                     <button
                       onClick={() => regenerateToken(pc.id)}
                       disabled={regenerating && regenPcId === pc.id}
-                      className="text-sm font-medium text-indigo-600 hover:text-indigo-500 transition disabled:opacity-50"
+                      className="text-sm font-medium text-violet-600 hover:text-violet-500 transition disabled:opacity-50"
                     >
                       {regenerating && regenPcId === pc.id ? "Gerando..." : "Gerar novo token"}
                     </button>
@@ -344,43 +332,53 @@ export default function PcsPage() {
                 ) : (
                   <Link
                     href={blocked ? "/pricing" : `/dispositivo/${pc.id}`}
-                    className="block rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md"
+                    className="block rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm transition-all hover:shadow-md hover:border-violet-200 hover:-translate-y-0.5 group-hover:border-violet-200"
                   >
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-semibold text-lg text-gray-900 flex items-center gap-1.5">
-                        <PlatformIcon platform={pc.platform} />
-                        {pc.name}
-                      </h3>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-2.5">
+                        <div className="flex items-center justify-center size-9 rounded-xl bg-zinc-50 border border-zinc-100">
+                          <PlatformIcon platform={pc.platform} />
+                        </div>
+                        <h3 className="font-semibold text-zinc-900">{pc.name}</h3>
+                      </div>
                       <span
                         className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${
                           online
-                            ? "bg-green-100 text-green-700"
-                            : "bg-gray-100 text-gray-500"
+                            ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                            : "bg-zinc-50 text-zinc-500 border border-zinc-200"
                         }`}
                       >
-                        <span className={`w-2 h-2 rounded-full ${online ? "bg-green-500 animate-pulse" : "bg-gray-400"}`} />
+                        <span className={`size-1.5 rounded-full ${online ? "bg-emerald-500 animate-pulse" : "bg-zinc-400"}`} />
                         {online ? "Online" : "Offline"}
                       </span>
                     </div>
-                    <div className="space-y-2 text-sm text-gray-500">
-                      <div className="flex justify-between">
-                        <span>Uso hoje</span>
-                        <span className="text-gray-900 font-medium">{formatTime(pc.usage_today_minutes)}</span>
+
+                    <div className="space-y-3">
+                      <div>
+                        <div className="flex justify-between text-sm mb-1.5">
+                          <span className="text-zinc-500">Uso hoje</span>
+                          <span className="text-zinc-900 font-semibold">{formatTime(pc.usage_today_minutes)}</span>
+                        </div>
+                        <UsageBar used={pc.usage_today_minutes} limit={pc.effective_limit_minutes || 120} />
                       </div>
-                      <div className="flex justify-between">
-                        <span>Strikes</span>
-                        <span className={pc.strikes > 0 ? "text-amber-500" : "text-gray-900"}>
+
+                      <div className="flex justify-between text-sm">
+                        <span className="text-zinc-500">Strikes</span>
+                        <span className={`font-semibold ${pc.strikes > 0 ? "text-amber-500" : "text-zinc-900"}`}>
                           {pc.strikes}{pc.strikes > 0 ? ` (${(pc.strikes % 3) || 3}/3)` : ""}
                         </span>
                       </div>
+
                       {pc.is_locked && (
-                        <div className="text-red-500 font-medium text-center mt-2 pt-2 border-t border-gray-100">
-                          🔒 Bloqueado
+                        <div className="flex items-center gap-1.5 text-red-600 font-medium text-sm pt-2 border-t border-zinc-100">
+                          <svg className="size-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
+                          Tela bloqueada
                         </div>
                       )}
                       {!pc.app_running && online && (
-                        <div className="text-amber-500 font-medium text-center mt-2 pt-2 border-t border-gray-100">
-                          ⚠ Programa encerrado
+                        <div className="flex items-center gap-1.5 text-amber-600 font-medium text-sm pt-2 border-t border-zinc-100">
+                          <svg className="size-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126Z" /></svg>
+                          Programa encerrado
                         </div>
                       )}
                     </div>
