@@ -64,11 +64,23 @@ export async function POST() {
     console.log("[mp-checkout] Success, redirecting to", subscription.init_point);
     return NextResponse.json({ url: subscription.init_point });
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    const status = (err as { status?: number })?.status || 500;
-    console.error("[mp-checkout] Error:", status, message, JSON.stringify(err));
+    // Extract as much detail as possible from MercadoPago SDK errors
+    const errObj = err as Record<string, unknown>;
+    const message = errObj?.message || (err instanceof Error ? err.message : "Unknown error");
+    const cause = errObj?.cause;
+    const status = (typeof errObj?.status === "number" ? errObj.status : 500) as number;
+    const apiError = cause && typeof cause === "object" ? JSON.stringify(cause) : String(cause || "");
+    
+    console.error("[mp-checkout] Error:", status, message);
+    console.error("[mp-checkout] Cause:", apiError);
+    console.error("[mp-checkout] Full:", JSON.stringify(err, Object.getOwnPropertyNames(err as object)));
+    
+    const userMessage = apiError && apiError !== "undefined" 
+      ? `${message} — ${apiError}` 
+      : String(message);
+    
     return NextResponse.json(
-      { error: `Erro ao criar assinatura: ${message}` },
+      { error: `Erro ao criar assinatura: ${userMessage}` },
       { status: status >= 400 && status < 600 ? status : 500 }
     );
   }
