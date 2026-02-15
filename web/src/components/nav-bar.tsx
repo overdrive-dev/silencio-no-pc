@@ -48,21 +48,21 @@ export default function NavBar() {
     <nav className={cn(
       "sticky top-0 z-50 transition-all duration-300",
       isLanding
-        ? "bg-white/70 backdrop-blur-xl border-b border-slate-200/60"
-        : "bg-white/80 backdrop-blur-xl border-b border-slate-200"
+        ? "bg-background/80 backdrop-blur-xl border-b border-border/60"
+        : "bg-white/90 backdrop-blur-xl border-b border-border"
     )}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="flex items-center justify-center size-8 rounded-lg bg-gradient-to-br from-violet-500 to-pink-500 shadow-md shadow-violet-500/20 group-hover:shadow-lg group-hover:shadow-violet-500/30 transition">
+            <div className="flex items-center justify-center size-8 rounded-lg bg-[#4A7AFF] shadow-md shadow-[#4A7AFF]/20 group-hover:shadow-lg group-hover:shadow-[#4A7AFF]/30 transition">
               <svg className="size-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="2" y="3" width="20" height="14" rx="2" />
                 <line x1="8" y1="21" x2="16" y2="21" />
                 <line x1="12" y1="17" x2="12" y2="21" />
               </svg>
             </div>
-            <span className="text-lg font-display font-bold tracking-tight text-slate-900">
+            <span className="text-lg font-display tracking-tight text-[#1a1a2e]">
               KidsPC
             </span>
           </Link>
@@ -77,8 +77,8 @@ export default function NavBar() {
                   className={cn(
                     "px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
                     item.current
-                      ? "text-violet-700 bg-violet-50"
-                      : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
+                      ? "text-[#4A7AFF] bg-[#EDF2FF]"
+                      : "text-gray-500 hover:text-[#1a1a2e] hover:bg-[#F0EBE5]"
                   )}
                 >
                   {item.name}
@@ -90,7 +90,7 @@ export default function NavBar() {
                 <a
                   key={item.name}
                   href={item.href}
-                  className="px-3 py-1.5 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-all"
+                  className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-500 hover:text-[#1a1a2e] hover:bg-[#F0EBE5] transition-all"
                 >
                   {item.name}
                 </a>
@@ -103,7 +103,7 @@ export default function NavBar() {
             {/* Payment warnings */}
             <SignedIn>
               {isPastDue && (
-                <span className="hidden sm:inline-flex items-center rounded-full bg-red-50 border border-red-200 px-2.5 py-0.5 text-xs font-medium text-red-600">
+                <span className="hidden sm:inline-flex items-center rounded-full bg-red-50 border border-red-200 px-2.5 py-0.5 text-xs font-medium text-[#FF6B6B]">
                   Pagamento pendente
                 </span>
               )}
@@ -118,12 +118,12 @@ export default function NavBar() {
             <div className="hidden sm:flex items-center gap-2">
               <SignedOut>
                 <SignInButton mode="modal">
-                  <button className="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 transition-all">
+                  <button className="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-[#1a1a2e] transition-all">
                     Entrar
                   </button>
                 </SignInButton>
                 <SignUpButton mode="modal">
-                  <button className="px-4 py-2 rounded-lg text-sm font-semibold bg-gradient-to-r from-violet-600 to-pink-500 text-white hover:from-violet-500 hover:to-pink-400 transition-all shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40">
+                  <button className="btn-pill btn-pill-primary text-sm py-2 px-5">
                     Começar grátis
                   </button>
                 </SignUpButton>
@@ -134,7 +134,7 @@ export default function NavBar() {
                   afterSignOutUrl="/"
                   appearance={{
                     elements: {
-                      avatarBox: "size-8 rounded-full ring-2 ring-violet-100",
+                      avatarBox: "size-8 rounded-full ring-2 ring-[#DAE5FF]",
                     },
                   }}
                 >
@@ -157,7 +157,7 @@ export default function NavBar() {
             {/* Mobile menu button */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden p-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition"
+              className="md:hidden p-2 rounded-lg text-gray-500 hover:text-[#1a1a2e] hover:bg-[#F0EBE5] transition"
             >
               {mobileOpen ? <XMarkIcon className="size-5" /> : <Bars3Icon className="size-5" />}
             </button>
@@ -167,7 +167,7 @@ export default function NavBar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t bg-white/95 backdrop-blur-xl border-slate-200">
+        <div className="md:hidden border-t bg-background/95 backdrop-blur-xl border-border">
           <div className="px-4 py-3 space-y-1">
             <SignedIn>
               {navigation.map((item) => (
@@ -177,7 +177,7 @@ export default function NavBar() {
                   onClick={() => setMobileOpen(false)}
                   className={cn(
                     "block px-3 py-2.5 rounded-lg text-sm font-medium transition",
-                    item.current ? "text-violet-700 bg-violet-50" : "text-slate-600 hover:bg-slate-50"
+                    item.current ? "text-[#4A7AFF] bg-[#EDF2FF]" : "text-gray-600 hover:bg-[#F0EBE5]"
                   )}
                 >
                   {item.name}
@@ -190,19 +190,19 @@ export default function NavBar() {
                   key={item.name}
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
-                  className="block px-3 py-2.5 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-900 transition"
+                  className="block px-3 py-2.5 rounded-lg text-sm font-medium text-gray-500 hover:text-[#1a1a2e] transition"
                 >
                   {item.name}
                 </a>
               ))}
-              <div className="pt-3 border-t border-slate-200 flex flex-col gap-2">
+              <div className="pt-3 border-t border-border flex flex-col gap-2">
                 <SignInButton mode="modal">
-                  <button className="w-full px-3 py-2.5 rounded-lg text-sm font-medium text-slate-600 hover:text-slate-900 transition text-left">
+                  <button className="w-full px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:text-[#1a1a2e] transition text-left">
                     Entrar
                   </button>
                 </SignInButton>
                 <SignUpButton mode="modal">
-                  <button className="w-full px-3 py-2.5 rounded-lg text-sm font-semibold bg-gradient-to-r from-violet-600 to-pink-500 text-white hover:from-violet-500 hover:to-pink-400 transition">
+                  <button className="w-full px-3 py-2.5 rounded-full text-sm font-semibold bg-[#4A7AFF] text-white hover:bg-[#3A6AEF] transition">
                     Começar grátis
                   </button>
                 </SignUpButton>
@@ -210,16 +210,16 @@ export default function NavBar() {
             </SignedOut>
           </div>
           <SignedIn>
-            <div className="px-4 py-3 border-t border-slate-200">
+            <div className="px-4 py-3 border-t border-border">
               <div className="flex items-center gap-3">
                 {user?.imageUrl && (
                   <img className="size-9 rounded-full" src={user.imageUrl} alt="" />
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate text-slate-900">
+                  <p className="text-sm font-medium truncate text-[#1a1a2e]">
                     {user?.fullName || user?.firstName || "Usuário"}
                   </p>
-                  <p className="text-xs truncate text-slate-500">
+                  <p className="text-xs truncate text-gray-500">
                     {user?.primaryEmailAddress?.emailAddress}
                   </p>
                 </div>

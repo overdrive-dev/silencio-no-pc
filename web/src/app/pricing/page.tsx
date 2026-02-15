@@ -66,31 +66,31 @@ export default function PricingPage() {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h1 className="text-3xl font-display font-bold tracking-tight text-slate-900 sm:text-4xl">
+        <h1 className="text-3xl font-display tracking-tight text-[#1a1a2e] sm:text-4xl">
           Plano KidsPC
         </h1>
-        <p className="mt-2 text-slate-500">
+        <p className="mt-2 text-gray-500">
           Controle o tempo e barulho do seu filho remotamente.
         </p>
       </div>
 
       <div className="max-w-lg mx-auto">
-        <div className="card-gradient-border p-8 shadow-lg relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-violet-100 to-transparent rounded-bl-full" />
+        <div className="card-flat p-8 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-36 h-36 blob-blue opacity-30" />
           <div className="relative">
             <div className="text-center mb-8">
-              <div className="text-5xl font-display font-bold text-slate-900">
+              <div className="text-5xl font-display text-[#1a1a2e]">
                 {plan.price}
-                <span className="text-lg text-slate-400 font-normal">/{plan.interval}</span>
+                <span className="text-lg text-gray-400 font-sans font-normal">/{plan.interval}</span>
               </div>
-              <div className="text-sm text-slate-500 mt-1">{plan.name}</div>
+              <div className="text-sm text-gray-500 mt-1">{plan.name}</div>
             </div>
 
             <ul className="space-y-3 mb-8">
               {plan.features.map((feature, i) => (
                 <li key={i} className="flex items-start gap-3 text-sm">
-                  <CheckIcon className="size-5 text-violet-500 shrink-0 mt-0.5" />
-                  <span className="text-slate-600">{feature}</span>
+                  <CheckIcon className="size-5 text-[#4A7AFF] shrink-0 mt-0.5" />
+                  <span className="text-gray-600">{feature}</span>
                 </li>
               ))}
             </ul>
@@ -102,10 +102,10 @@ export default function PricingPage() {
             )}
 
             {!isLoaded ? (
-              <div className="text-center text-slate-400 text-sm">Carregando...</div>
+              <div className="text-center text-gray-400 text-sm">Carregando...</div>
             ) : !isSignedIn ? (
               <SignInButton mode="modal">
-                <button className="w-full rounded-xl bg-gradient-to-r from-violet-600 to-pink-500 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/25 hover:shadow-xl hover:shadow-violet-500/40 transition-all">
+                <button className="btn-pill btn-pill-primary w-full justify-center">
                   Entrar para assinar
                 </button>
               </SignInButton>
@@ -126,7 +126,7 @@ export default function PricingPage() {
                 <button
                   onClick={handleCancel}
                   disabled={loading}
-                  className="w-full rounded-xl py-3.5 text-sm font-semibold text-slate-600 border border-slate-300 hover:border-red-300 hover:text-red-600 disabled:opacity-50 transition-all"
+                  className="btn-pill btn-pill-outline w-full justify-center hover:border-[#FF6B6B] hover:text-[#FF6B6B] disabled:opacity-50"
                 >
                   {loading ? "Cancelando..." : "Cancelar assinatura"}
                 </button>
@@ -135,7 +135,7 @@ export default function PricingPage() {
               <button
                 onClick={handleSubscribe}
                 disabled={loading}
-                className="w-full rounded-xl bg-gradient-to-r from-violet-600 to-pink-500 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/25 disabled:opacity-50 transition-all hover:shadow-xl hover:shadow-violet-500/40"
+                className="btn-pill btn-pill-primary w-full justify-center disabled:opacity-50"
               >
                 {loading ? "Redirecionando para o Mercado Pago..." : "Assinar agora"}
               </button>
@@ -143,7 +143,7 @@ export default function PricingPage() {
           </div>
         </div>
 
-        <p className="text-center text-xs text-slate-400 mt-6">
+        <p className="text-center text-xs text-gray-400 mt-6">
           Pagamentos processados com segurança pelo Mercado Pago. Cancele a qualquer momento.
         </p>
       </div>

@@ -121,42 +121,42 @@ const tips = [
     title: "Não proíba — substitua",
     description:
       "Em vez de só tirar o computador, ofereça algo divertido no lugar. \"Vem, vamos fazer um bolo\" funciona melhor do que \"desliga isso agora\".",
-    color: "bg-rose-100 text-rose-600",
+    color: "bg-[#FFE0E0] text-[#FF6B6B]",
   },
   {
     icon: ChatBubbleLeftRightIcon,
     title: "Converse sobre o porquê",
     description:
       "Explique de forma simples por que o limite existe. \"Preciso que você descanse os olhos e o cérebro\" é mais eficaz do que \"porque eu mandei\".",
-    color: "bg-violet-100 text-violet-600",
+    color: "bg-[#EDF2FF] text-[#4A7AFF]",
   },
   {
     icon: SparklesIcon,
     title: "Dê o exemplo",
     description:
       "Se você fica no celular o dia todo, fica difícil cobrar. Mostre que você também tem limites. Momentos sem tela pra família toda fazem diferença.",
-    color: "bg-amber-100 text-amber-600",
+    color: "bg-[#FFF3D6] text-[#FFA94D]",
   },
   {
     icon: SunIcon,
     title: "Crie uma rotina",
     description:
       "Horário de tela, horário de brincar, horário de estudar. Quando vira rotina, a criança para de negociar porque sabe o que esperar.",
-    color: "bg-cyan-100 text-cyan-600",
+    color: "bg-[#D6F5E0] text-[#51CF66]",
   },
   {
     icon: AcademicCapIcon,
     title: "Recompense sem tela",
     description:
       "Em vez de dar mais tempo de computador como prêmio, experimente: um passeio, escolher o jantar, dormir mais tarde no fim de semana.",
-    color: "bg-emerald-100 text-emerald-600",
+    color: "bg-[#F3E8FF] text-[#9775FA]",
   },
   {
     icon: PuzzlePieceIcon,
     title: "Tenha um \"kit anti-tédio\"",
     description:
       "Uma caixa com jogos, livros, materiais de arte e ideias de atividades. Quando seu filho disser \"tô com tédio\", aponte pra caixa.",
-    color: "bg-pink-100 text-pink-600",
+    color: "bg-[#FFE0E0] text-[#FF6B6B]",
   },
 ];
 
@@ -164,17 +164,18 @@ export default function DicasAtividadesPage() {
   return (
     <div className="bg-background overflow-hidden">
       {/* Hero */}
-      <section className="relative py-20 sm:py-28 overflow-hidden bg-grain">
-        <div className="absolute inset-0 gradient-hero" />
+      <section className="relative py-20 sm:py-28 overflow-hidden">
+        <div className="absolute top-10 -left-20 w-64 h-64 blob-blue opacity-30 animate-float-slow" />
+        <div className="absolute bottom-10 right-0 w-48 h-48 blob-coral opacity-20 animate-float" />
         <div className="relative mx-auto max-w-4xl px-6 text-center">
-          <p className="text-sm font-semibold tracking-widest uppercase text-violet-500 mb-4">
+          <p className="text-sm font-semibold tracking-widest uppercase text-[#4A7AFF] mb-4">
             Pra toda a família
           </p>
-          <h1 className="font-display text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+          <h1 className="font-display text-4xl tracking-tight text-[#1a1a2e] sm:text-5xl lg:text-6xl">
             O que fazer quando{" "}
-            <span className="text-gradient">desliga a tela?</span>
+            <span className="text-[#4A7AFF]">desliga a tela?</span>
           </h1>
-          <p className="mt-6 text-lg text-slate-500 max-w-2xl mx-auto">
+          <p className="mt-6 text-lg text-gray-500 max-w-2xl mx-auto">
             Sabemos que limitar o tempo de tela é só metade do desafio. A outra metade é ter
             atividades legais pra substituir. Reunimos ideias práticas pra cada idade — 
             sem precisar de nada complicado.
@@ -186,13 +187,13 @@ export default function DicasAtividadesPage() {
       <section className="py-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-6">
           <div className="text-center mb-14">
-            <p className="text-sm font-semibold tracking-widest uppercase text-pink-500">
+            <p className="text-sm font-semibold tracking-widest uppercase text-[#FF6B6B]">
               Antes de tudo
             </p>
-            <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+            <h2 className="mt-3 font-display text-3xl tracking-tight text-[#1a1a2e] sm:text-4xl">
               6 dicas que fazem diferença
             </h2>
-            <p className="mt-4 text-lg text-slate-500">
+            <p className="mt-4 text-lg text-gray-500">
               Pequenas mudanças de atitude que transformam a rotina da família.
             </p>
           </div>
@@ -201,15 +202,15 @@ export default function DicasAtividadesPage() {
             {tips.map((tip) => (
               <div
                 key={tip.title}
-                className="rounded-2xl bg-white border border-slate-200 p-7 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+                className="card-flat p-7"
               >
                 <div className={`flex size-10 items-center justify-center rounded-xl ${tip.color} mb-4`}>
                   <tip.icon className="size-5" />
                 </div>
-                <h3 className="text-base font-semibold text-slate-900 mb-2">
+                <h3 className="text-base font-semibold text-[#1a1a2e] mb-2">
                   {tip.title}
                 </h3>
-                <p className="text-sm leading-relaxed text-slate-500">
+                <p className="text-sm leading-relaxed text-gray-500">
                   {tip.description}
                 </p>
               </div>
@@ -222,13 +223,13 @@ export default function DicasAtividadesPage() {
       <section className="py-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-6">
           <div className="text-center mb-14">
-            <p className="text-sm font-semibold tracking-widest uppercase text-violet-500">
+            <p className="text-sm font-semibold tracking-widest uppercase text-[#4A7AFF]">
               Por faixa etária
             </p>
-            <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+            <h2 className="mt-3 font-display text-3xl tracking-tight text-[#1a1a2e] sm:text-4xl">
               Ideias de atividades pra cada idade
             </h2>
-            <p className="mt-4 text-lg text-slate-500">
+            <p className="mt-4 text-lg text-gray-500">
               Cada fase tem suas brincadeiras. Escolha a faixa etária do seu filho e inspire-se.
             </p>
           </div>
@@ -250,11 +251,11 @@ export default function DicasAtividadesPage() {
                     >
                       <div className="flex items-center gap-3 mb-3">
                         <activity.icon className={`size-5 ${group.accent}`} />
-                        <h3 className="text-base font-semibold text-slate-900">
+                        <h3 className="text-base font-semibold text-[#1a1a2e]">
                           {activity.title}
                         </h3>
                       </div>
-                      <p className="text-sm leading-relaxed text-slate-600">
+                      <p className="text-sm leading-relaxed text-gray-600">
                         {activity.description}
                       </p>
                     </div>
@@ -268,24 +269,25 @@ export default function DicasAtividadesPage() {
 
       {/* CTA */}
       <section className="relative py-20 sm:py-24 overflow-hidden">
-        <div className="absolute inset-0 gradient-mesh opacity-50" />
+        <div className="absolute top-10 -right-10 w-40 h-40 blob-yellow opacity-30" />
+        <div className="absolute bottom-10 left-10 w-48 h-48 blob-blue opacity-20" />
         <div className="relative mx-auto max-w-2xl px-6 text-center">
-          <h2 className="font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+          <h2 className="font-display text-3xl tracking-tight text-[#1a1a2e] sm:text-4xl">
             Atividades são ótimas. Mas o limite precisa existir.
           </h2>
-          <p className="mt-5 text-lg text-slate-500">
+          <p className="mt-5 text-lg text-gray-500">
             O KidsPC te ajuda a garantir que o tempo de tela não passe do combinado — 
             pra sobrar tempo pra tudo isso que você acabou de ler.
           </p>
           <div className="mt-10 flex items-center justify-center gap-4 flex-wrap">
             <SignUpButton mode="modal">
-              <button className="rounded-xl bg-gradient-to-r from-violet-600 to-pink-500 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/25 hover:shadow-xl hover:shadow-violet-500/40 transition-all hover:-translate-y-0.5">
+              <button className="btn-pill btn-pill-primary">
                 Quero experimentar o KidsPC
               </button>
             </SignUpButton>
             <Link
               href="/"
-              className="rounded-xl px-8 py-3.5 text-sm font-semibold text-slate-600 border border-slate-300 hover:border-violet-300 hover:text-violet-600 transition-all"
+              className="btn-pill btn-pill-outline"
             >
               Voltar ao início
             </Link>

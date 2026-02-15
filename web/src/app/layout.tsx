@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Outfit, Plus_Jakarta_Sans } from "next/font/google";
+import { DM_Serif_Display, Plus_Jakarta_Sans } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 
 import { ptBR } from "@clerk/localizations";
@@ -7,7 +7,8 @@ import NavBar from "@/components/nav-bar";
 import MainWrapper from "@/components/main-wrapper";
 import "./globals.css";
 
-const displayFont = Outfit({
+const displayFont = DM_Serif_Display({
+  weight: "400",
   subsets: ["latin"],
   variable: "--font-display",
   display: "swap",
@@ -34,10 +35,10 @@ export default function RootLayout({
       localization={ptBR}
       appearance={{
         variables: {
-          colorPrimary: "#8b5cf6",
+          colorPrimary: "#4A7AFF",
           colorBackground: "#ffffff",
-          colorInputBackground: "#f8fafc",
-          colorText: "#0f172a",
+          colorInputBackground: "#FAF7F2",
+          colorText: "#1a1a2e",
         },
       }}
     >

@@ -1,31 +1,31 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* ── Playground Design System — Bright & Colorful ── */
-  --color-background: #fafafa;
-  --color-foreground: #0f172a;
+  /* ── Flat Design System — Warm & Clean ── */
+  --color-background: #FAF7F2;
+  --color-foreground: #1a1a2e;
   --color-surface: #ffffff;
-  --color-surface-hover: #f8fafc;
-  --color-border: #e2e8f0;
-  --color-border-subtle: #f1f5f9;
-  --color-accent: #8b5cf6;
-  --color-accent-hover: #7c3aed;
-  --color-pink: #ec4899;
-  --color-orange: #f97316;
-  --color-cyan: #06b6d4;
-  --color-emerald: #10b981;
-  --color-muted: #64748b;
-  --color-muted-foreground: #94a3b8;
+  --color-surface-hover: #f5f0eb;
+  --color-border: #e8e0d8;
+  --color-border-subtle: #f0ebe5;
+  --color-accent: #4A7AFF;
+  --color-accent-hover: #3A6AEF;
+  --color-coral: #FF6B6B;
+  --color-orange: #FFA94D;
+  --color-mint: #51CF66;
+  --color-purple: #9775FA;
+  --color-muted: #6B7280;
+  --color-muted-foreground: #9CA3AF;
 
   /* Dashboard */
-  --color-dash-bg: #f8fafc;
+  --color-dash-bg: #FAF7F2;
   --color-dash-surface: #ffffff;
-  --color-dash-border: #e2e8f0;
-  --color-dash-text: #0f172a;
-  --color-dash-muted: #64748b;
+  --color-dash-border: #e8e0d8;
+  --color-dash-text: #1a1a2e;
+  --color-dash-muted: #6B7280;
 
   --font-sans: var(--font-body), system-ui, sans-serif;
-  --font-display: var(--font-display), system-ui, sans-serif;
+  --font-display: var(--font-display), Georgia, serif;
 }
 
 body {
@@ -59,95 +59,59 @@ body {
 .delay-3 { animation-delay: 240ms; }
 .delay-4 { animation-delay: 320ms; }
 .delay-5 { animation-delay: 400ms; }
-.delay-6 { animation-delay: 480ms; }
-.delay-7 { animation-delay: 560ms; }
 
-/* ── Colorful gradient mesh backgrounds ── */
-.gradient-mesh {
-  background-image:
-    radial-gradient(at 20% 30%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
-    radial-gradient(at 80% 20%, rgba(236, 72, 153, 0.12) 0px, transparent 50%),
-    radial-gradient(at 60% 80%, rgba(6, 182, 212, 0.1) 0px, transparent 50%),
-    radial-gradient(at 10% 70%, rgba(249, 115, 22, 0.08) 0px, transparent 50%);
+/* ── Soft section backgrounds ── */
+.bg-cream { background-color: #FAF7F2; }
+.bg-cream-dark { background-color: #F0EBE5; }
+.bg-blue-soft { background-color: #EDF2FF; }
+
+/* ── Accent text color ── */
+.text-accent { color: #4A7AFF; }
+
+/* ── Pill button base ── */
+.btn-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  padding: 0.75rem 2rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 0.2s;
 }
 
-/* ── Warm hero gradient ── */
-.gradient-hero {
-  background-image:
-    radial-gradient(ellipse 60% 50% at 25% 20%, rgba(139, 92, 246, 0.12) 0px, transparent 70%),
-    radial-gradient(ellipse 50% 40% at 75% 25%, rgba(236, 72, 153, 0.09) 0px, transparent 70%),
-    radial-gradient(ellipse 40% 30% at 60% 75%, rgba(249, 115, 22, 0.06) 0px, transparent 70%),
-    radial-gradient(ellipse 35% 40% at 10% 60%, rgba(6, 182, 212, 0.06) 0px, transparent 70%);
+.btn-pill-primary {
+  background-color: #4A7AFF;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(74, 122, 255, 0.25);
+}
+.btn-pill-primary:hover {
+  background-color: #3A6AEF;
+  box-shadow: 0 6px 20px rgba(74, 122, 255, 0.35);
+  transform: translateY(-1px);
 }
 
-/* ── Subtle grain overlay ── */
-.bg-grain::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  opacity: 0.03;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 256px 256px;
+.btn-pill-outline {
+  background-color: transparent;
+  color: #1a1a2e;
+  border: 1.5px solid #e8e0d8;
+}
+.btn-pill-outline:hover {
+  border-color: #4A7AFF;
+  color: #4A7AFF;
 }
 
-/* ── Colorful shadow effects ── */
-.shadow-glow-violet {
-  box-shadow: 0 8px 40px rgba(139, 92, 246, 0.15), 0 4px 16px rgba(139, 92, 246, 0.1);
-}
-
-.shadow-glow-pink {
-  box-shadow: 0 8px 40px rgba(236, 72, 153, 0.15), 0 4px 16px rgba(236, 72, 153, 0.1);
-}
-
-/* ── Gradient text ── */
-.text-gradient {
-  background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 50%, #f97316 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.text-gradient-cool {
-  background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* ── Gradient border card ── */
-.card-gradient-border {
-  position: relative;
+/* ── Soft card ── */
+.card-flat {
   background: #ffffff;
   border-radius: 1.25rem;
-  overflow: hidden;
+  border: 1px solid #e8e0d8;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  transition: all 0.3s;
 }
-
-.card-gradient-border::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  padding: 1.5px;
-  border-radius: inherit;
-  background: linear-gradient(135deg, #8b5cf6, #ec4899, #f97316, #06b6d4);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0.4;
-  transition: opacity 0.3s;
-}
-
-.card-gradient-border:hover::before {
-  opacity: 0.8;
-}
-
-/* ── Dot grid pattern (light) ── */
-.dot-grid {
-  background-image: radial-gradient(rgba(139, 92, 246, 0.08) 1px, transparent 1px);
-  background-size: 24px 24px;
+.card-flat:hover {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+  transform: translateY(-2px);
 }
 
 /* ── Scrollbar styling ── */
@@ -158,11 +122,11 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(139, 92, 246, 0.15);
+  background: rgba(74, 122, 255, 0.15);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(139, 92, 246, 0.3);
+  background: rgba(74, 122, 255, 0.3);
 }
 
 /* ── Float animation ── */
@@ -181,4 +145,22 @@ body {
 
 .animate-float-delay {
   animation: float 6s ease-in-out 2s infinite;
+}
+
+/* ── Decorative blob shapes ── */
+.blob-blue {
+  background: #DAE5FF;
+  border-radius: 60% 40% 50% 50% / 50% 60% 40% 50%;
+}
+.blob-coral {
+  background: #FFE0E0;
+  border-radius: 50% 60% 40% 50% / 40% 50% 60% 50%;
+}
+.blob-yellow {
+  background: #FFF3D6;
+  border-radius: 40% 60% 50% 50% / 60% 40% 50% 50%;
+}
+.blob-mint {
+  background: #D6F5E0;
+  border-radius: 50% 40% 60% 50% / 50% 50% 40% 60%;
 }

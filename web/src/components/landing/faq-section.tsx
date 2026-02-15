@@ -51,27 +51,27 @@ export default function FaqSection() {
     <section id="faq" className="py-24 sm:py-32">
       <div className="mx-auto max-w-4xl px-6">
         <div className="text-center mb-14">
-          <p className="text-sm font-semibold tracking-widest uppercase text-violet-500">Dúvidas?</p>
-          <p className="mt-3 font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+          <p className="text-sm font-semibold tracking-widest uppercase text-[#4A7AFF]">Dúvidas?</p>
+          <h2 className="mt-3 font-display text-3xl tracking-tight text-[#1a1a2e] sm:text-4xl">
             A gente responde
-          </p>
-          <p className="mt-4 text-lg text-slate-500">
+          </h2>
+          <p className="mt-4 text-lg text-gray-500">
             As perguntas mais comuns de pais como você.
           </p>
         </div>
 
         <dl className="space-y-3">
           {faqs.map((faq, index) => (
-            <Disclosure key={index} as="div" className="rounded-xl bg-white border border-slate-200 hover:border-violet-200 shadow-sm transition-colors">
+            <Disclosure key={index} as="div" className="card-flat overflow-hidden">
               {({ open }) => (
                 <>
                   <DisclosureButton className="flex w-full items-center justify-between px-6 py-5 text-left">
-                    <span className="text-base font-medium text-slate-800">{faq.question}</span>
+                    <span className="text-base font-medium text-[#1a1a2e]">{faq.question}</span>
                     <ChevronDownIcon
-                      className={`size-5 text-slate-400 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+                      className={`size-5 text-gray-400 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
                     />
                   </DisclosureButton>
-                  <DisclosurePanel className="px-6 pb-5 text-sm leading-relaxed text-slate-500">
+                  <DisclosurePanel className="px-6 pb-5 text-sm leading-relaxed text-gray-500">
                     {faq.answer}
                   </DisclosurePanel>
                 </>

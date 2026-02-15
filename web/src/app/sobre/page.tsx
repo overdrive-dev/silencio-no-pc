@@ -13,28 +13,28 @@ const values = [
     title: "Empatia com as famílias",
     description:
       "Sabemos que cada família é diferente. Não julgamos — oferecemos ferramentas pra você criar as regras que fazem sentido pra sua casa.",
-    color: "bg-rose-100 text-rose-600",
+    color: "bg-[#FFE0E0] text-[#FF6B6B]",
   },
   {
     icon: ShieldCheckIcon,
     title: "Tecnologia a favor dos pais",
     description:
       "Tecnologia não precisa ser complicada. Criamos o KidsPC pra ser tão simples que qualquer pai ou mãe consiga usar, mesmo sem entender de computador.",
-    color: "bg-violet-100 text-violet-600",
+    color: "bg-[#EDF2FF] text-[#4A7AFF]",
   },
   {
     icon: LightBulbIcon,
     title: "Limite com amor, não com briga",
     description:
       "Acreditamos que limites são atos de cuidado. O KidsPC tira o peso de ser \"o vilão\" dos seus ombros — as regras são automáticas e a criança entende.",
-    color: "bg-amber-100 text-amber-600",
+    color: "bg-[#FFF3D6] text-[#FFA94D]",
   },
   {
     icon: UserGroupIcon,
     title: "Feito por pais, pra pais",
     description:
       "O KidsPC nasceu de uma necessidade real: a dificuldade de controlar o tempo de tela dos nossos próprios filhos. Cada funcionalidade resolve um problema que vivemos na pele.",
-    color: "bg-cyan-100 text-cyan-600",
+    color: "bg-[#D6F5E0] text-[#51CF66]",
   },
 ];
 
@@ -42,17 +42,18 @@ export default function SobrePage() {
   return (
     <div className="bg-background overflow-hidden">
       {/* Hero */}
-      <section className="relative py-20 sm:py-28 overflow-hidden bg-grain">
-        <div className="absolute inset-0 gradient-hero" />
+      <section className="relative py-20 sm:py-28 overflow-hidden">
+        <div className="absolute top-10 -right-20 w-64 h-64 blob-yellow opacity-30 animate-float-slow" />
+        <div className="absolute bottom-10 left-0 w-48 h-48 blob-blue opacity-20 animate-float" />
         <div className="relative mx-auto max-w-4xl px-6 text-center">
-          <p className="text-sm font-semibold tracking-widest uppercase text-violet-500 mb-4">
+          <p className="text-sm font-semibold tracking-widest uppercase text-[#4A7AFF] mb-4">
             Sobre nós
           </p>
-          <h1 className="font-display text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+          <h1 className="font-display text-4xl tracking-tight text-[#1a1a2e] sm:text-5xl lg:text-6xl">
             Nascemos de uma{" "}
-            <span className="text-gradient">briga por causa do computador</span>
+            <span className="text-[#4A7AFF]">briga por causa do computador</span>
           </h1>
-          <p className="mt-6 text-lg text-slate-500 max-w-2xl mx-auto">
+          <p className="mt-6 text-lg text-gray-500 max-w-2xl mx-auto">
             Assim como você, a gente já perdeu a paciência mandando filho sair do
             computador. E pensamos: &ldquo;tem que ter um jeito melhor&rdquo;. O KidsPC é esse jeito.
           </p>
@@ -62,11 +63,11 @@ export default function SobrePage() {
       {/* Our Story */}
       <section className="py-20 sm:py-24">
         <div className="mx-auto max-w-3xl px-6">
-          <div className="rounded-2xl bg-white border border-slate-200 p-8 sm:p-12 shadow-sm">
-            <h2 className="font-display text-2xl font-bold text-slate-900 mb-6">
+          <div className="card-flat p-8 sm:p-12">
+            <h2 className="font-display text-2xl text-[#1a1a2e] mb-6">
               Nossa história
             </h2>
-            <div className="space-y-4 text-base leading-relaxed text-slate-600">
+            <div className="space-y-4 text-base leading-relaxed text-gray-600">
               <p>
                 Tudo começou com uma cena que provavelmente você conhece: uma criança grudada no
                 computador, ignorando todos os pedidos pra parar, e um pai (ou mãe) cada vez mais
@@ -97,10 +98,10 @@ export default function SobrePage() {
       <section className="py-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-6">
           <div className="text-center mb-14">
-            <p className="text-sm font-semibold tracking-widest uppercase text-pink-500">
+            <p className="text-sm font-semibold tracking-widest uppercase text-[#FF6B6B]">
               No que acreditamos
             </p>
-            <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+            <h2 className="mt-3 font-display text-3xl tracking-tight text-[#1a1a2e] sm:text-4xl">
               Nossos valores
             </h2>
           </div>
@@ -109,15 +110,15 @@ export default function SobrePage() {
             {values.map((value) => (
               <div
                 key={value.title}
-                className="rounded-2xl bg-white border border-slate-200 p-7 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+                className="card-flat p-7"
               >
                 <div className={`flex size-10 items-center justify-center rounded-xl ${value.color} mb-4`}>
                   <value.icon className="size-5" />
                 </div>
-                <h3 className="text-base font-semibold text-slate-900 mb-2">
+                <h3 className="text-base font-semibold text-[#1a1a2e] mb-2">
                   {value.title}
                 </h3>
-                <p className="text-sm leading-relaxed text-slate-500">
+                <p className="text-sm leading-relaxed text-gray-500">
                   {value.description}
                 </p>
               </div>
@@ -129,11 +130,11 @@ export default function SobrePage() {
       {/* Mission */}
       <section className="py-20 sm:py-24">
         <div className="mx-auto max-w-3xl px-6">
-          <div className="rounded-2xl bg-gradient-to-br from-violet-50 to-pink-50 border border-violet-200 p-8 sm:p-12 text-center">
-            <h2 className="font-display text-2xl font-bold text-slate-900 mb-4">
+          <div className="rounded-2xl bg-[#EDF2FF] border border-[#DAE5FF] p-8 sm:p-12 text-center">
+            <h2 className="font-display text-2xl text-[#1a1a2e] mb-4">
               Nossa missão
             </h2>
-            <p className="text-lg leading-relaxed text-slate-600">
+            <p className="text-lg leading-relaxed text-gray-600">
               Ajudar famílias brasileiras a encontrar o equilíbrio entre tecnologia e infância. 
               Acreditamos que computador e videogame fazem parte da vida das crianças — mas que
               ter limites saudáveis é um ato de amor. Queremos que os pais tenham as ferramentas
@@ -145,23 +146,24 @@ export default function SobrePage() {
 
       {/* CTA */}
       <section className="relative py-20 sm:py-24 overflow-hidden">
-        <div className="absolute inset-0 gradient-mesh opacity-50" />
+        <div className="absolute top-10 -left-10 w-40 h-40 blob-coral opacity-20" />
+        <div className="absolute bottom-10 right-10 w-48 h-48 blob-mint opacity-20" />
         <div className="relative mx-auto max-w-2xl px-6 text-center">
-          <h2 className="font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+          <h2 className="font-display text-3xl tracking-tight text-[#1a1a2e] sm:text-4xl">
             Vem com a gente
           </h2>
-          <p className="mt-5 text-lg text-slate-500">
+          <p className="mt-5 text-lg text-gray-500">
             Junte-se a milhares de famílias que já transformaram a rotina em casa.
           </p>
           <div className="mt-10 flex items-center justify-center gap-4 flex-wrap">
             <SignUpButton mode="modal">
-              <button className="rounded-xl bg-gradient-to-r from-violet-600 to-pink-500 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/25 hover:shadow-xl hover:shadow-violet-500/40 transition-all hover:-translate-y-0.5">
+              <button className="btn-pill btn-pill-primary">
                 Quero experimentar o KidsPC
               </button>
             </SignUpButton>
             <Link
               href="/dicas-atividades"
-              className="rounded-xl px-8 py-3.5 text-sm font-semibold text-slate-600 border border-slate-300 hover:border-violet-300 hover:text-violet-600 transition-all"
+              className="btn-pill btn-pill-outline"
             >
               Ver dicas de atividades
             </Link>

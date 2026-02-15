@@ -1,5 +1,5 @@
 ---
-description: Guidelines de design frontend "Playground" para criar interfaces coloridas e divertidas. Usar sempre que construir ou modificar componentes web.
+description: Guidelines de design frontend "Flat Illustration" para criar interfaces limpas e acolhedoras. Usar sempre que construir ou modificar componentes web.
 ---
 
 # Frontend Design Skill
@@ -62,30 +62,30 @@ Antes de codar, entenda o contexto e comprometa-se com uma direção estética c
 - Design cookie-cutter sem caráter específico ao contexto
 - Convergir para as mesmas escolhas em cada geração
 
-## Contexto do Projeto KidsPC — Design System "Playground"
+## Contexto do Projeto KidsPC — Design System "Flat Illustration"
 
-- **Stack**: Next.js 16 App Router, Tailwind CSS 4, @heroicons/react, @headlessui/react, recharts, lucide-react, three.js (@react-three/fiber, @react-three/drei), framer-motion
-- **Fonts**: Outfit (`--font-display`, headings) + Plus Jakarta Sans (`--font-body`, body text) via Google Fonts
-- **Design philosophy**: Bright, colorful, fun. Light backgrounds everywhere. Inspired by Notion, Linear (light mode), Stripe.
-- **Color palette** (unified light):
-  - Background: `#fafafa` (bg-background), `#f8fafc` (bg-slate-50 dashboard)
-  - Primary: violet-600 (`#8b5cf6`) → pink-500 (`#ec4899`) gradient for CTAs
-  - Accents: violet, pink, orange, cyan, emerald, amber — each feature has its own color
-  - Text: slate-900 headings, slate-500 body, slate-400 muted
-  - Cards: `rounded-2xl border-slate-200 bg-white shadow-sm`
-  - Hover: `hover:border-violet-300 hover:shadow-lg hover:-translate-y-1`
-- **CTA buttons**: `bg-gradient-to-r from-violet-600 to-pink-500` with `shadow-violet-500/25`
-- **Gradient text**: `.text-gradient` = violet→pink→orange, `.text-gradient-cool` = violet→cyan
-- **Visual patterns**: `bg-grain` texture, `.gradient-hero` warm radial gradients, `.gradient-mesh` multi-color mesh, `dot-grid` violet dots, `animate-fade-in-up` with staggered delays, `animate-float` for decorative elements
-- **Special card**: `.card-gradient-border` — white card with animated rainbow gradient border on hover
-- **Three.js hero**: Floating distorted icosahedron with orbital rings and particles in warm purple/pink tones (hero-scene.tsx)
-- **NavBar**: Light glassmorphism (`bg-white/70 backdrop-blur-xl`), gradient logo icon, violet active states
-- **Modals**: `rounded-2xl border-slate-200 bg-white shadow-2xl` with icon headers
-- **Clerk theme**: light theme with violet primary
+- **Stack**: Next.js 16 App Router, Tailwind CSS 4, @heroicons/react, @headlessui/react, recharts, lucide-react
+- **Fonts**: DM Serif Display (`--font-display`, headings — serif) + Plus Jakarta Sans (`--font-body`, body text) via Google Fonts
+- **Design philosophy**: Warm, clean, flat. Cream backgrounds, soft blue accent, no gradients. Inspired by Dribbble corporate flat illustration style.
+- **Color palette**:
+  - Background: `#FAF7F2` (cream), `#F0EBE5` (cream-dark)
+  - Primary accent: `#4A7AFF` (soft blue), hover `#3A6AEF`
+  - Coral: `#FF6B6B`, Orange: `#FFA94D`, Mint: `#51CF66`, Purple: `#9775FA`
+  - Text: `#1a1a2e` (navy headings), `gray-500` body, `gray-400` muted
+  - Borders: `#e8e0d8` (warm), `#F0EBE5` (subtle)
+  - Cards: `.card-flat` — white `rounded-xl` with warm border, subtle shadow, hover lift
+  - Soft tinted backgrounds: `#EDF2FF` (blue-soft), `#FFE0E0` (coral), `#D6F5E0` (mint), `#FFF3D6` (yellow), `#F3E8FF` (purple)
+- **CTA buttons**: `.btn-pill .btn-pill-primary` — fully rounded, solid `#4A7AFF`, blue shadow
+- **Secondary buttons**: `.btn-pill .btn-pill-outline` — transparent with warm border, hover blue
+- **Visual patterns**: Decorative `.blob-blue`, `.blob-coral`, `.blob-yellow`, `.blob-mint` organic shapes, `animate-float` for movement, `animate-fade-in-up` with staggered delays
+- **Illustrations**: Flat SVG illustrations (hero-scene replaced with `illustrations.tsx` — HeroIllustration, ParentPhoneIllustration, FamilyIllustration)
+- **NavBar**: Cream bg (`bg-background/80 backdrop-blur-xl`), solid blue logo, pill CTA
+- **Modals**: `card-flat` with icon headers
+- **Clerk theme**: light theme with `#4A7AFF` blue primary
 - **Idioma**: Português (BR) — all user-facing text
 - **Público**: Pais brasileiros com filhos em idade escolar
-- **Tom**: Fun, colorful, approachable — divertido mas confiável
-- Ao modificar UI existente, manter coerência com Playground system (light bg, slate text, colorful accents, gradient CTAs)
-- Ao criar novos componentes, usar `font-display` para headings, `rounded-2xl` para cards, gradient buttons para CTAs primárias
-- Feature icons: each in its own color (violet, pink, cyan, amber, emerald, rose) with `bg-{color}-100 text-{color}-600`
+- **Tom**: Warm, empathetic, approachable — acolhedor e confiável
+- Ao modificar UI existente, manter coerência com Flat system (cream bg, navy text, flat blue accent, no gradients)
+- Ao criar novos componentes, usar `font-display` (serif) para headings, `.card-flat` para cards, `.btn-pill` para CTAs
+- Feature icons: each in its own soft tinted bg (blue, coral, mint, yellow, purple) with matching text color
 - Reference: `.windsurf/skills/nextjs-web.md` for full route map and component conventions
