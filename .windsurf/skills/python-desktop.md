@@ -10,7 +10,7 @@ Reference guide for the KidsPC Windows desktop application (`src/`). Use when mo
 | `config.py` | `Config` | Encrypted JSON config (`%APPDATA%/KidsPC/config.json`) via Fernet |
 | `audio_monitor.py` | `AudioMonitor` | Captures mic audio (PyAudio), calculates dB (NumPy RMS→dB formula) |
 | `strike_manager.py` | `StrikeManager` | Processes noise levels → strikes with 3-cycle: aviso → forte → penalidade |
-| `time_manager.py` | `TimeManager` | Evaluates daily limits + schedule → returns `TimeAction` enum |
+| `time_manager.py` | `TimeManager` | Evaluates daily limits + schedule → returns `TimeAction` enum. Supports `_responsible_mode` (bypasses all checks until day reset) |
 | `activity_tracker.py` | `ActivityTracker` | Tracks mouse/keyboard via Win32 `GetLastInputInfo`, measures active time |
 | `screen_locker.py` | `ScreenLocker` | Calls `LockWorkStation()`, re-locks via enforcement loop if user unlocks |
 | `app_blocker.py` | `AppBlocker` | Iterates `psutil.process_iter()`, terminates blocked processes |

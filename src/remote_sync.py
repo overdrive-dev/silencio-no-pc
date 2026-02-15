@@ -123,6 +123,7 @@ class RemoteSync:
                 "app_running": True,
                 "shutdown_type": None,
                 "is_locked": self.screen_locker.is_enforcing(),
+                "responsible_mode": self.time_manager.is_responsible_mode(),
                 "usage_today_minutes": self.activity_tracker.get_effective_usage_minutes(),
                 "effective_limit_minutes": self.time_manager.get_daily_limit_minutes(),
                 "current_noise_db": round(noise_db, 1),

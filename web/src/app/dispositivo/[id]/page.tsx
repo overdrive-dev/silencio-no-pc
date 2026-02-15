@@ -361,6 +361,9 @@ export default function PcDashboard() {
           {pc.is_locked && (
             <div className="text-red-500 font-medium text-sm">🔒 Tela Bloqueada</div>
           )}
+          {pc.responsible_mode && (
+            <div className="text-indigo-500 font-medium text-sm">👤 Modo Responsável ativo</div>
+          )}
         </div>
 
         {/* Quick Actions */}

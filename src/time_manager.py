@@ -26,6 +26,7 @@ class TimeManager:
         self._warned_5 = False
         self._extra_minutes_today = 0
         self._removed_minutes_today = 0
+        self._responsible_mode = False
         self._last_check_date = datetime.now().date()
     
     def _check_day_reset(self):
@@ -37,6 +38,7 @@ class TimeManager:
             self._warned_5 = False
             self._extra_minutes_today = 0
             self._removed_minutes_today = 0
+            self._responsible_mode = False
             self._last_check_date = today
     
     def _is_within_allowed_hours(self) -> bool:
@@ -113,12 +115,29 @@ class TimeManager:
         """Retorna se o uso está bloqueado."""
         return self._blocked
     
+    def enter_responsible_mode(self):
+        """Ativa modo responsável — bypassa todas as restrições até o próximo dia."""
+        self._responsible_mode = True
+        self._blocked = False
+        self._warned_15 = False
+        self._warned_5 = False
+    
+    def exit_responsible_mode(self):
+        """Desativa modo responsável."""
+        self._responsible_mode = False
+    
+    def is_responsible_mode(self) -> bool:
+        return self._responsible_mode
+    
     def check(self) -> TimeAction:
         """Verifica estado atual e retorna ação necessária.
         
         Deve ser chamado periodicamente (a cada ~30s-60s).
         """
         self._check_day_reset()
+        
+        if self._responsible_mode:
+            return TimeAction.NONE
         
         if not self._is_within_allowed_hours():
             if not self._blocked:
@@ -161,6 +180,7 @@ class TimeManager:
             "usage_minutes": self.activity_tracker.get_effective_usage_minutes(),
             "remaining_minutes": self.get_remaining_minutes(),
             "is_blocked": self._blocked,
+            "responsible_mode": self._responsible_mode,
             "usage_percent": self.get_usage_percent(),
             "extra_minutes": self._extra_minutes_today,
             "penalty_minutes": self.activity_tracker.get_time_penalty_minutes(),

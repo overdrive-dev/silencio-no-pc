@@ -5,6 +5,7 @@ export interface PC {
   paired_at: string | null;
   is_online: boolean;
   is_locked: boolean;
+  responsible_mode: boolean;
   app_running: boolean;
   shutdown_type: string | null;
   usage_today_minutes: number;

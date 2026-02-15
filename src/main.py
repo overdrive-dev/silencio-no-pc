@@ -4,7 +4,7 @@ import atexit
 import signal
 from pathlib import Path
 
-__version__ = "2.1.4"
+__version__ = "2.1.5"
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -22,6 +22,7 @@ from src.screen_locker import ScreenLocker
 from src.ui.noise_meter import NoiseMeterWidget
 from src.ui.warning_popup import mostrar_aviso_leve, mostrar_aviso_forte
 from src.ui.time_warning_popup import TimeWarningPopup, TimePenaltyPopup, TimeBlockedPopup
+from src.ui.parent_auth_popup import ParentAuthPopup
 from src.tray_app import TrayApp
 from src.remote_sync import RemoteSync
 from src.auto_updater import AutoUpdater
@@ -128,15 +129,18 @@ class KidsPC:
                 popup = TimeWarningPopup(5)
                 popup.exec_()
             
-            elif action == TimeAction.BLOCK:
-                self.logger.uso_bloqueado("Limite diário atingido")
-                popup = TimeBlockedPopup("daily_limit")
-                popup.exec_()
-                self.screen_locker.start_enforcement()
-            
-            elif action == TimeAction.OUTSIDE_HOURS:
-                self.logger.uso_bloqueado("Fora do horário permitido")
-                popup = TimeBlockedPopup("outside_hours")
+            elif action in (TimeAction.BLOCK, TimeAction.OUTSIDE_HOURS):
+                reason = "daily_limit" if action == TimeAction.BLOCK else "outside_hours"
+                if self.config.tem_senha():
+                    auth_popup = ParentAuthPopup(reason)
+                    auth_popup.exec_()
+                    if auth_popup.authenticated and self.config.verificar_senha(auth_popup.get_password()):
+                        self.time_manager.enter_responsible_mode()
+                        self.logger.uso_desbloqueado("Modo responsável ativado")
+                        return
+                desc = "Limite diário atingido" if action == TimeAction.BLOCK else "Fora do horário permitido"
+                self.logger.uso_bloqueado(desc)
+                popup = TimeBlockedPopup(reason)
                 popup.exec_()
                 self.screen_locker.start_enforcement()
             
@@ -237,8 +241,12 @@ class KidsPC:
     def _on_command_executed(self, command: str, payload: dict):
         """Slot Qt (main thread) — atualiza UI imediatamente após comando remoto."""
         if command == "lock":
+            if self.time_manager.is_responsible_mode():
+                self.time_manager.exit_responsible_mode()
             popup = TimeBlockedPopup("manual_lock")
             popup.exec_()
+        elif command == "unlock" and not self.time_manager.is_responsible_mode():
+            pass
         self._check_time()
 
     def _init_ui(self):
