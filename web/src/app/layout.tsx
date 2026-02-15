@@ -43,7 +43,7 @@ export default function RootLayout({
       }}
     >
       <html lang="pt-BR" className="h-full">
-        <body className={`${displayFont.variable} ${bodyFont.variable} antialiased h-full`}>
+        <body className={`${displayFont.variable} ${bodyFont.variable} antialiased h-full bg-background`}>
           <NavBar />
           <MainWrapper>
             {children}
