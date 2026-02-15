@@ -2,55 +2,87 @@
 
 import { useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Float, MeshDistortMaterial } from "@react-three/drei";
 import * as THREE from "three";
 
-function ShieldOrb() {
+const PASTEL_COLORS = [
+  "#c4b5fd", // violet-300
+  "#f9a8d4", // pink-300
+  "#fdba74", // orange-300
+  "#67e8f9", // cyan-300
+  "#86efac", // green-300
+  "#fde68a", // amber-300
+  "#a5b4fc", // indigo-300
+  "#fca5a5", // red-300
+];
+
+interface BlobData {
+  x: number;
+  y: number;
+  z: number;
+  scale: number;
+  speed: number;
+  phase: number;
+  color: string;
+  distort: number;
+}
+
+function PastelBlob({ data }: { data: BlobData }) {
   const meshRef = useRef<THREE.Mesh>(null);
-  const materialRef = useRef<THREE.ShaderMaterial>(null);
 
   useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.y = state.clock.elapsedTime * 0.15;
-      meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.1) * 0.1;
-    }
+    if (!meshRef.current) return;
+    const t = state.clock.elapsedTime * data.speed + data.phase;
+    meshRef.current.position.y = data.y + Math.sin(t) * 0.4;
+    meshRef.current.position.x = data.x + Math.cos(t * 0.7) * 0.2;
+    meshRef.current.rotation.x = t * 0.15;
+    meshRef.current.rotation.z = t * 0.1;
   });
 
   return (
-    <Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.8}>
-      <mesh ref={meshRef} scale={1.6}>
-        <icosahedronGeometry args={[1, 8]} />
-        <MeshDistortMaterial
-          color="#c084fc"
-          emissive="#7c3aed"
-          emissiveIntensity={0.15}
-          roughness={0.2}
-          metalness={0.8}
-          distort={0.2}
-          speed={2}
-          transparent
-          opacity={0.18}
-        />
-      </mesh>
-      {/* Inner glow sphere */}
-      <mesh scale={1.3}>
-        <sphereGeometry args={[1, 32, 32]} />
-        <meshBasicMaterial color="#ec4899" transparent opacity={0.05} />
-      </mesh>
-    </Float>
+    <mesh ref={meshRef} position={[data.x, data.y, data.z]} scale={data.scale}>
+      <sphereGeometry args={[1, 24, 24]} />
+      <meshBasicMaterial color={data.color} transparent opacity={0.25} />
+    </mesh>
   );
 }
 
-function Particles() {
-  const count = 120;
+function FloatingBlobs() {
+  const blobs = useMemo<BlobData[]>(() => {
+    const items: BlobData[] = [];
+    for (let i = 0; i < 18; i++) {
+      items.push({
+        x: (Math.random() - 0.5) * 10,
+        y: (Math.random() - 0.5) * 7,
+        z: (Math.random() - 0.5) * 4 - 2,
+        scale: 0.2 + Math.random() * 0.6,
+        speed: 0.2 + Math.random() * 0.4,
+        phase: Math.random() * Math.PI * 2,
+        color: PASTEL_COLORS[i % PASTEL_COLORS.length],
+        distort: 0.2 + Math.random() * 0.3,
+      });
+    }
+    return items;
+  }, []);
+
+  return (
+    <>
+      {blobs.map((blob, i) => (
+        <PastelBlob key={i} data={blob} />
+      ))}
+    </>
+  );
+}
+
+function TinyDots() {
+  const count = 60;
   const meshRef = useRef<THREE.InstancedMesh>(null);
 
   const positions = useMemo(() => {
     const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 12;
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 12;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 8;
+      pos[i * 3] = (Math.random() - 0.5) * 14;
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 10;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 6 - 1;
     }
     return pos;
   }, []);
@@ -59,12 +91,14 @@ function Particles() {
     if (!meshRef.current) return;
     const temp = new THREE.Object3D();
     for (let i = 0; i < count; i++) {
-      const x = positions[i * 3] + Math.sin(state.clock.elapsedTime * 0.3 + i) * 0.3;
-      const y = positions[i * 3 + 1] + Math.cos(state.clock.elapsedTime * 0.2 + i * 0.5) * 0.3;
-      const z = positions[i * 3 + 2];
-      temp.position.set(x, y, z);
-      const scale = 0.015 + Math.sin(state.clock.elapsedTime + i) * 0.008;
-      temp.scale.set(scale, scale, scale);
+      const t = state.clock.elapsedTime * 0.3 + i;
+      temp.position.set(
+        positions[i * 3] + Math.sin(t) * 0.15,
+        positions[i * 3 + 1] + Math.cos(t * 0.8) * 0.15,
+        positions[i * 3 + 2]
+      );
+      const s = 0.02 + Math.sin(state.clock.elapsedTime * 0.5 + i * 2) * 0.01;
+      temp.scale.set(s, s, s);
       temp.updateMatrix();
       meshRef.current.setMatrixAt(i, temp.matrix);
     }
@@ -73,27 +107,9 @@ function Particles() {
 
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
-      <sphereGeometry args={[1, 8, 8]} />
-      <meshBasicMaterial color="#c084fc" transparent opacity={0.22} />
+      <sphereGeometry args={[1, 6, 6]} />
+      <meshBasicMaterial color="#c4b5fd" transparent opacity={0.3} />
     </instancedMesh>
-  );
-}
-
-function OrbitalRing({ radius, speed, color }: { radius: number; speed: number; color: string }) {
-  const ringRef = useRef<THREE.Mesh>(null);
-
-  useFrame((state) => {
-    if (ringRef.current) {
-      ringRef.current.rotation.z = state.clock.elapsedTime * speed;
-      ringRef.current.rotation.x = Math.PI / 3;
-    }
-  });
-
-  return (
-    <mesh ref={ringRef}>
-      <torusGeometry args={[radius, 0.008, 16, 100]} />
-      <meshBasicMaterial color={color} transparent opacity={0.12} />
-    </mesh>
   );
 }
 
@@ -106,15 +122,9 @@ export default function HeroScene() {
         style={{ background: "transparent" }}
         dpr={[1, 1.5]}
       >
-        <ambientLight intensity={0.3} />
-        <pointLight position={[5, 5, 5]} intensity={0.6} color="#c084fc" />
-        <pointLight position={[-5, -3, 3]} intensity={0.4} color="#f472b6" />
-        <spotLight position={[0, 8, 4]} angle={0.3} intensity={0.5} color="#a78bfa" penumbra={1} />
-
-        <ShieldOrb />
-        <Particles />
-        <OrbitalRing radius={3.2} speed={0.15} color="#c084fc" />
-        <OrbitalRing radius={3.8} speed={-0.1} color="#f472b6" />
+        <ambientLight intensity={0.6} />
+        <FloatingBlobs />
+        <TinyDots />
       </Canvas>
     </div>
   );
