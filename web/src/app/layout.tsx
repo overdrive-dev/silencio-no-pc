@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Serif_Display, Plus_Jakarta_Sans } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
+import { ptBR } from "@clerk/localizations";
 import NavBar from "@/components/nav-bar";
 import MainWrapper from "@/components/main-wrapper";
 import "./globals.css";
@@ -29,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider localization={ptBR}>
       <html lang="pt-BR" className="h-full">
         <body className={`${displayFont.variable} ${bodyFont.variable} antialiased h-full bg-stone-50 text-slate-800`}>
           <div className="min-h-full">
