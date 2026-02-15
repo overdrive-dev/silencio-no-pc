@@ -176,11 +176,9 @@ export default async function Home() {
               </div>
             </div>
 
-            {/* Illustration — 7 cols, oversized, bleeds right */}
+            {/* Illustration — 7 cols, boxed container */}
             <div className="lg:col-span-7 hidden lg:block relative animate-fade-in-up delay-2">
-              <div className="relative -mr-24 xl:-mr-32">
-                <HeroScene className="w-full" />
-              </div>
+              <HeroScene className="w-full" />
             </div>
           </div>
         </div>

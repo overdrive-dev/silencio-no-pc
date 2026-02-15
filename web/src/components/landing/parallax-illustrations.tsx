@@ -17,13 +17,13 @@ export function HeroScene({ className }: { className?: string }) {
   }, []);
 
   return (
-    <div ref={ref} className={`relative ${className ?? ""}`} style={{ minHeight: 520 }}>
+    <div ref={ref} className={`relative rounded-[2rem] bg-[#EDF2FF]/60 overflow-hidden ${className ?? ""}`} style={{ minHeight: 520 }}>
       {/* Layer 0 — Background blobs (slowest) */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={parallaxStyle(scrollY, -0.04, offset)}
       >
-        <div className="absolute -top-8 -right-12 w-80 h-80 rounded-full bg-[#DAE5FF] opacity-40 blur-xl" />
+        <div className="absolute -top-8 -right-12 w-80 h-80 rounded-full bg-[#DAE5FF] opacity-50 blur-xl" />
         <div className="absolute bottom-0 -left-8 w-48 h-48 rounded-full bg-[#FFE0E0] opacity-30 blur-lg" />
         <div className="absolute top-1/3 left-1/4 w-24 h-24 rounded-full bg-[#FFF3D6] opacity-40 blur-md" />
       </div>
@@ -232,13 +232,14 @@ export function StepsScene({ className }: { className?: string }) {
   }, []);
 
   return (
-    <div ref={ref} className={`relative ${className ?? ""}`} style={{ minHeight: 460 }}>
+    <div ref={ref} className={`relative rounded-[2rem] bg-[#DAE5FF]/40 overflow-hidden ${className ?? ""}`} style={{ minHeight: 460 }}>
       {/* Background shape */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={parallaxStyle(scrollY, -0.03, offset)}
       >
-        <div className="absolute top-1/4 right-1/4 w-64 h-64 rounded-full bg-[#EDF2FF] opacity-50 blur-2xl" />
+        <div className="absolute top-1/4 right-1/4 w-64 h-64 rounded-full bg-[#EDF2FF] opacity-60 blur-2xl" />
+        <div className="absolute bottom-1/4 left-1/3 w-40 h-40 rounded-full bg-[#D6F5E0] opacity-30 blur-xl" />
       </div>
 
       {/* Main phone — tilted/isometric feel */}
@@ -355,20 +356,21 @@ export function FamilyScene({ className }: { className?: string }) {
   }, []);
 
   return (
-    <div ref={ref} className={`relative ${className ?? ""}`}>
+    <div ref={ref} className={`relative rounded-[2rem] bg-[#FFF3D6]/50 overflow-hidden ${className ?? ""}`}>
       {/* Background warm glow */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={parallaxStyle(scrollY, -0.02, offset)}
       >
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-[#FFF3D6] opacity-40 blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-[#FFF3D6] opacity-50 blur-3xl" />
+        <div className="absolute top-1/4 right-1/4 w-48 h-48 rounded-full bg-[#FFE0E0] opacity-30 blur-xl" />
       </div>
 
       <svg
         viewBox="0 0 600 400"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className={`relative w-full max-w-xl mx-auto ${className ?? ""}`}
+        className="relative w-full max-w-xl mx-auto py-6"
         style={parallaxStyle(scrollY, -0.03, offset)}
       >
         {/* Floor/rug */}
