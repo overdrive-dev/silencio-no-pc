@@ -254,7 +254,7 @@ export function StepsScene({ className }: { className?: string }) {
   }, []);
 
   return (
-    <div ref={ref} className={`relative rounded-[2rem] bg-[#B8CCFF] overflow-hidden ${className ?? ""}`} style={{ minHeight: 460 }}>
+    <div ref={ref} className={`relative rounded-[2rem] bg-[#B8CCFF] overflow-hidden ${className ?? ""}`} style={{ minHeight: 560 }}>
       {/* Background shape */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -264,12 +264,12 @@ export function StepsScene({ className }: { className?: string }) {
         <div className="absolute bottom-1/4 left-1/3 w-40 h-40 rounded-full bg-[#D6F5E0] opacity-30 blur-xl" />
       </div>
 
-      {/* Main phone — tilted/isometric feel */}
+      {/* Main phone — centered with padding */}
       <div
         className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-        style={parallaxStyle(scrollY, -0.05, offset)}
+        style={parallaxStyle(scrollY, -0.03, offset)}
       >
-        <svg viewBox="0 0 260 460" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-56 sm:w-64 drop-shadow-2xl" style={{ transform: "rotate(-6deg)" }}>
+        <svg viewBox="0 0 260 460" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-52 sm:w-56 drop-shadow-2xl">
           {/* Phone body */}
           <rect x="8" y="8" width="244" height="444" rx="28" fill="#1a1a2e" />
           <rect x="18" y="44" width="224" height="370" rx="6" fill="#FAF7F2" />
@@ -319,45 +319,77 @@ export function StepsScene({ className }: { className?: string }) {
 
       {/* Floating cards around the phone — different parallax speeds */}
       <div
-        className="absolute top-4 left-0 sm:left-4"
-        style={parallaxStyle(scrollY, -0.1, offset)}
+        className="absolute top-8 left-4 sm:left-8"
+        style={parallaxStyle(scrollY, -0.08, offset)}
       >
-        <div className="bg-white rounded-2xl shadow-xl border border-[#e8e0d8] p-3 w-44 animate-float-slow">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="size-6 rounded-full bg-[#EDF2FF] flex items-center justify-center">
-              <svg className="size-3 text-[#4A7AFF]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        <div className="bg-white rounded-2xl shadow-xl p-3 w-44 animate-float-slow">
+          <div className="flex items-center gap-2 mb-1.5">
+            <div className="size-7 rounded-full bg-[#EDF2FF] flex items-center justify-center">
+              <svg className="size-3.5 text-[#4A7AFF]" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
             </div>
-            <span className="text-[10px] font-bold text-[#1a1a2e]">Cadastro rápido</span>
+            <span className="text-[11px] font-bold text-[#1a1a2e]">Limite de tempo</span>
           </div>
-          <p className="text-[9px] text-gray-400 leading-relaxed">Nome e e-mail. Pronto em 30 segundos.</p>
+          <p className="text-[9px] text-gray-400 leading-relaxed">1h30 por dia, bloqueia sozinho.</p>
         </div>
       </div>
 
       <div
-        className="absolute bottom-12 left-0 sm:left-8"
-        style={parallaxStyle(scrollY, -0.08, offset)}
+        className="absolute bottom-16 left-4 sm:left-6"
+        style={parallaxStyle(scrollY, -0.06, offset)}
       >
-        <div className="bg-white rounded-2xl shadow-xl border border-[#D6F5E0] p-3 w-48 animate-float-delay">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="size-6 rounded-full bg-[#D6F5E0] flex items-center justify-center">
-              <svg className="size-3 text-[#51CF66]" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+        <div className="bg-white rounded-2xl shadow-xl p-3 w-48 animate-float-delay">
+          <div className="flex items-center gap-2 mb-1.5">
+            <div className="size-7 rounded-full bg-[#D6F5E0] flex items-center justify-center">
+              <svg className="size-3.5 text-[#51CF66]" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
             </div>
-            <span className="text-[10px] font-bold text-[#51CF66]">Tudo conectado!</span>
+            <span className="text-[11px] font-bold text-[#51CF66]">Tudo conectado!</span>
           </div>
           <p className="text-[9px] text-gray-400 leading-relaxed">PC do João vinculado ao seu painel.</p>
         </div>
       </div>
 
       <div
-        className="absolute top-1/3 right-0 sm:right-4"
-        style={parallaxStyle(scrollY, -0.12, offset)}
+        className="absolute top-12 right-4 sm:right-8"
+        style={parallaxStyle(scrollY, -0.1, offset)}
       >
-        <div className="bg-white rounded-2xl shadow-xl border border-[#FFE0E0] p-3 w-40 animate-float">
+        <div className="bg-white rounded-2xl shadow-xl p-3 w-40 animate-float">
           <div className="flex items-center gap-2 mb-1">
-            <div className="size-6 rounded-full bg-[#FFE0E0] flex items-center justify-center text-[10px]">🔒</div>
-            <span className="text-[10px] font-bold text-[#FF6B6B]">Protegido</span>
+            <div className="size-7 rounded-full bg-[#FFE0E0] flex items-center justify-center">
+              <svg className="size-3.5 text-[#FF6B6B]" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
+            </div>
+            <span className="text-[11px] font-bold text-[#FF6B6B]">Protegido</span>
           </div>
           <p className="text-[9px] text-gray-400 leading-relaxed">Criança não desinstala</p>
+        </div>
+      </div>
+
+      <div
+        className="absolute top-[45%] right-4 sm:right-6"
+        style={parallaxStyle(scrollY, -0.07, offset)}
+      >
+        <div className="bg-white rounded-2xl shadow-xl p-3 w-44 animate-float-slow">
+          <div className="flex items-center gap-2 mb-1">
+            <div className="size-7 rounded-full bg-[#FFF3D6] flex items-center justify-center">
+              <svg className="size-3.5 text-[#FFA94D]" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 1 1 0-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 0 1-1.44-4.282m3.102.069a18.03 18.03 0 0 1-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 0 1 8.835 2.535M10.34 6.66a23.847 23.847 0 0 0 8.835-2.535m0 0A23.74 23.74 0 0 0 18.795 3m.38 1.125a23.91 23.91 0 0 1 1.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 0 0 1.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 0 1 0 3.46" /></svg>
+            </div>
+            <span className="text-[11px] font-bold text-[#FFA94D]">Som detectado</span>
+          </div>
+          <p className="text-[9px] text-gray-400 leading-relaxed">Barulho alto = perde tempo</p>
+        </div>
+      </div>
+
+      <div
+        className="absolute bottom-10 right-6 sm:right-10"
+        style={parallaxStyle(scrollY, -0.09, offset)}
+      >
+        <div className="bg-white rounded-2xl shadow-xl p-3 w-44 animate-float">
+          <div className="flex items-center gap-2 mb-1">
+            <div className="size-7 rounded-full bg-[#F3E8FF] flex items-center justify-center">
+              <svg className="size-3.5 text-[#9775FA]" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" /></svg>
+            </div>
+            <span className="text-[11px] font-bold text-[#9775FA]">Site bloqueado</span>
+          </div>
+          <p className="text-[9px] text-gray-400 leading-relaxed">youtube.com bloqueado</p>
         </div>
       </div>
     </div>
