@@ -13,7 +13,7 @@ import {
   CheckIcon,
 } from "@heroicons/react/24/outline";
 import FaqSection from "@/components/landing/faq-section";
-import { HeroScene, StepsScene, FamilyScene } from "@/components/landing/parallax-illustrations";
+import { HeroScene, StepsScene } from "@/components/landing/parallax-illustrations";
 
 const features = [
   {
@@ -344,13 +344,10 @@ export default async function Home() {
 
       {/* ── Final CTA ── */}
       <section className="relative py-24 sm:py-32 overflow-hidden">
-        <div className="relative mx-auto max-w-6xl px-6">
-          {/* Large family illustration behind the CTA text */}
-          <div className="relative">
-            <FamilyScene className="mb-8 sm:mb-12" />
-          </div>
-
-          <div className="relative text-center max-w-2xl mx-auto">
+        <div className="absolute top-10 -left-10 w-48 h-48 blob-yellow opacity-30" />
+        <div className="absolute bottom-10 right-10 w-40 h-40 blob-blue opacity-30" />
+        <div className="relative mx-auto max-w-3xl px-6">
+          <div className="text-center max-w-2xl mx-auto">
             <h2 className="font-display text-3xl tracking-tight text-[#1a1a2e] sm:text-5xl">
               Que tal menos briga e mais tranquilidade?
             </h2>

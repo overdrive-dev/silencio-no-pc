@@ -17,20 +17,20 @@ export function HeroScene({ className }: { className?: string }) {
   }, []);
 
   return (
-    <div ref={ref} className={`relative rounded-[2rem] bg-[#EDF2FF]/60 overflow-hidden ${className ?? ""}`} style={{ minHeight: 520 }}>
+    <div ref={ref} className={`relative rounded-[2rem] bg-[#C5D5FF] overflow-hidden ${className ?? ""}`} style={{ minHeight: 520 }}>
       {/* Layer 0 — Background blobs (slowest) */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={parallaxStyle(scrollY, -0.04, offset)}
       >
-        <div className="absolute -top-8 -right-12 w-80 h-80 rounded-full bg-[#DAE5FF] opacity-50 blur-xl" />
-        <div className="absolute bottom-0 -left-8 w-48 h-48 rounded-full bg-[#FFE0E0] opacity-30 blur-lg" />
-        <div className="absolute top-1/3 left-1/4 w-24 h-24 rounded-full bg-[#FFF3D6] opacity-40 blur-md" />
+        <div className="absolute -top-8 -right-12 w-80 h-80 rounded-full bg-[#A8BFFF] opacity-50 blur-xl" />
+        <div className="absolute bottom-0 -left-8 w-48 h-48 rounded-full bg-[#FFB8B8] opacity-40 blur-lg" />
+        <div className="absolute top-1/3 left-1/4 w-24 h-24 rounded-full bg-[#FFE4A3] opacity-50 blur-md" />
       </div>
 
       {/* Layer 1 — The giant phone/dashboard (medium speed) */}
       <div
-        className="absolute right-0 top-4 w-[280px] sm:w-[320px]"
+        className="absolute right-6 top-8 w-[260px] sm:w-[290px]"
         style={parallaxStyle(scrollY, -0.07, offset)}
       >
         <svg viewBox="0 0 300 520" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full drop-shadow-2xl">
@@ -98,7 +98,7 @@ export function HeroScene({ className }: { className?: string }) {
 
       {/* Layer 2 — Kid at desk (foreground, slightly faster parallax) */}
       <div
-        className="absolute left-0 bottom-0 w-[340px] sm:w-[380px]"
+        className="absolute left-4 bottom-2 w-[300px] sm:w-[340px]"
         style={parallaxStyle(scrollY, -0.02, offset)}
       >
         <svg viewBox="0 0 400 380" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
@@ -183,35 +183,57 @@ export function HeroScene({ className }: { className?: string }) {
         </svg>
       </div>
 
-      {/* Layer 3 — Floating notification badges (fastest, most parallax) */}
+      {/* Layer 3 — Floating feature boxes (fastest, most parallax) */}
       <div
         className="absolute pointer-events-none"
-        style={{ ...parallaxStyle(scrollY, -0.12, offset), top: 0, left: 0, right: 0, bottom: 0 }}
+        style={{ ...parallaxStyle(scrollY, -0.1, offset), top: 0, left: 0, right: 0, bottom: 0 }}
       >
-        {/* "Volume alto!" badge */}
-        <div className="absolute top-8 right-[45%] bg-white rounded-2xl shadow-xl border border-[#FFE0E0] px-4 py-2.5 flex items-center gap-2 animate-float">
-          <div className="size-8 rounded-full bg-[#FFE0E0] flex items-center justify-center">
-            <svg className="size-4 text-[#FF6B6B]" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z" /></svg>
+        {/* Volume alert badge */}
+        <div className="absolute top-6 left-[38%] bg-white rounded-2xl shadow-xl px-3.5 py-2 flex items-center gap-2 animate-float">
+          <div className="size-7 rounded-full bg-[#FFE0E0] flex items-center justify-center">
+            <svg className="size-3.5 text-[#FF6B6B]" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z" /></svg>
           </div>
           <div>
-            <p className="text-xs font-bold text-[#FF6B6B]">Volume alto!</p>
-            <p className="text-[10px] text-gray-400">Strike 2/3</p>
+            <p className="text-[11px] font-bold text-[#FF6B6B]">Volume alto!</p>
+            <p className="text-[9px] text-gray-400">Strike 2/3</p>
           </div>
         </div>
 
-        {/* "Tempo acabou" badge */}
-        <div className="absolute bottom-24 right-[30%] bg-white rounded-2xl shadow-xl border border-[#DAE5FF] px-4 py-2.5 flex items-center gap-2 animate-float-delay">
-          <div className="size-8 rounded-full bg-[#EDF2FF] flex items-center justify-center">
-            <svg className="size-4 text-[#4A7AFF]" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+        {/* Time limit badge */}
+        <div className="absolute bottom-20 right-[28%] bg-white rounded-2xl shadow-xl px-3.5 py-2 flex items-center gap-2 animate-float-delay">
+          <div className="size-7 rounded-full bg-[#EDF2FF] flex items-center justify-center">
+            <svg className="size-3.5 text-[#4A7AFF]" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
           </div>
           <div>
-            <p className="text-xs font-bold text-[#4A7AFF]">Tempo acabou</p>
-            <p className="text-[10px] text-gray-400">Tela bloqueada</p>
+            <p className="text-[11px] font-bold text-[#4A7AFF]">Tempo acabou</p>
+            <p className="text-[9px] text-gray-400">Tela bloqueada</p>
           </div>
         </div>
 
-        {/* Checkmark bubble */}
-        <div className="absolute top-[60%] left-[5%] bg-white rounded-full shadow-lg border border-[#D6F5E0] size-12 flex items-center justify-center animate-float-slow">
+        {/* App blocking badge */}
+        <div className="absolute top-[42%] left-[3%] bg-white rounded-2xl shadow-xl px-3.5 py-2 flex items-center gap-2 animate-float-slow">
+          <div className="size-7 rounded-full bg-[#F3E8FF] flex items-center justify-center">
+            <svg className="size-3.5 text-[#9775FA]" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" /></svg>
+          </div>
+          <div>
+            <p className="text-[11px] font-bold text-[#9775FA]">App bloqueado</p>
+            <p className="text-[9px] text-gray-400">Roblox</p>
+          </div>
+        </div>
+
+        {/* Schedule badge */}
+        <div className="absolute bottom-8 left-[8%] bg-white rounded-2xl shadow-xl px-3.5 py-2 flex items-center gap-2 animate-float">
+          <div className="size-7 rounded-full bg-[#FFF3D6] flex items-center justify-center">
+            <svg className="size-3.5 text-[#FFA94D]" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" /></svg>
+          </div>
+          <div>
+            <p className="text-[11px] font-bold text-[#FFA94D]">Horário noturno</p>
+            <p className="text-[9px] text-gray-400">22h – 07h bloqueado</p>
+          </div>
+        </div>
+
+        {/* Protection badge */}
+        <div className="absolute top-[70%] right-[5%] bg-white rounded-full shadow-lg size-11 flex items-center justify-center animate-float-slow">
           <svg className="size-5 text-[#51CF66]" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
         </div>
       </div>
@@ -232,7 +254,7 @@ export function StepsScene({ className }: { className?: string }) {
   }, []);
 
   return (
-    <div ref={ref} className={`relative rounded-[2rem] bg-[#DAE5FF]/40 overflow-hidden ${className ?? ""}`} style={{ minHeight: 460 }}>
+    <div ref={ref} className={`relative rounded-[2rem] bg-[#B8CCFF] overflow-hidden ${className ?? ""}`} style={{ minHeight: 460 }}>
       {/* Background shape */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -356,7 +378,7 @@ export function FamilyScene({ className }: { className?: string }) {
   }, []);
 
   return (
-    <div ref={ref} className={`relative rounded-[2rem] bg-[#FFF3D6]/50 overflow-hidden ${className ?? ""}`}>
+    <div ref={ref} className={`relative rounded-[2rem] bg-[#FFE4A3] overflow-hidden ${className ?? ""}`}>
       {/* Background warm glow */}
       <div
         className="absolute inset-0 pointer-events-none"
