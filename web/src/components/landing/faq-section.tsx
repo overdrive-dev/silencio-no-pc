@@ -5,44 +5,44 @@ import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
 const faqs = [
   {
-    question: "O que é o KidsPC?",
+    question: "O que é o KidsPC exatamente?",
     answer:
-      "O KidsPC é um sistema de controle parental que roda no dispositivo do seu filho e se conecta a um painel web. Você define limites de tempo, horários permitidos e monitora o barulho — tudo remotamente, do seu celular ou de qualquer navegador.",
+      "É um programinha que você instala no computador do seu filho. Ele controla o tempo de uso, avisa quando tem barulho demais e bloqueia a tela automaticamente. E o melhor: você gerencia tudo pelo celular, sem precisar estar perto do computador.",
   },
   {
-    question: "Como instalo no dispositivo do meu filho?",
+    question: "Eu não entendo muito de tecnologia. Vou conseguir instalar?",
     answer:
-      "Basta criar sua conta no painel, adicionar um novo dispositivo e seguir o processo de pareamento: baixe o instalador, rode no dispositivo da criança e insira o código de pareamento. Leva menos de 2 minutos.",
+      "Com certeza! Foi feito pensando em pais que não são experts em tecnologia. Você cria sua conta, baixa um arquivo e abre no computador do seu filho. Aparece um código na tela, você digita no painel e pronto. Leva menos de 5 minutos, de verdade.",
   },
   {
-    question: "Funciona em Mac, Linux ou celular?",
+    question: "Funciona no celular também?",
     answer:
-      "Atualmente o KidsPC funciona no Windows 10/11. Suporte para Android e iOS está em desenvolvimento e será lançado em breve. Mac e Linux estão sendo avaliados.",
+      "Por enquanto, o KidsPC funciona em computadores com Windows 10 ou 11. A versão para celulares Android está sendo desenvolvida e sai em breve! Enquanto isso, você controla tudo pelo navegador do seu celular — só o app do filho que precisa ser no computador.",
   },
   {
-    question: "Posso controlar mais de um dispositivo?",
+    question: "Tenho mais de um filho. Funciona em vários computadores?",
     answer:
-      "Sim! O plano inclui até 2 dispositivos com uma única assinatura. Cada dispositivo tem suas próprias configurações de tempo, horários e limites, tudo gerenciável pelo mesmo painel.",
+      "Funciona sim! Com uma única assinatura, você controla até 2 computadores. Cada um tem suas próprias regras de tempo e horário, e você gerencia todos pelo mesmo painel.",
   },
   {
-    question: "A criança consegue desinstalar ou burlar?",
+    question: "Meu filho é esperto com tecnologia. Ele vai conseguir desativar?",
     answer:
-      "O KidsPC é protegido por senha. Para acessar configurações, adicionar tempo ou fechar o programa, é necessário inserir a senha definida pelo responsável. O bloqueio de tela re-trava automaticamente se a criança tentar desbloquear.",
+      "Pensamos nisso! O KidsPC é protegido por uma senha que só você sabe. Seu filho não consegue fechar o programa, mudar as regras ou desinstalar. Se ele tentar desbloquear a tela, ela trava de novo automaticamente.",
   },
   {
-    question: "Como funciona o monitor de barulho?",
+    question: "Como funciona a parte do barulho?",
     answer:
-      "O KidsPC usa o microfone do dispositivo para detectar níveis de som excessivos. Se o barulho ultrapassar o limite, o sistema emite avisos visuais. A cada 3 strikes, aplica uma penalidade de tempo. Os strikes acumulam ao longo do dia e tudo é configurável.",
+      "O KidsPC usa o microfone do computador pra perceber quando o barulho passa do limite. Primeiro, aparece um aviso na tela. Se seu filho continuar gritando, ele perde tempo de uso. É como um sistema de \"cartões\" — e funciona! A maioria das crianças aprende a se controlar sozinha.",
   },
   {
-    question: "Precisa de internet para funcionar?",
+    question: "Precisa de internet?",
     answer:
-      "O controle de tempo e bloqueio funcionam offline. A sincronização com o painel web (comandos remotos, status em tempo real) requer conexão com a internet.",
+      "O limite de tempo e o bloqueio de tela funcionam mesmo sem internet. Mas pra você controlar pelo celular e ver o que está acontecendo em tempo real, o computador do seu filho precisa estar conectado à internet.",
   },
   {
-    question: "Quanto custa o KidsPC?",
+    question: "Quanto custa? Tem contrato?",
     answer:
-      "O KidsPC custa R$\u00A019,90/mês e inclui até 2 dispositivos, controle de tempo, monitoramento de barulho, comandos remotos, histórico de uso e atualizações automáticas. Você pode cancelar a qualquer momento. Pagamentos processados com segurança pelo Mercado Pago.",
+      "Custa R$\u00A019,90 por mês e inclui tudo: controle de tempo, bloqueio de apps e sites, monitoramento de barulho, controle pelo celular e atualizações automáticas. Não tem contrato e nem fidelidade — você cancela quando quiser, sem multa e sem burocracia.",
   },
 ];
 
@@ -51,12 +51,12 @@ export default function FaqSection() {
     <section id="faq" className="py-24 sm:py-32">
       <div className="mx-auto max-w-4xl px-6">
         <div className="text-center mb-14">
-          <p className="text-sm font-semibold tracking-widest uppercase text-violet-500">FAQ</p>
+          <p className="text-sm font-semibold tracking-widest uppercase text-violet-500">Dúvidas?</p>
           <p className="mt-3 font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-            Perguntas frequentes
+            A gente responde
           </p>
           <p className="mt-4 text-lg text-slate-500">
-            Tudo que você precisa saber sobre o KidsPC.
+            As perguntas mais comuns de pais como você.
           </p>
         </div>
 

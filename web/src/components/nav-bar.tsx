@@ -24,7 +24,7 @@ export default function NavBar() {
   const { isInGracePeriod, isPastDue, daysUntilBlock } = useSubscription();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const isLanding = pathname === "/" || pathname === "/politica-privacidade";
+  const isLanding = pathname === "/" || pathname === "/politica-privacidade" || pathname === "/sobre" || pathname === "/dicas-atividades";
 
   const navigation = [
     { name: "Dispositivos", href: "/dispositivos", current: pathname.startsWith("/dispositivos") || pathname.startsWith("/dispositivo/") },
@@ -32,11 +32,16 @@ export default function NavBar() {
     { name: "Configurações", href: "/settings", current: pathname.startsWith("/settings") },
   ];
 
-  const landingNav = [
+  const landingNav = pathname === "/" ? [
     { name: "Funcionalidades", href: "#features" },
     { name: "Depoimentos", href: "#testimonials" },
     { name: "Preços", href: "#pricing" },
     { name: "FAQ", href: "#faq" },
+  ] : [
+    { name: "Início", href: "/" },
+    { name: "Dicas de Atividades", href: "/dicas-atividades" },
+    { name: "Sobre", href: "/sobre" },
+    { name: "Preços", href: "/pricing" },
   ];
 
   return (

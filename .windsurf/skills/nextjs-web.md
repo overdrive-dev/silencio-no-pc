@@ -9,7 +9,7 @@ Reference guide for the KidsPC web dashboard (`web/`). Use when modifying pages,
 - **Clerk** (auth), **Supabase** (database), **MercadoPago** (payments)
 - **@heroicons/react** (primary icons), **lucide-react** (secondary icons)
 - **@headlessui/react** (accessible UI primitives), **recharts** (charts)
-- **Fonts**: DM Serif Display (display/headings, `--font-display`) + Plus Jakarta Sans (body, `--font-body`)
+- **Fonts**: Outfit (display/headings, `--font-display`) + Plus Jakarta Sans (body, `--font-body`)
 
 ## Route Map
 
@@ -31,6 +31,8 @@ Reference guide for the KidsPC web dashboard (`web/`). Use when modifying pages,
 | `/pricing` | `app/pricing/page.tsx` | Public | Pricing page |
 | `/download` | `app/download/page.tsx` | Public | App download page |
 | `/politica-privacidade` | `app/politica-privacidade/page.tsx` | Public | Privacy policy |
+| `/dicas-atividades` | `app/dicas-atividades/page.tsx` | Public | Activity ideas to replace screen time (by age group) |
+| `/sobre` | `app/sobre/page.tsx` | Public | About us — mission, values, story |
 
 ### API Routes
 

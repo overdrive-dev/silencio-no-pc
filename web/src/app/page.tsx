@@ -18,33 +18,33 @@ import HeroScene from "@/components/landing/hero-scene";
 
 const features = [
   {
-    name: "Controle de Tempo",
+    name: "Limite de Tempo sem Briga",
     description:
-      "Defina limites diários de uso por dispositivo. Avisos automáticos aos 15 e 5 minutos restantes. Bloqueio total quando o tempo acabar.",
+      "Você define quanto tempo seu filho pode usar o computador por dia. Quando acabar, a tela bloqueia sozinha — sem discussão, sem estresse.",
     icon: ClockIcon,
     color: "bg-violet-100 text-violet-600",
     border: "hover:border-violet-300",
   },
   {
-    name: "Monitor de Barulho",
+    name: "Quando Gritaria é Demais",
     description:
-      "Detecta barulho excessivo pelo microfone. Sistema de strikes com avisos visuais e penalidades de tempo configuráveis.",
+      "Sabe quando seu filho grita jogando e incomoda a casa toda? O KidsPC percebe o barulho e avisa. Se continuar, perde tempo de tela. Ele aprende sozinho a se controlar.",
     icon: SpeakerWaveIcon,
     color: "bg-pink-100 text-pink-600",
     border: "hover:border-pink-300",
   },
   {
-    name: "Painel Remoto",
+    name: "Controle pelo Celular",
     description:
-      "Adicione tempo, bloqueie a tela, reinicie strikes e controle o dispositivo remotamente — do celular ou de qualquer navegador.",
+      "Não precisa ir até o computador. Do seu celular, você libera mais tempo, bloqueia a tela ou vê o que está acontecendo — esteja onde estiver.",
     icon: GlobeAltIcon,
     color: "bg-cyan-100 text-cyan-600",
     border: "hover:border-cyan-300",
   },
   {
-    name: "Horários Personalizados",
+    name: "Horários Certos",
     description:
-      "Configure horários permitidos para cada dia da semana. Fora do horário, o dispositivo bloqueia automaticamente.",
+      "Computador só funciona nos horários que você escolher. À noite, fim de semana, hora de estudar — você decide e o KidsPC cuida do resto.",
     icon: CalendarDaysIcon,
     color: "bg-amber-100 text-amber-600",
     border: "hover:border-amber-300",
@@ -52,16 +52,16 @@ const features = [
   {
     name: "Bloqueio de Apps & Sites",
     description:
-      "Bloqueie aplicativos e sites específicos ou permita apenas os aprovados. Regras sincronizadas remotamente.",
+      "Escolha quais jogos, apps e sites seu filho pode acessar. Bloqueie o que não é adequado e fique tranquilo.",
     icon: NoSymbolIcon,
     badge: "Novo",
     color: "bg-rose-100 text-rose-600",
     border: "hover:border-rose-300",
   },
   {
-    name: "Proteção por Senha",
+    name: "Criança Não Desliga",
     description:
-      "Todas as ações sensíveis exigem senha. Configurações, adicionar tempo e fechar o app são protegidos.",
+      "Seu filho não consegue fechar o programa, mudar as regras ou desinstalar. Tudo é protegido por uma senha que só você sabe.",
     icon: LockClosedIcon,
     color: "bg-emerald-100 text-emerald-600",
     border: "hover:border-emerald-300",
@@ -72,21 +72,21 @@ const steps = [
   {
     number: "01",
     title: "Crie sua conta",
-    description: "Registre-se gratuitamente no painel web em segundos.",
+    description: "É rapidinho — só nome e e-mail. Não precisa instalar nada no seu celular.",
     icon: ShieldCheckIcon,
     color: "from-violet-500 to-purple-600",
   },
   {
     number: "02",
-    title: "Instale no dispositivo",
-    description: "Baixe o instalador, rode no PC da criança e insira o código de pareamento.",
+    title: "Instale no computador do seu filho",
+    description: "Baixe um arquivo, abra no computador da criança e digite o código que aparece na tela. Pronto!",
     icon: BoltIcon,
     color: "from-pink-500 to-rose-600",
   },
   {
     number: "03",
-    title: "Controle de qualquer lugar",
-    description: "Monitore o uso, ajuste limites e envie comandos direto do seu celular.",
+    title: "Pronto! Agora é com você",
+    description: "Pelo celular ou computador, acompanhe o uso, ajuste os limites e tenha mais tranquilidade no dia a dia.",
     icon: GlobeAltIcon,
     color: "from-cyan-500 to-blue-600",
   },
@@ -94,30 +94,30 @@ const steps = [
 
 const testimonials = [
   {
-    body: "Meu filho ficava no PC até 3h da manhã. Com o KidsPC, defini o limite de 2h por dia e horário até 22h. Agora ele dorme cedo e reclama menos porque sabe que é automático.",
+    body: "Meu filho ficava no computador até de madrugada e eu não sabia como resolver. Agora defino o horário e o limite de tempo — quando acaba, a tela desliga sozinha. Acabaram as brigas na hora de dormir.",
     author: { name: "Carla M.", role: "Mãe de 2 filhos" },
     accent: "bg-violet-100 text-violet-600",
   },
   {
-    body: "O monitor de barulho é genial. Meu filho gritava jogando online e incomodava a casa toda. Depois de perder tempo por causa dos strikes, ele aprendeu a controlar o volume sozinho.",
-    author: { name: "Ricardo S.", role: "Pai de 1 filho" },
+    body: "A parte do barulho mudou a nossa rotina. Meu filho gritava jogando e acordava o bebê. Depois que começou a perder tempo de tela por gritar, ele mesmo aprendeu a falar mais baixo. Eu nem preciso ficar brigando.",
+    author: { name: "Ricardo S.", role: "Pai de 2 filhos" },
     accent: "bg-pink-100 text-pink-600",
   },
   {
-    body: "Adoro poder adicionar tempo extra pelo celular quando ele se comporta bem. É como uma recompensa instantânea. E se precisa desligar pra jantar, bloqueio remotamente.",
+    body: "Quando meu filho se comporta bem, libero mais uns minutinhos pelo celular. Ele adora e eu uso como incentivo. E na hora do jantar, bloqueio a tela de onde eu estiver. É muito prático.",
     author: { name: "Fernanda L.", role: "Mãe de 3 filhos" },
     accent: "bg-cyan-100 text-cyan-600",
   },
 ];
 
 const planFeatures = [
-  "Até 2 dispositivos inclusos",
-  "Controle de tempo e horários",
-  "Monitor de barulho com strikes",
-  "Bloqueio de apps e sites",
-  "Comandos remotos em tempo real",
-  "Histórico completo de uso",
-  "Atualizações automáticas",
+  "Funciona em até 2 computadores",
+  "Limite de tempo diário e horários",
+  "Aviso e penalidade por barulho",
+  "Bloqueio de jogos, apps e sites",
+  "Controle pelo celular ou navegador",
+  "Veja quanto seu filho usou cada dia",
+  "Atualizações automáticas incluídas",
 ];
 
 export default async function Home() {
@@ -145,26 +145,27 @@ export default async function Home() {
           </div>
 
           <h1 className="animate-fade-in-up delay-1 font-display text-5xl font-bold tracking-tight text-slate-900 sm:text-7xl lg:text-8xl leading-[0.95]">
-            Controle parental
+            Menos tela,
             <br />
-            <span className="text-gradient">inteligente</span>
+            <span className="text-gradient">mais infância</span>
           </h1>
           <p className="animate-fade-in-up delay-2 mt-8 text-lg leading-8 text-slate-500 max-w-2xl mx-auto sm:text-xl">
-            Limite tempo de tela, monitore barulho e gerencie os dispositivos do seu filho
-            remotamente. Sem complicação, sem briga.
+            Seu filho passa tempo demais no computador e você não sabe como controlar?
+            O KidsPC limita o tempo de tela, avisa quando tem barulho demais e você
+            gerencia tudo pelo celular. Sem briga, sem estresse.
           </p>
 
           <div className="animate-fade-in-up delay-3 mt-12 flex items-center justify-center gap-4 flex-wrap">
             <SignUpButton mode="modal">
               <button className="group relative rounded-xl bg-gradient-to-r from-violet-600 to-pink-500 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/25 hover:shadow-xl hover:shadow-violet-500/40 transition-all hover:-translate-y-0.5">
-                Começar agora — R$&nbsp;19,90/mês
+                Quero experimentar — R$&nbsp;19,90/mês
               </button>
             </SignUpButton>
             <a
               href="#features"
               className="rounded-xl px-8 py-3.5 text-sm font-semibold text-slate-600 border border-slate-300 hover:border-violet-300 hover:text-violet-600 hover:bg-violet-50 transition-all"
             >
-              Ver funcionalidades
+              Como funciona?
             </a>
           </div>
 
@@ -197,12 +198,12 @@ export default async function Home() {
       <section id="features" className="py-24 sm:py-32 relative">
         <div className="mx-auto max-w-6xl px-6">
           <div className="mx-auto max-w-2xl text-center mb-16">
-            <p className="text-sm font-semibold tracking-widest uppercase text-violet-500">Funcionalidades</p>
+            <p className="text-sm font-semibold tracking-widest uppercase text-violet-500">O que o KidsPC faz</p>
             <p className="mt-3 font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-              Tudo que você precisa
+              Tudo que você precisa pra ficar tranquilo
             </p>
             <p className="mt-4 text-lg text-slate-500">
-              Do controle de tempo ao bloqueio de apps — tudo gerenciável remotamente.
+              Você não precisa entender de tecnologia. O KidsPC cuida de tudo — você só escolhe as regras.
             </p>
           </div>
 
@@ -238,13 +239,13 @@ export default async function Home() {
         <div className="relative mx-auto max-w-6xl px-6">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.5fr] gap-16 items-start">
             <div className="lg:sticky lg:top-32">
-              <p className="text-sm font-semibold tracking-widest uppercase text-pink-500">Simples de configurar</p>
+              <p className="text-sm font-semibold tracking-widest uppercase text-pink-500">Super fácil</p>
               <p className="mt-3 font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-                Funcionando em
-                <br />3 passos
+                Funciona em
+                <br />3 passinhos
               </p>
               <p className="mt-4 text-base text-slate-500">
-                Do cadastro ao controle total em menos de 5 minutos.
+                Mesmo que você não manje de tecnologia, você consegue. Leva menos de 5 minutos.
               </p>
             </div>
 
@@ -277,9 +278,9 @@ export default async function Home() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(139,92,246,0.06),transparent)]" />
         <div className="relative mx-auto max-w-6xl px-6">
           <div className="mx-auto max-w-2xl text-center">
-            <p className="text-sm font-semibold tracking-widest uppercase text-violet-500">Depoimentos</p>
+            <p className="text-sm font-semibold tracking-widest uppercase text-violet-500">Famílias reais</p>
             <p className="mt-3 font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-              O que os pais dizem
+              Pais que já recuperaram a paz em casa
             </p>
           </div>
 
@@ -319,12 +320,12 @@ export default async function Home() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_0%,rgba(236,72,153,0.06),transparent)]" />
         <div className="relative mx-auto max-w-lg px-6">
           <div className="text-center mb-12">
-            <p className="text-sm font-semibold tracking-widest uppercase text-pink-500">Preços</p>
+            <p className="text-sm font-semibold tracking-widest uppercase text-pink-500">Quanto custa</p>
             <p className="mt-3 font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-              Simples e transparente
+              Um preço justo, sem pegadinha
             </p>
             <p className="mt-4 text-lg text-slate-500">
-              Um plano completo. Sem surpresas.
+              Tudo incluso num único plano. Cancele quando quiser, sem multa.
             </p>
           </div>
 
@@ -336,7 +337,7 @@ export default async function Home() {
                   R$&nbsp;19,90
                   <span className="text-lg text-slate-400 font-normal">/mês</span>
                 </div>
-                <p className="text-sm text-slate-500 mt-2">Plano Completo</p>
+                <p className="text-sm text-slate-500 mt-2">Tudo incluso, sem surpresas</p>
               </div>
 
               <ul className="space-y-3 mb-8">
@@ -350,12 +351,12 @@ export default async function Home() {
 
               <SignUpButton mode="modal">
                 <button className="w-full rounded-xl bg-gradient-to-r from-violet-600 to-pink-500 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/25 hover:shadow-xl hover:shadow-violet-500/40 transition-all">
-                  Começar agora
+                  Quero experimentar
                 </button>
               </SignUpButton>
 
               <p className="text-center text-xs text-slate-400 mt-4">
-                Pagamentos via Mercado Pago. Cancele quando quiser.
+                Pagamento seguro pelo Mercado Pago. Cancele a qualquer momento, sem burocracia.
               </p>
             </div>
           </div>
@@ -370,15 +371,16 @@ export default async function Home() {
         <div className="absolute inset-0 gradient-mesh opacity-50" />
         <div className="relative mx-auto max-w-2xl px-6 text-center">
           <h2 className="font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-            Pronto para ter paz em casa?
+            Que tal menos briga e mais tranquilidade?
           </h2>
           <p className="mt-5 text-lg text-slate-500">
-            Crie sua conta em segundos e comece a gerenciar os dispositivos do seu filho hoje.
+            Você merece não precisar gritar pra seu filho sair do computador.
+            Comece agora e sinta a diferença já no primeiro dia.
           </p>
           <div className="mt-10 flex items-center justify-center gap-4 flex-wrap">
             <SignUpButton mode="modal">
               <button className="rounded-xl bg-gradient-to-r from-violet-600 to-pink-500 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/25 hover:shadow-xl hover:shadow-violet-500/40 transition-all hover:-translate-y-0.5">
-                Começar agora — R$&nbsp;19,90/mês
+                Quero começar agora — R$&nbsp;19,90/mês
               </button>
             </SignUpButton>
             <SignInButton mode="modal">
@@ -402,13 +404,13 @@ export default async function Home() {
               </svg>
             </div>
             <span className="text-sm font-semibold text-slate-900">KidsPC</span>
-            <span className="text-sm text-slate-400">&middot; Controle parental inteligente</span>
+            <span className="text-sm text-slate-400">&middot; Menos tela, mais infância</span>
           </div>
-          <div className="flex gap-6 text-sm text-slate-400">
+          <div className="flex gap-6 text-sm text-slate-400 flex-wrap justify-center sm:justify-end">
             <a href="#features" className="hover:text-violet-600 transition">Funcionalidades</a>
-            <a href="#testimonials" className="hover:text-violet-600 transition">Depoimentos</a>
             <a href="#pricing" className="hover:text-violet-600 transition">Preços</a>
-            <a href="#faq" className="hover:text-violet-600 transition">FAQ</a>
+            <a href="/dicas-atividades" className="hover:text-violet-600 transition">Dicas de Atividades</a>
+            <a href="/sobre" className="hover:text-violet-600 transition">Sobre</a>
             <a href="/politica-privacidade" className="hover:text-violet-600 transition">Privacidade</a>
           </div>
         </div>
