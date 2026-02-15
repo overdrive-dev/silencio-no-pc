@@ -27,32 +27,39 @@ export async function POST() {
     const preApprovalApi = new PreApproval(client);
 
     // Search for subscriptions by external_reference (clerk userId)
-    const results = await preApprovalApi.search({
-      options: {
-        external_reference: userId,
-        sort: "date_created:desc",
-        limit: 1,
-      },
-    });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let subscriptions: any[] = [];
+    try {
+      const results = await preApprovalApi.search({
+        options: {
+          external_reference: userId,
+          sort: "date_created:desc",
+          limit: 1,
+        },
+      });
+      subscriptions = results.results || [];
+    } catch (searchErr) {
+      console.warn("[mp-sync] MercadoPago search failed (non-fatal):", searchErr instanceof Error ? searchErr.message : searchErr);
+      return NextResponse.json({ subscribed: false, status: "no_subscription", synced: false });
+    }
 
-    const subscriptions = results.results || [];
     if (subscriptions.length === 0) {
       return NextResponse.json({ subscribed: false, status: "no_subscription" });
     }
 
     const sub = subscriptions[0];
-    const status = mapMpStatus(sub.status || "pending");
+    const status = mapMpStatus(String(sub.status || "pending"));
 
     const now = new Date().toISOString();
     const nextChargeDate = sub.next_payment_date
-      ? new Date(sub.next_payment_date).toISOString()
+      ? new Date(String(sub.next_payment_date)).toISOString()
       : null;
     const startDate = sub.date_created
-      ? new Date(sub.date_created).toISOString()
+      ? new Date(String(sub.date_created)).toISOString()
       : now;
 
     await upsertSubscription(userId, {
-      mp_subscription_id: sub.id,
+      mp_subscription_id: String(sub.id),
       mp_payer_id: sub.payer_id?.toString() || null,
       plan: "monthly",
       status,

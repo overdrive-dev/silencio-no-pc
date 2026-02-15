@@ -47,20 +47,6 @@ export function useSubscription() {
       const res = await fetch("/api/mercadopago/status");
       const data: SubscriptionStatus = await res.json();
 
-      // If no active sub found, try syncing directly from MercadoPago
-      if (!data.subscribed && data.status === "inactive") {
-        const syncRes = await fetch("/api/mercadopago/sync", { method: "POST" });
-        const syncData = await syncRes.json();
-        if (syncData.synced) {
-          const res2 = await fetch("/api/mercadopago/status");
-          const data2: SubscriptionStatus = await res2.json();
-          setSub(data2);
-          setCache(data2);
-          setLoading(false);
-          return;
-        }
-      }
-
       setSub(data);
       // Only cache positive states to avoid stale data after user migration
       if (data.subscribed) {
