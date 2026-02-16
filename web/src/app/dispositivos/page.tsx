@@ -140,22 +140,31 @@ export default function PcsPage() {
               : `${pcs.length} dispositivo${pcs.length > 1 ? "s" : ""} vinculado${pcs.length > 1 ? "s" : ""}`}
           </p>
         </div>
-        {hasAccess ? (
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-pink-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-violet-500/20 hover:shadow-lg hover:shadow-violet-500/30 transition-all hover:-translate-y-0.5"
-          >
-            <PlusIcon className="size-4" />
-            Adicionar
-          </button>
-        ) : (
+        <div className="flex items-center gap-2">
           <Link
-            href="/pricing"
-            className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-pink-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:shadow-lg transition"
+            href="/download"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-200 hover:bg-slate-50 transition"
           >
-            Assinar
+            <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Baixar app
           </Link>
-        )}
+          {hasAccess ? (
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-pink-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-violet-500/20 hover:shadow-lg hover:shadow-violet-500/30 transition-all hover:-translate-y-0.5"
+            >
+              <PlusIcon className="size-4" />
+              Adicionar
+            </button>
+          ) : (
+            <Link
+              href="/pricing"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-pink-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:shadow-lg transition"
+            >
+              Assinar
+            </Link>
+          )}
+        </div>
       </div>
 
       <PaymentBanner />

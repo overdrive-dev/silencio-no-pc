@@ -17,7 +17,7 @@ Reference guide for the KidsPC web dashboard (`web/`). Use when modifying pages,
 
 | Route | File | Auth | Purpose |
 |---|---|---|---|
-| `/` | `app/page.tsx` | Public | Landing page (redirects to `/dispositivos` if logged in) |
+| `/` | `app/page.tsx` | Public | Landing page (shows different CTAs for signed-in vs signed-out users via `<SignedIn>`/`<SignedOut>`) |
 | `/dispositivos` | `app/dispositivos/page.tsx` | Required | Device list |
 | `/dispositivo/[id]` | `app/dispositivo/[id]/page.tsx` | Required | Device dashboard (tabs: history, events, activity, controls) |
 | `/dispositivo/[id]/settings` | `app/dispositivo/[id]/settings/page.tsx` | Required | Device settings |
