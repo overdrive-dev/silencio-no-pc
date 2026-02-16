@@ -16,45 +16,45 @@ import { HeroScene, StepsScene } from "@/components/landing/parallax-illustratio
 
 const features = [
   {
-    name: "Limite de Tempo sem Briga",
+    name: "Tempo de Tela Organizado",
     description:
-      "Você define quanto tempo seu filho pode usar o computador por dia. Quando acabar, a tela bloqueia sozinha — sem discussão, sem estresse.",
+      "Defina quanto tempo por dia seu filho pode usar o computador. Quando o tempo acaba, a tela encerra automaticamente — e ele já sabe que é assim.",
     icon: ClockIcon,
     color: "bg-[#EDF2FF] text-[#4A7AFF]",
   },
   {
-    name: "Quando Gritaria é Demais",
+    name: "Ambiente Mais Calmo",
     description:
-      "Sabe quando seu filho grita jogando e incomoda a casa toda? O KidsPC percebe o barulho e avisa. Se continuar, perde tempo de tela. Ele aprende sozinho a se controlar.",
+      "O KidsPC detecta o nível de barulho e ensina seu filho a manter o volume adequado. Com o tempo, ele mesmo se regula — e a casa fica mais tranquila.",
     icon: SpeakerWaveIcon,
     color: "bg-[#FFE0E0] text-[#FF6B6B]",
   },
   {
-    name: "Controle pelo Celular",
+    name: "Acompanhe de Qualquer Lugar",
     description:
-      "Não precisa ir até o computador. Do seu celular, você libera mais tempo, bloqueia a tela ou vê o que está acontecendo — esteja onde estiver.",
+      "Pelo celular ou navegador, você acompanha o uso, ajusta limites e libera mais tempo quando quiser. Tudo na palma da mão.",
     icon: GlobeAltIcon,
     color: "bg-[#D6F5E0] text-[#51CF66]",
   },
   {
-    name: "Horários Certos",
+    name: "Rotina com Horários Definidos",
     description:
-      "Computador só funciona nos horários que você escolher. À noite, fim de semana, hora de estudar — você decide e o KidsPC cuida do resto.",
+      "Escolha em quais horários o computador fica disponível. Hora de estudar, dormir ou brincar lá fora — cada momento no seu lugar.",
     icon: CalendarDaysIcon,
     color: "bg-[#FFF3D6] text-[#FFA94D]",
   },
   {
     name: "Bloqueio de Apps & Sites",
     description:
-      "Escolha quais jogos, apps e sites seu filho pode acessar. Bloqueie o que não é adequado e fique tranquilo.",
+      "Selecione quais jogos, apps e sites são permitidos. Seu filho acessa só o que faz sentido para a idade dele.",
     icon: NoSymbolIcon,
     badge: "Novo",
     color: "bg-[#F3E8FF] text-[#9775FA]",
   },
   {
-    name: "Criança Não Desliga",
+    name: "Proteção Inteligente",
     description:
-      "Seu filho não consegue fechar o programa, mudar as regras ou desinstalar. Tudo é protegido por uma senha que só você sabe.",
+      "O programa roda de forma segura — seu filho não consegue alterar as regras ou desinstalar. Você configura uma vez e funciona.",
     icon: LockClosedIcon,
     color: "bg-[#EDF2FF] text-[#4A7AFF]",
   },
@@ -64,21 +64,21 @@ const steps = [
   {
     number: "01",
     title: "Crie sua conta",
-    description: "É rapidinho — só nome e e-mail. Não precisa instalar nada no seu celular.",
+    description: "Rápido e simples — só nome e e-mail. Você já pode configurar tudo pelo navegador.",
     icon: ShieldCheckIcon,
     color: "bg-[#4A7AFF]",
   },
   {
     number: "02",
     title: "Instale no computador do seu filho",
-    description: "Baixe um arquivo, abra no computador da criança e digite o código que aparece na tela. Pronto!",
+    description: "Baixe o app, abra no computador da criança e vincule com o código que aparece na tela.",
     icon: BoltIcon,
     color: "bg-[#FF6B6B]",
   },
   {
     number: "03",
-    title: "Pronto! Agora é com você",
-    description: "Pelo celular ou computador, acompanhe o uso, ajuste os limites e tenha mais tranquilidade no dia a dia.",
+    title: "Tudo pronto!",
+    description: "Acompanhe o uso, ajuste os limites e veja seu filho desenvolvendo uma rotina mais equilibrada.",
     icon: GlobeAltIcon,
     color: "bg-[#51CF66]",
   },
@@ -86,17 +86,17 @@ const steps = [
 
 const testimonials = [
   {
-    body: "Meu filho ficava no computador até de madrugada e eu não sabia como resolver. Agora defino o horário e o limite de tempo — quando acaba, a tela desliga sozinha. Acabaram as brigas na hora de dormir.",
+    body: "Agora meu filho tem uma rotina certinha. Ele já sabe que tem um tempo pra jogar e quando acaba, vai fazer outra coisa naturalmente. A noite ficou muito mais tranquila.",
     author: { name: "Carla M.", role: "Mãe de 2 filhos" },
     accent: "bg-[#EDF2FF] text-[#4A7AFF]",
   },
   {
-    body: "A parte do barulho mudou a nossa rotina. Meu filho gritava jogando e acordava o bebê. Depois que começou a perder tempo de tela por gritar, ele mesmo aprendeu a falar mais baixo. Eu nem preciso ficar brigando.",
+    body: "O sensor de barulho fez meu filho aprender a controlar o volume sozinho. Hoje ele joga de boa, sem incomodar ninguém. Foi uma mudança gradual e bem natural.",
     author: { name: "Ricardo S.", role: "Pai de 2 filhos" },
     accent: "bg-[#FFE0E0] text-[#FF6B6B]",
   },
   {
-    body: "Quando meu filho se comporta bem, libero mais uns minutinhos pelo celular. Ele adora e eu uso como incentivo. E na hora do jantar, bloqueio a tela de onde eu estiver. É muito prático.",
+    body: "Consigo acompanhar tudo pelo celular e ajustar quando preciso. Às vezes libero mais um tempinho como incentivo. Meu filho entende as regras e a convivência melhorou muito.",
     author: { name: "Fernanda L.", role: "Mãe de 3 filhos" },
     accent: "bg-[#D6F5E0] text-[#51CF66]",
   },
@@ -105,10 +105,10 @@ const testimonials = [
 const planFeatures = [
   "Funciona em até 2 computadores",
   "Limite de tempo diário e horários",
-  "Aviso e penalidade por barulho",
+  "Sensor de barulho inteligente",
   "Bloqueio de jogos, apps e sites",
-  "Controle pelo celular ou navegador",
-  "Veja quanto seu filho usou cada dia",
+  "Acompanhamento pelo celular ou navegador",
+  "Relatório de uso diário",
   "Atualizações automáticas incluídas",
 ];
 
@@ -135,21 +135,21 @@ export default function Home() {
                 <span className="text-[#4A7AFF]">mais infância</span>
               </h1>
               <p className="animate-fade-in-up delay-2 mt-6 text-lg leading-8 text-gray-500 max-w-lg">
-                Seu filho passa tempo demais no computador e você não sabe como controlar?
-                O KidsPC limita o tempo de tela, avisa quando tem barulho demais e você
-                gerencia tudo pelo celular.
+                O KidsPC ajuda seu filho a ter uma rotina digital mais saudável.
+                Limite de tempo, controle de barulho e acompanhamento em tempo real —
+                tudo pelo celular.
               </p>
 
               <div className="animate-fade-in-up delay-3 mt-10 flex items-center gap-4 flex-wrap">
                 <SignedOut>
                   <SignUpButton mode="modal">
                     <button className="btn-pill btn-pill-primary">
-                      Quero experimentar
+                      Começar agora — R$&nbsp;19,90/mês
                       <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                     </button>
                   </SignUpButton>
                   <a href="#features" className="btn-pill btn-pill-outline">
-                    Como funciona?
+                    Conhecer mais
                   </a>
                 </SignedOut>
                 <SignedIn>
@@ -193,12 +193,12 @@ export default function Home() {
       <section id="features" className="py-20 sm:py-28 relative">
         <div className="mx-auto max-w-6xl px-6">
           <div className="mx-auto max-w-2xl text-center mb-16">
-            <p className="text-sm font-semibold tracking-widest uppercase text-[#4A7AFF]">O que o KidsPC faz</p>
+            <p className="text-sm font-semibold tracking-widest uppercase text-[#4A7AFF]">Funcionalidades</p>
             <h2 className="mt-3 font-display text-3xl tracking-tight text-[#1a1a2e] sm:text-4xl">
-              Tudo que você precisa pra ficar tranquilo
+              Uma rotina digital mais saudável
             </h2>
             <p className="mt-4 text-lg text-gray-500">
-              Você não precisa entender de tecnologia. O KidsPC cuida de tudo — você só escolhe as regras.
+              Ferramentas simples para ajudar seu filho a usar o computador de forma equilibrada.
             </p>
           </div>
 
@@ -228,12 +228,12 @@ export default function Home() {
         <div className="relative mx-auto max-w-7xl px-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-5">
-              <p className="text-sm font-semibold tracking-widest uppercase text-[#FF6B6B]">Super fácil</p>
+              <p className="text-sm font-semibold tracking-widest uppercase text-[#FF6B6B]">Simples de configurar</p>
               <h2 className="mt-3 font-display text-3xl tracking-tight text-[#1a1a2e] sm:text-4xl">
-                Funciona em 3 passinhos
+                Pronto em 3 passos
               </h2>
               <p className="mt-4 text-base text-gray-500 max-w-md">
-                Mesmo que você não manje de tecnologia, você consegue. Leva menos de 5 minutos.
+                Não precisa entender de tecnologia. Em menos de 5 minutos tudo está funcionando.
               </p>
 
               <div className="mt-10 space-y-8">
@@ -265,7 +265,7 @@ export default function Home() {
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-sm font-semibold tracking-widest uppercase text-[#4A7AFF]">Famílias reais</p>
             <h2 className="mt-3 font-display text-3xl tracking-tight text-[#1a1a2e] sm:text-4xl">
-              Pais que já recuperaram a paz em casa
+              Rotinas mais leves, crianças mais felizes
             </h2>
           </div>
 
@@ -332,7 +332,7 @@ export default function Home() {
 
               <SignUpButton mode="modal">
                 <button className="btn-pill btn-pill-primary w-full justify-center">
-                  Quero experimentar
+                  Começar agora
                 </button>
               </SignUpButton>
 
@@ -354,11 +354,11 @@ export default function Home() {
         <div className="relative mx-auto max-w-3xl px-6">
           <div className="text-center max-w-2xl mx-auto">
             <h2 className="font-display text-3xl tracking-tight text-[#1a1a2e] sm:text-5xl">
-              Que tal menos briga e mais tranquilidade?
+              Uma casa mais tranquila começa aqui
             </h2>
             <p className="mt-5 text-lg text-gray-500 max-w-lg mx-auto">
-              Você merece não precisar gritar pra seu filho sair do computador.
-              Comece agora e sinta a diferença já no primeiro dia.
+              Seu filho com uma rotina mais organizada, usando o computador de forma saudável.
+              E você acompanhando tudo com facilidade.
             </p>
             <div className="mt-10 flex items-center justify-center gap-4 flex-wrap">
               <SignedOut>
