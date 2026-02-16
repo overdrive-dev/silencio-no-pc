@@ -7,13 +7,13 @@ Reference guide for building, packaging, publishing, and deploying KidsPC. Use w
 **Single source of truth**: `__version__` in `src/main.py`
 
 ```python
-__version__ = "1.5.0"  # example
+__version__ = "2.2.0"  # current
 ```
 
 All build scripts read this value. When bumping version:
 1. Update `__version__` in `src/main.py`
 2. Run `publish.py` (handles everything else)
-3. Optionally update `app_version` table in Supabase (id=1)
+3. **Always** update `app_version` table in Supabase (id=1) — required for auto-updater
 
 ## Desktop Build (`build.py`)
 
@@ -162,6 +162,9 @@ All env vars listed in `AGENTS.md` must be set in Vercel project settings:
 - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
 - `CLERK_SECRET_KEY`
 - `MELI_ACCESS_TOKEN`
+- `NEXT_PUBLIC_MELI_PUBLIC_KEY`
+- `MELI_WEBHOOK_SECRET`
+- `NEXT_PUBLIC_APP_URL`
 
 ### Deploy Triggers
 - Push to `main` branch → auto-deploy to production

@@ -30,7 +30,9 @@ Reference guide for the KidsPC Supabase schema, RLS policies, and data patterns.
 | `last_heartbeat` | timestamptz | Last sync timestamp |
 | `last_activity` | timestamptz | Last mouse/keyboard activity |
 | `app_version` | text | Installed desktop app version |
-| `created_at` | timestamptz | Row creation |
+| `effective_limit_minutes` | integer | Current effective daily limit (after extras/penalties) |
+| `responsible_mode` | boolean | Responsible mode active (bypasses all checks) |
+| `platform` | text NOT NULL | `windows` (default) or `android` |
 
 **Indexes**: `idx_pcs_user_id` on `user_id`, `idx_pcs_sync_token` on `sync_token`
 **Realtime**: Enabled (`alter publication supabase_realtime add table pcs`)
@@ -101,7 +103,7 @@ Reference guide for the KidsPC Supabase schema, RLS policies, and data patterns.
 | `user_id` | text NOT NULL | |
 | `pc_id` | uuid FK → pcs | ON DELETE CASCADE |
 | `created_at` | timestamptz | |
-| `command` | text NOT NULL | `add_time`, `remove_time`, `lock`, `unlock`, `shutdown`, `reset_strikes` |
+| `command` | text NOT NULL | `add_time`, `remove_time`, `lock`, `unlock`, `shutdown`, `reset_strikes`, `unpair` |
 | `payload` | jsonb | e.g. `{"minutes": 15}` |
 | `status` | text | `pending` → `executed` or `failed` |
 | `executed_at` | timestamptz | Set by desktop after execution |
@@ -237,11 +239,12 @@ CREATE POLICY "allow_all_update" ON pcs FOR UPDATE USING (true);
 
 ## Migration Conventions
 
-- Files in `supabase/migrations/` with numeric prefix: `001_`, `002_`, etc.
+- Files in `supabase/migrations/` with numeric prefix: `001_`, `002_`, `003_`, etc.
 - DDL only (CREATE TABLE, ALTER TABLE, CREATE POLICY)
 - Each migration is idempotent where possible (`IF NOT EXISTS`)
 - Schema changes to existing tables: new migration file, never edit existing ones
 - After adding columns: update `web/src/lib/types.ts` interfaces AND Python `remote_sync.py` queries
+- Supabase MCP `apply_migration` can also be used for DDL changes (tracked separately from local files)
 
 ## Data Lifecycle
 

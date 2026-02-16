@@ -1,6 +1,6 @@
 # KidsPC — Project Agent Guide
 
-KidsPC is a parental control SaaS for Windows PCs. Parents manage screen time, noise levels, and app/site access remotely via a web dashboard. The desktop app runs silently on the child's PC and enforces rules synced from Supabase.
+KidsPC is a parental control SaaS for Windows PCs and Android devices. Parents manage screen time, noise levels, and app/site access remotely via a web dashboard. Client apps (desktop or Android) run on the child's device and enforce rules synced from Supabase.
 
 ## Architecture
 
@@ -123,7 +123,8 @@ silencio-no-pc/
 ├── supabase/
 │   └── migrations/
 │       ├── 001_create_tables.sql   # Core schema (10 tables)
-│       └── 002_rls_policies.sql    # RLS (permissive TRUE policies)
+│       ├── 002_rls_policies.sql    # RLS (permissive TRUE policies)
+│       └── 003_app_usage_site_visits.sql  # app_usage + site_visits tables
 │
 ├── installer/setup.iss     # Inno Setup script
 ├── build.py                # PyInstaller build script
@@ -138,7 +139,8 @@ silencio-no-pc/
         ├── python-desktop.md
         ├── nextjs-web.md
         ├── supabase-db.md
-        └── build-deploy.md
+        ├── build-deploy.md
+        └── android-app.md
 ```
 
 ## Tech Stack
@@ -183,6 +185,9 @@ silencio-no-pc/
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk publishable key |
 | `CLERK_SECRET_KEY` | Clerk secret key |
 | `MELI_ACCESS_TOKEN` | MercadoPago access token |
+| `NEXT_PUBLIC_MELI_PUBLIC_KEY` | MercadoPago public key (client-side) |
+| `MELI_WEBHOOK_SECRET` | MercadoPago webhook signature secret |
+| `NEXT_PUBLIC_APP_URL` | App base URL for MercadoPago callbacks |
 | `GITHUB_TOKEN` | GitHub token (for publish.py, not web) |
 
 ## Key Conventions
@@ -225,6 +230,7 @@ Every API route follows this structure:
 ## Related Skills
 
 - **Python desktop**: `.windsurf/skills/python-desktop.md`
+- **Android app**: `.windsurf/skills/android-app.md`
 - **Next.js web**: `.windsurf/skills/nextjs-web.md`
 - **Supabase database**: `.windsurf/skills/supabase-db.md`
 - **Build & deploy**: `.windsurf/skills/build-deploy.md`

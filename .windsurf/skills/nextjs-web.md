@@ -39,8 +39,8 @@ Reference guide for the KidsPC web dashboard (`web/`). Use when modifying pages,
 | Route | Methods | Purpose |
 |---|---|---|
 | `/api/dispositivos` | GET, POST | List user's PCs, create new PC |
-| `/api/dispositivos/claim` | POST | Claim sync token (pairing flow) |
-| `/api/dispositivo/[id]` | GET, DELETE | Get/remove single PC |
+| `/api/dispositivos/claim` | POST | Claim sync token (pairing flow). Accepts `token`, `platform` (`windows`/`android`), `name` |
+| `/api/dispositivo/[id]` | GET, PATCH, DELETE | Get/update/remove single PC |
 | `/api/dispositivo/[id]/settings` | GET, PUT | Read/update PC settings |
 | `/api/dispositivo/[id]/commands` | POST | Send command to PC |
 | `/api/dispositivo/[id]/events` | GET | Paginated events (query: `limit`, `offset`, `type`) |
@@ -165,21 +165,37 @@ When adding columns to Supabase, **always update the corresponding interface** i
 - `MainWrapper` (`components/main-wrapper.tsx`): Content container
 - `PaymentBanner` (`components/payment-banner.tsx`): Shown on device dashboard when no subscription
 
-### Design Tokens (Current)
-- **Primary**: teal-600 (not indigo — despite some dashboard elements using indigo-600)
-- **Background**: stone-50 (sections alternate with white)
-- **Text**: slate-900 (headings), slate-500/600 (body), slate-400 (muted)
-- **Cards**: stone-50/80 bg + stone-200/80 ring, hover → white + teal-200/60 ring + shadow
-- **Dark sections**: slate-900 bg (testimonials, final CTA)
-- **Grain texture**: `bg-grain` class in hero section
-- **Radial gradients**: Used for ambient light effects on hero/dark sections
-- **Animations**: `animate-fade-in-up` with `delay-N` classes for staggered reveals
+### Device Dashboard Components (`components/device/`)
+- `history-tab.tsx` — Daily usage chart (recharts)
+- `events-tab.tsx` — Paginated events list
+- `activity-tab.tsx` — App usage + site visits breakdowns
+- `controls-tab.tsx` — App/site blocking management (mode toggle, add/remove rules)
+- `usage-gauge.tsx` — Circular usage gauge widget
 
-### Dashboard Design
-- Device dashboard uses indigo-600 accents (buttons, active tabs, links)
+### Landing Components (`components/landing/`)
+- `faq-section.tsx` — Accordion FAQ
+- `hero-scene.tsx` — Hero section scene
+- `illustrations.tsx` — Flat SVG illustrations (HeroIllustration, ParentPhoneIllustration, FamilyIllustration)
+- `parallax-illustrations.tsx` — Parallax scroll effects (StepsScene)
+
+### Design Tokens — "Flat Illustration" System
+> Full design spec in `.windsurf/workflows/frontend-design.md`
+
+**Landing page:**
+- **Background**: `#FAF7F2` (cream), sections alternate with `#F0EBE5` (cream-dark)
+- **Primary accent**: `#4A7AFF` (soft blue), hover `#3A6AEF`
+- **Text**: `#1a1a2e` (navy headings), `gray-500` (body), `gray-400` (muted)
+- **Cards**: `.card-flat` — white `rounded-xl` with warm border `#e8e0d8`, subtle shadow, hover lift
+- **CTAs**: `.btn-pill .btn-pill-primary` — fully rounded, solid `#4A7AFF`, blue shadow
+- **Decorative**: Blob shapes (`.blob-blue`, `.blob-coral`), `animate-float`, `animate-fade-in-up` with staggered delays
+- **Fonts**: DM Serif Display (`--font-display`, headings) + Plus Jakarta Sans (`--font-body`)
+
+**Dashboard (authenticated):**
+- Indigo-600 accents (buttons, active tabs, links)
 - Cards: white bg + gray-200 border + shadow-sm
 - Status badges: colored rounded-full with dot indicator
 - Quick action buttons: colored grid (green for add, amber for remove, red for lock, blue for unlock)
+- Device list shows platform icon (Windows blue / Android green) next to device name
 
 ## Landing Page Structure
 
