@@ -9,13 +9,17 @@ function Banner({ icon, title, description, buttonText, buttonHref, variant }: {
   description: React.ReactNode;
   buttonText: string;
   buttonHref: string;
-  variant: "warning" | "danger";
+  variant: "info" | "warning" | "danger";
 }) {
   const colors = variant === "danger"
     ? "border-red-200 bg-red-50 text-red-800"
+    : variant === "info"
+    ? "border-[#DAE5FF] bg-[#EDF2FF]/60 text-slate-700"
     : "border-amber-200 bg-amber-50 text-amber-800";
   const btnColors = variant === "danger"
     ? "bg-red-600 hover:bg-red-500 shadow-red-600/10"
+    : variant === "info"
+    ? "bg-[#4A7AFF] hover:bg-[#3A6AEF] shadow-[#4A7AFF]/10"
     : "bg-amber-600 hover:bg-amber-500 shadow-amber-600/10";
 
   return (
@@ -45,12 +49,12 @@ export default function PaymentBanner() {
   if (!subscription || subscription.status === "inactive") {
     return (
       <Banner
-        icon="🔒"
-        title="Assinatura necessária"
-        description="Assine para adicionar dispositivos e controlar remotamente."
-        buttonText="Assinar"
+        icon="�"
+        title="Assine para liberar o controle remoto"
+        description="Com a assinatura você acompanha e gerencia os dispositivos do seu filho."
+        buttonText="Ver planos"
         buttonHref="/pricing"
-        variant="warning"
+        variant="info"
       />
     );
   }

@@ -148,22 +148,13 @@ export default function PcsPage() {
             <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Baixar app
           </Link>
-          {hasAccess ? (
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-pink-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-violet-500/20 hover:shadow-lg hover:shadow-violet-500/30 transition-all hover:-translate-y-0.5"
-            >
-              <PlusIcon className="size-4" />
-              Adicionar
-            </button>
-          ) : (
-            <Link
-              href="/pricing"
-              className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-pink-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:shadow-lg transition"
-            >
-              Assinar
-            </Link>
-          )}
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-pink-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-violet-500/20 hover:shadow-lg hover:shadow-violet-500/30 transition-all hover:-translate-y-0.5"
+          >
+            <PlusIcon className="size-4" />
+            Adicionar
+          </button>
         </div>
       </div>
 
@@ -269,31 +260,57 @@ export default function PcsPage() {
 
       {/* Empty state */}
       {pcs.length === 0 && !showAddModal && (
-        <div className="rounded-2xl border-2 border-dashed border-slate-200 p-12 text-center">
-          <div className="inline-flex items-center justify-center size-14 rounded-2xl bg-violet-50 mb-4">
-            <ComputerDesktopIcon className="size-7 text-violet-500" />
+        <div className="rounded-2xl border border-slate-200 bg-white p-8 sm:p-12 max-w-lg mx-auto">
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center size-16 rounded-2xl bg-[#EDF2FF] mb-6">
+              <ComputerDesktopIcon className="size-8 text-[#4A7AFF]" />
+            </div>
+            <h3 className="text-lg font-display font-bold text-slate-900">Vincule seu primeiro dispositivo</h3>
+            <p className="mt-2 text-sm text-slate-500 leading-relaxed">
+              Instale o KidsPC no computador do seu filho e vincule com um código de pareamento. É rápido e simples.
+            </p>
           </div>
-          <h3 className="text-sm font-semibold text-slate-900">Nenhum dispositivo vinculado</h3>
-          <p className="mt-1 text-sm text-slate-500 max-w-sm mx-auto">
-            Adicione um dispositivo, instale o app e vincule com o token de pareamento.
-          </p>
-          <div className="mt-6 flex items-center justify-center gap-3">
-            {hasAccess && (
-              <button
-                onClick={() => setShowAddModal(true)}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-pink-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:shadow-lg transition"
-              >
-                <PlusIcon className="size-4" />
-                Adicionar Dispositivo
-              </button>
-            )}
+
+          <div className="mt-8 space-y-3">
+            <div className="flex gap-3 items-start">
+              <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-[#4A7AFF] text-white text-xs font-bold">1</div>
+              <p className="text-sm text-slate-600">Baixe e instale o app no computador da criança</p>
+            </div>
+            <div className="flex gap-3 items-start">
+              <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-[#FF6B6B] text-white text-xs font-bold">2</div>
+              <p className="text-sm text-slate-600">Clique em <strong>Adicionar</strong> acima para gerar um código</p>
+            </div>
+            <div className="flex gap-3 items-start">
+              <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-[#51CF66] text-white text-xs font-bold">3</div>
+              <p className="text-sm text-slate-600">Digite o código no app e pronto — tudo vinculado!</p>
+            </div>
+          </div>
+
+          <div className="mt-8 flex items-center justify-center gap-3">
             <Link
               href="/download"
-              className="inline-flex items-center rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-200 hover:bg-slate-50 transition"
+              className="btn-pill btn-pill-primary text-sm"
             >
-              Baixar app
+              <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Baixar o app
             </Link>
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="btn-pill btn-pill-outline text-sm"
+            >
+              <PlusIcon className="size-4" />
+              Adicionar dispositivo
+            </button>
           </div>
+
+          {!hasAccess && (
+            <div className="mt-6 rounded-xl bg-[#EDF2FF]/60 border border-[#DAE5FF] p-4 text-center">
+              <p className="text-sm text-slate-600">
+                Para controlar remotamente, você precisa de uma assinatura.
+                <Link href="/pricing" className="text-[#4A7AFF] font-semibold hover:underline ml-1">Ver planos</Link>
+              </p>
+            </div>
+          )}
         </div>
       )}
 
@@ -307,12 +324,13 @@ export default function PcsPage() {
             return (
               <div key={pc.id} className="relative group">
                 {blocked && (
-                  <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-zinc-900/60 backdrop-blur-sm">
+                  <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-white/80 backdrop-blur-sm">
                     <div className="text-center">
-                      <div className="inline-flex items-center justify-center size-10 rounded-xl bg-white/10 mb-2">
-                        <svg className="size-5 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
+                      <div className="inline-flex items-center justify-center size-10 rounded-xl bg-[#EDF2FF] mb-2">
+                        <svg className="size-5 text-[#4A7AFF]" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
                       </div>
-                      <p className="text-sm text-white font-medium">Assine para controlar</p>
+                      <p className="text-sm text-slate-600 font-medium">Assinatura necessária</p>
+                      <Link href="/pricing" className="text-xs text-[#4A7AFF] font-medium hover:underline mt-1 inline-block">Ver planos</Link>
                     </div>
                   </div>
                 )}

@@ -33,6 +33,8 @@ export default function RootLayout({
   return (
     <ClerkProvider
       localization={ptBR}
+      signInFallbackRedirectUrl="/dispositivos"
+      signUpFallbackRedirectUrl="/dispositivos"
       appearance={{
         variables: {
           colorPrimary: "#4A7AFF",
