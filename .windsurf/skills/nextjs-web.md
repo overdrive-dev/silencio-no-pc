@@ -29,7 +29,7 @@ Reference guide for the KidsPC web dashboard (`web/`). Use when modifying pages,
 | `/settings/notifications` | `app/settings/notifications/page.tsx` | Required | Notification preferences |
 | `/billing` | `app/billing/page.tsx` | Required | Billing page |
 | `/pricing` | `app/pricing/page.tsx` | Public | Pricing page |
-| `/download` | `app/download/page.tsx` | Public | App download page |
+| `/download` | `app/download/page.tsx` | Public | Standalone download page (platform cards, install steps, requirements, CTA). Rendered outside dashboard layout via `isPublic` in `main-wrapper.tsx` and `isLanding` in `nav-bar.tsx`. |
 | `/politica-privacidade` | `app/politica-privacidade/page.tsx` | Public | Privacy policy |
 | `/dicas-atividades` | `app/dicas-atividades/page.tsx` | Public | Activity ideas to replace screen time (by age group) |
 | `/sobre` | `app/sobre/page.tsx` | Public | About us — mission, values, story |

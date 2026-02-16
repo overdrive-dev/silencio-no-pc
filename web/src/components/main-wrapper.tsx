@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 
 export default function MainWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isPublic = pathname === "/" || pathname === "/politica-privacidade" || pathname === "/sobre" || pathname === "/dicas-atividades";
+  const isPublic = pathname === "/" || pathname === "/politica-privacidade" || pathname === "/sobre" || pathname === "/dicas-atividades" || pathname === "/download";
 
   if (isPublic) {
     return <main className="bg-background text-foreground">{children}</main>;

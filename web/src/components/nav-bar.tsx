@@ -24,7 +24,7 @@ export default function NavBar() {
   const { isInGracePeriod, isPastDue, daysUntilBlock } = useSubscription();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const isLanding = pathname === "/" || pathname === "/politica-privacidade" || pathname === "/sobre" || pathname === "/dicas-atividades";
+  const isLanding = pathname === "/" || pathname === "/politica-privacidade" || pathname === "/sobre" || pathname === "/dicas-atividades" || pathname === "/download";
 
   const navigation = [
     { name: "Dispositivos", href: "/dispositivos", current: pathname.startsWith("/dispositivos") || pathname.startsWith("/dispositivo/") },
