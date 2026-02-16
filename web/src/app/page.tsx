@@ -13,7 +13,7 @@ import {
   CheckIcon,
 } from "@heroicons/react/24/outline";
 import FaqSection from "@/components/landing/faq-section";
-import { StepsScene } from "@/components/landing/parallax-illustrations";
+
 
 const steps = [
   {
@@ -308,9 +308,48 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Giant tilted phone with floating cards — 7 cols */}
-            <div className="lg:col-span-7 hidden lg:flex items-center justify-center">
-              <StepsScene className="w-full max-w-xl" />
+            {/* Photo with floating step badges — 7 cols */}
+            <div className="lg:col-span-7 relative hidden lg:block">
+              <div className="relative rounded-3xl overflow-hidden max-w-xl mx-auto aspect-[4/3]">
+                <Image
+                  src="/images/hero-child-1.jpg"
+                  alt="Criança usando o computador protegida pelo KidsPC"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+
+                {/* Step badges floating over the photo */}
+                <div className="absolute top-5 left-5 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg px-4 py-3 flex items-center gap-3 animate-float z-10">
+                  <div className="flex size-8 items-center justify-center rounded-full bg-[#4A7AFF] text-white">
+                    <ShieldCheckIcon className="size-4" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-[#1a1a2e]">Conta criada</p>
+                    <p className="text-[10px] text-[#51CF66] font-medium">Completo</p>
+                  </div>
+                </div>
+
+                <div className="absolute top-5 right-5 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg px-4 py-3 flex items-center gap-3 animate-float-delay z-10">
+                  <div className="flex size-8 items-center justify-center rounded-full bg-[#FF6B6B] text-white">
+                    <BoltIcon className="size-4" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-[#1a1a2e]">App instalado</p>
+                    <p className="text-[10px] text-[#51CF66] font-medium">Conectado</p>
+                  </div>
+                </div>
+
+                <div className="absolute bottom-5 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg px-5 py-3 flex items-center gap-3 animate-float-slow z-10">
+                  <div className="flex size-8 items-center justify-center rounded-full bg-[#51CF66] text-white">
+                    <CheckIcon className="size-4" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-[#1a1a2e]">Tudo conectado!</p>
+                    <p className="text-[10px] text-gray-400">Painel pronto para usar</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
