@@ -166,26 +166,26 @@ export default function Home() {
               />
 
               {/* Dashboard card overlay */}
-              <div className="relative z-10 p-6 sm:p-8">
-                <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg border border-[#e8e0d8] p-5 max-w-sm">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="flex size-10 items-center justify-center rounded-xl bg-[#EDF2FF]">
-                      <svg className="size-5 text-[#4A7AFF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /></svg>
+              <div className="relative z-10 p-5 sm:p-6">
+                <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-[#e8e0d8] px-4 py-3 max-w-[260px]">
+                  <div className="flex items-center gap-2.5 mb-2.5">
+                    <div className="flex size-8 items-center justify-center rounded-lg bg-[#EDF2FF]">
+                      <svg className="size-4 text-[#4A7AFF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /></svg>
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-[#1a1a2e]">PC do Miguel</p>
-                      <div className="flex items-center gap-1.5">
+                      <p className="text-xs font-semibold text-[#1a1a2e] leading-tight">PC da Maria</p>
+                      <div className="flex items-center gap-1">
                         <span className="size-1.5 rounded-full bg-[#51CF66]" />
-                        <span className="text-xs text-gray-400">Online agora</span>
+                        <span className="text-[10px] text-gray-400">Online agora</span>
                       </div>
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-xs">
-                      <span className="text-gray-500">Tempo usado hoje</span>
+                  <div className="space-y-1.5">
+                    <div className="flex justify-between text-[11px]">
+                      <span className="text-gray-500">Tempo usado</span>
                       <span className="font-semibold text-[#1a1a2e]">1h 24min / 2h</span>
                     </div>
-                    <div className="h-2.5 rounded-full bg-[#EDF2FF] overflow-hidden">
+                    <div className="h-2 rounded-full bg-[#EDF2FF] overflow-hidden">
                       <div className="h-full rounded-full bg-[#4A7AFF]" style={{ width: "70%" }} />
                     </div>
                   </div>
@@ -208,30 +208,28 @@ export default function Home() {
               {/* Mini stats card */}
               <div className="mt-6 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/10 p-5">
                 <div className="flex items-center gap-2 mb-4">
-                  <GlobeAltIcon className="size-4 text-[#4A7AFF]" />
-                  <span className="text-xs font-semibold text-white">Uso da semana</span>
+                  <ClockIcon className="size-4 text-[#4A7AFF]" />
+                  <span className="text-xs font-semibold text-white">Tempo de tela da semana</span>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-2xl font-display text-white">8h</p>
-                    <p className="text-[11px] text-gray-400 mt-0.5">Tempo total</p>
+                    <p className="text-2xl font-display text-white">8h 30m</p>
+                    <p className="text-[11px] text-gray-400 mt-0.5">Total da semana</p>
                   </div>
                   <div>
-                    <p className="text-2xl font-display text-[#51CF66]">3</p>
-                    <p className="text-[11px] text-gray-400 mt-0.5">Apps bloqueados</p>
+                    <p className="text-2xl font-display text-[#4A7AFF]">1h 13m</p>
+                    <p className="text-[11px] text-gray-400 mt-0.5">Média por dia</p>
                   </div>
                 </div>
-                <div className="mt-4 flex items-end gap-2">
-                  {[40, 65, 55, 80, 45, 70, 30].map((h, i) => (
-                    <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
-                      <div className="w-full rounded-lg bg-white/5" style={{ height: 56 }}>
-                        <div
-                          className="w-full rounded-lg bg-[#4A7AFF] transition-all"
-                          style={{ height: `${h}%`, marginTop: `${100 - h}%` }}
-                        />
-                      </div>
+                <div className="mt-4 flex items-end gap-2" style={{ height: 56 }}>
+                  {[{ h: 40, label: "S" }, { h: 65, label: "T" }, { h: 55, label: "Q" }, { h: 80, label: "Q" }, { h: 45, label: "S" }, { h: 70, label: "S" }, { h: 30, label: "D" }].map((bar, i) => (
+                    <div key={i} className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+                      <div
+                        className="w-full rounded-md bg-[#4A7AFF]"
+                        style={{ height: `${bar.h}%` }}
+                      />
                       <span className="text-[10px] text-gray-500 font-medium">
-                        {["S", "T", "Q", "Q", "S", "S", "D"][i]}
+                        {bar.label}
                       </span>
                     </div>
                   ))}
