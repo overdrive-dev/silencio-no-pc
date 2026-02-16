@@ -1,4 +1,5 @@
 import { SignInButton, SignUpButton, SignedIn, SignedOut } from "@clerk/nextjs";
+import Image from "next/image";
 import Link from "next/link";
 import {
   ClockIcon,
@@ -152,11 +153,23 @@ export default function Home() {
       <section id="features" className="pb-20 sm:pb-28 relative">
         <div className="mx-auto max-w-6xl px-6">
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-5 animate-fade-in-up delay-5">
-            {/* ── Large card: Dashboard preview ── */}
-            <div className="lg:col-span-3 relative rounded-3xl bg-[#EDF2FF] border border-[#DAE5FF] p-6 sm:p-8 overflow-hidden min-h-[380px] sm:min-h-[420px]">
-              {/* Mock dashboard */}
-              <div className="relative z-10">
-                <div className="bg-white rounded-2xl shadow-lg border border-[#e8e0d8] p-5 max-w-sm">
+            {/* ── Large card: Photo + floating UI ── */}
+            <div className="lg:col-span-3 relative rounded-3xl overflow-hidden min-h-[380px] sm:min-h-[420px]">
+              {/* Background photo */}
+              <Image
+                src="/images/hero-child-1.jpg"
+                alt="Criança usando o computador com o KidsPC"
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 60vw"
+                priority
+              />
+              {/* Soft blue overlay for legibility */}
+              <div className="absolute inset-0 bg-[#EDF2FF]/60" />
+
+              {/* Dashboard card overlay */}
+              <div className="relative z-10 p-6 sm:p-8">
+                <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg border border-[#e8e0d8] p-5 max-w-sm">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="flex size-10 items-center justify-center rounded-xl bg-[#EDF2FF]">
                       <svg className="size-5 text-[#4A7AFF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /></svg>
@@ -169,7 +182,6 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
-                  {/* Usage bar */}
                   <div className="space-y-2">
                     <div className="flex justify-between text-xs">
                       <span className="text-gray-500">Tempo usado hoje</span>
@@ -183,7 +195,7 @@ export default function Home() {
               </div>
 
               {/* Floating badges */}
-              <div className="absolute top-6 right-6 sm:top-8 sm:right-8 bg-white rounded-xl shadow-lg border border-[#FFE0E0] px-3.5 py-2.5 flex items-center gap-2 animate-float z-10">
+              <div className="absolute top-6 right-6 sm:top-8 sm:right-8 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-[#FFE0E0] px-3.5 py-2.5 flex items-center gap-2 animate-float z-10">
                 <SpeakerWaveIcon className="size-4 text-[#FF6B6B]" />
                 <div>
                   <p className="text-[11px] font-semibold text-[#1a1a2e]">Volume alto</p>
@@ -191,7 +203,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="absolute bottom-6 left-6 sm:bottom-8 sm:left-8 bg-white rounded-xl shadow-lg border border-[#D6F5E0] px-3.5 py-2.5 flex items-center gap-2 animate-float-delay z-10">
+              <div className="absolute bottom-6 left-6 sm:bottom-8 sm:left-8 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-[#D6F5E0] px-3.5 py-2.5 flex items-center gap-2 animate-float-delay z-10">
                 <ClockIcon className="size-4 text-[#51CF66]" />
                 <div>
                   <p className="text-[11px] font-semibold text-[#1a1a2e]">Tempo restante</p>
@@ -199,7 +211,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="absolute bottom-6 right-6 sm:bottom-8 sm:right-8 bg-white rounded-xl shadow-lg border border-[#F3E8FF] px-3.5 py-2.5 flex items-center gap-2 animate-float-slow z-10">
+              <div className="absolute bottom-6 right-6 sm:bottom-8 sm:right-8 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-[#F3E8FF] px-3.5 py-2.5 flex items-center gap-2 animate-float-slow z-10">
                 <NoSymbolIcon className="size-4 text-[#9775FA]" />
                 <div>
                   <p className="text-[11px] font-semibold text-[#1a1a2e]">App bloqueado</p>
