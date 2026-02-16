@@ -119,12 +119,12 @@ export default function NavBar() {
               <SignedOut>
                 <SignInButton mode="modal">
                   <button className="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-[#1a1a2e] transition-all">
-                    Entrar
+                    Acessar painel
                   </button>
                 </SignInButton>
                 <SignUpButton mode="modal">
                   <button className="btn-pill btn-pill-primary text-sm py-2 px-5">
-                    Começar grátis
+                    Assinar — R$&nbsp;19,90/mês
                   </button>
                 </SignUpButton>
               </SignedOut>
@@ -198,12 +198,12 @@ export default function NavBar() {
               <div className="pt-3 border-t border-border flex flex-col gap-2">
                 <SignInButton mode="modal">
                   <button className="w-full px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:text-[#1a1a2e] transition text-left">
-                    Entrar
+                    Acessar painel
                   </button>
                 </SignInButton>
                 <SignUpButton mode="modal">
                   <button className="w-full px-3 py-2.5 rounded-full text-sm font-semibold bg-[#4A7AFF] text-white hover:bg-[#3A6AEF] transition">
-                    Começar grátis
+                    Assinar — R$ 19,90/mês
                   </button>
                 </SignUpButton>
               </div>
