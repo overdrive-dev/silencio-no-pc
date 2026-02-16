@@ -148,9 +148,10 @@ export default function Home() {
                       <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                     </button>
                   </SignUpButton>
-                  <a href="#features" className="btn-pill btn-pill-outline">
-                    Conhecer mais
-                  </a>
+                  <Link href="/download" className="btn-pill btn-pill-outline flex items-center gap-2">
+                    <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Baixar o app
+                  </Link>
                 </SignedOut>
                 <SignedIn>
                   <Link href="/dispositivos" className="btn-pill btn-pill-primary">
@@ -164,19 +165,34 @@ export default function Home() {
                 </SignedIn>
               </div>
 
-              <div className="animate-fade-in-up delay-4 mt-10 flex items-center gap-x-6 gap-y-2 flex-wrap text-sm text-gray-400">
-                <div className="flex items-center gap-2">
-                  <ShieldCheckIcon className="size-4 text-[#4A7AFF]" />
-                  <span>Até 2 dispositivos</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <svg className="size-4 text-[#4A7AFF]" viewBox="0 0 24 24" fill="currentColor">
+              {/* Platform availability bar */}
+              <div className="animate-fade-in-up delay-4 mt-10 flex items-center gap-3 flex-wrap">
+                <div className="flex items-center gap-2.5 rounded-xl bg-white border border-[#DAE5FF] shadow-sm px-4 py-2.5">
+                  <svg className="size-5 text-[#4A7AFF]" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M3 5.548l7.065-0.966v6.829H3V5.548zm0 12.904l7.065 0.966v-6.829H3v5.863zM11.065 4.38L22 2.75v8.661h-10.935V4.38zm0 15.24L22 21.25v-8.661h-10.935v7.031z" />
                   </svg>
-                  <span>Windows 10/11</span>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-[#1a1a2e] leading-tight">Windows</span>
+                    <span className="text-[10px] text-[#4A7AFF] font-medium">Disponível</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1.5 rounded-full bg-[#D6F5E0] px-3 py-1">
-                  <span className="text-[#51CF66] font-medium text-xs">Android em breve</span>
+                <div className="flex items-center gap-2.5 rounded-xl bg-white border border-[#D6F5E0] shadow-sm px-4 py-2.5">
+                  <svg className="size-5 text-[#51CF66]" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17.523 2.237a.625.625 0 0 0-.886 0L14.87 3.993a8.628 8.628 0 0 0-5.746 0L7.363 2.237a.625.625 0 1 0-.886.886l1.5 1.5A8.57 8.57 0 0 0 3.5 11.5v.5h17v-.5a8.57 8.57 0 0 0-4.477-6.877l1.5-1.5a.625.625 0 0 0 0-.886ZM8.75 9.5a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Zm6.5 0a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM3.5 13v5.5A3.5 3.5 0 0 0 7 22h10a3.5 3.5 0 0 0 3.5-3.5V13h-17Z" />
+                  </svg>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-[#1a1a2e] leading-tight">Android</span>
+                    <span className="text-[10px] text-[#51CF66] font-medium">Em breve</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2.5 rounded-xl bg-white border border-gray-200 shadow-sm px-4 py-2.5">
+                  <svg className="size-5 text-gray-400" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.71 19.5C17.88 20.74 17.02 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 16.56 2.93 11.3 4.7 7.72C5.57 5.94 7.36 4.86 9.28 4.84C10.56 4.82 11.75 5.74 12.55 5.74C13.33 5.74 14.77 4.62 16.35 4.8C17.02 4.83 18.77 5.07 19.87 6.72C19.78 6.78 17.5 8.12 17.53 10.88C17.56 14.19 20.43 15.28 20.47 15.3C20.44 15.39 19.99 16.93 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z" />
+                  </svg>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-[#1a1a2e] leading-tight">Apple</span>
+                    <span className="text-[10px] text-gray-400 font-medium">Em breve</span>
+                  </div>
                 </div>
               </div>
             </div>
