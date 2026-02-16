@@ -12,53 +12,7 @@ import {
   CheckIcon,
 } from "@heroicons/react/24/outline";
 import FaqSection from "@/components/landing/faq-section";
-import { HeroScene, StepsScene } from "@/components/landing/parallax-illustrations";
-
-const features = [
-  {
-    name: "Tempo de Tela Organizado",
-    description:
-      "Defina quanto tempo por dia seu filho pode usar o computador. Quando o tempo acaba, a tela encerra automaticamente — e ele já sabe que é assim.",
-    icon: ClockIcon,
-    color: "bg-[#EDF2FF] text-[#4A7AFF]",
-  },
-  {
-    name: "Ambiente Mais Calmo",
-    description:
-      "O KidsPC detecta o nível de barulho e ensina seu filho a manter o volume adequado. Com o tempo, ele mesmo se regula — e a casa fica mais tranquila.",
-    icon: SpeakerWaveIcon,
-    color: "bg-[#FFE0E0] text-[#FF6B6B]",
-  },
-  {
-    name: "Acompanhe de Qualquer Lugar",
-    description:
-      "Pelo celular ou navegador, você acompanha o uso, ajusta limites e libera mais tempo quando quiser. Tudo na palma da mão.",
-    icon: GlobeAltIcon,
-    color: "bg-[#D6F5E0] text-[#51CF66]",
-  },
-  {
-    name: "Rotina com Horários Definidos",
-    description:
-      "Escolha em quais horários o computador fica disponível. Hora de estudar, dormir ou brincar lá fora — cada momento no seu lugar.",
-    icon: CalendarDaysIcon,
-    color: "bg-[#FFF3D6] text-[#FFA94D]",
-  },
-  {
-    name: "Bloqueio de Apps & Sites",
-    description:
-      "Selecione quais jogos, apps e sites são permitidos. Seu filho acessa só o que faz sentido para a idade dele.",
-    icon: NoSymbolIcon,
-    badge: "Novo",
-    color: "bg-[#F3E8FF] text-[#9775FA]",
-  },
-  {
-    name: "Proteção Inteligente",
-    description:
-      "O programa roda de forma segura — seu filho não consegue alterar as regras ou desinstalar. Você configura uma vez e funciona.",
-    icon: LockClosedIcon,
-    color: "bg-[#EDF2FF] text-[#4A7AFF]",
-  },
-];
+import { StepsScene } from "@/components/landing/parallax-illustrations";
 
 const steps = [
   {
@@ -115,126 +69,220 @@ const planFeatures = [
 export default function Home() {
   return (
     <div className="bg-background overflow-hidden">
-      {/* ── Hero ── */}
-      <section className="relative overflow-hidden py-20 sm:py-28 lg:py-36">
-        <div className="relative mx-auto max-w-7xl px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center min-h-[520px]">
-            {/* Text — 5 cols */}
-            <div className="lg:col-span-5 relative z-10">
-              <div className="animate-fade-in-up delay-0 inline-flex items-center gap-2 rounded-full bg-[#EDF2FF] px-4 py-1.5 text-sm font-medium text-[#4A7AFF] mb-8">
-                <span className="relative flex size-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#4A7AFF] opacity-50" />
-                  <span className="relative inline-flex size-2 rounded-full bg-[#4A7AFF]" />
-                </span>
-                v2.1.0 — Bloqueio de apps &amp; sites
+      {/* ── Hero — Centered ── */}
+      <section className="relative overflow-hidden pt-20 pb-12 sm:pt-28 sm:pb-16 lg:pt-36 lg:pb-20">
+        <div className="relative mx-auto max-w-4xl px-6 text-center">
+          <div className="animate-fade-in-up delay-0 inline-flex items-center gap-2 rounded-full bg-[#EDF2FF] px-4 py-1.5 text-sm font-medium text-[#4A7AFF] mb-8">
+            <span className="relative flex size-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#4A7AFF] opacity-50" />
+              <span className="relative inline-flex size-2 rounded-full bg-[#4A7AFF]" />
+            </span>
+            v2.1.0 — Bloqueio de apps &amp; sites
+          </div>
+
+          <h1 className="animate-fade-in-up delay-1 font-display text-4xl tracking-tight text-[#1a1a2e] sm:text-5xl lg:text-[3.5rem] xl:text-6xl leading-[1.1]">
+            Controle inteligente para
+            <br />
+            o computador do seu filho
+          </h1>
+          <p className="animate-fade-in-up delay-2 mt-6 text-lg leading-8 text-gray-500 max-w-2xl mx-auto">
+            Limite de tempo, controle de barulho e acompanhamento em tempo real.
+            Tudo pelo celular — e sem complicação.
+          </p>
+
+          <div className="animate-fade-in-up delay-3 mt-10 flex items-center justify-center gap-4 flex-wrap">
+            <SignedOut>
+              <SignUpButton mode="modal">
+                <button className="btn-pill btn-pill-primary">
+                  Começar agora — R$&nbsp;19,90/mês
+                  <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+              </SignUpButton>
+              <a href="#features" className="btn-pill btn-pill-outline">
+                Conhecer mais
+              </a>
+            </SignedOut>
+            <SignedIn>
+              <Link href="/dispositivos" className="btn-pill btn-pill-primary">
+                Meu painel
+                <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </Link>
+              <Link href="/download" className="btn-pill btn-pill-outline flex items-center gap-2">
+                <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Baixar o app
+              </Link>
+            </SignedIn>
+          </div>
+
+          {/* Platform availability bar */}
+          <div className="animate-fade-in-up delay-4 mt-10 flex items-center justify-center gap-3 flex-wrap">
+            <Link href="/download" className="flex items-center gap-2.5 rounded-xl bg-white border border-[#DAE5FF] shadow-sm px-4 py-2.5 hover:shadow-md hover:border-[#4A7AFF]/40 transition-all group">
+              <svg className="size-5 text-[#4A7AFF]" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 5.548l7.065-0.966v6.829H3V5.548zm0 12.904l7.065 0.966v-6.829H3v5.863zM11.065 4.38L22 2.75v8.661h-10.935V4.38zm0 15.24L22 21.25v-8.661h-10.935v7.031z" />
+              </svg>
+              <div className="flex flex-col">
+                <span className="text-sm font-semibold text-[#1a1a2e] leading-tight">Windows</span>
+                <span className="text-[10px] text-[#4A7AFF] font-medium">Baixar agora</span>
               </div>
-
-              <h1 className="animate-fade-in-up delay-1 font-display text-4xl tracking-tight text-[#1a1a2e] sm:text-5xl lg:text-6xl leading-[1.1]">
-                Menos tela,
-                <br />
-                <span className="text-[#4A7AFF]">mais infância</span>
-              </h1>
-              <p className="animate-fade-in-up delay-2 mt-6 text-lg leading-8 text-gray-500 max-w-lg">
-                O KidsPC ajuda seu filho a ter uma rotina digital mais saudável.
-                Limite de tempo, controle de barulho e acompanhamento em tempo real —
-                tudo pelo celular.
-              </p>
-
-              <div className="animate-fade-in-up delay-3 mt-10 flex items-center gap-4 flex-wrap">
-                <SignedOut>
-                  <SignUpButton mode="modal">
-                    <button className="btn-pill btn-pill-primary">
-                      Começar agora — R$&nbsp;19,90/mês
-                      <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                    </button>
-                  </SignUpButton>
-                  <a href="#features" className="btn-pill btn-pill-outline">
-                    Conhecer mais
-                  </a>
-                </SignedOut>
-                <SignedIn>
-                  <Link href="/dispositivos" className="btn-pill btn-pill-primary">
-                    Meu painel
-                    <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                  </Link>
-                  <Link href="/download" className="btn-pill btn-pill-outline flex items-center gap-2">
-                    <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    Baixar o app
-                  </Link>
-                </SignedIn>
-              </div>
-
-              {/* Platform availability bar */}
-              <div className="animate-fade-in-up delay-4 mt-10 flex items-center gap-3 flex-wrap">
-                <Link href="/download" className="flex items-center gap-2.5 rounded-xl bg-white border border-[#DAE5FF] shadow-sm px-4 py-2.5 hover:shadow-md hover:border-[#4A7AFF]/40 transition-all group">
-                  <svg className="size-5 text-[#4A7AFF]" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M3 5.548l7.065-0.966v6.829H3V5.548zm0 12.904l7.065 0.966v-6.829H3v5.863zM11.065 4.38L22 2.75v8.661h-10.935V4.38zm0 15.24L22 21.25v-8.661h-10.935v7.031z" />
-                  </svg>
-                  <div className="flex flex-col">
-                    <span className="text-sm font-semibold text-[#1a1a2e] leading-tight">Windows</span>
-                    <span className="text-[10px] text-[#4A7AFF] font-medium">Baixar agora</span>
-                  </div>
-                  <svg className="size-4 text-[#4A7AFF] opacity-50 group-hover:opacity-100 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                </Link>
-                <div className="flex items-center gap-2.5 rounded-xl bg-gray-50 border border-gray-200 px-4 py-2.5 opacity-60">
-                  <svg className="size-5 text-gray-400" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M17.523 2.237a.625.625 0 0 0-.886 0L14.87 3.993a8.628 8.628 0 0 0-5.746 0L7.363 2.237a.625.625 0 1 0-.886.886l1.5 1.5A8.57 8.57 0 0 0 3.5 11.5v.5h17v-.5a8.57 8.57 0 0 0-4.477-6.877l1.5-1.5a.625.625 0 0 0 0-.886ZM8.75 9.5a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Zm6.5 0a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM3.5 13v5.5A3.5 3.5 0 0 0 7 22h10a3.5 3.5 0 0 0 3.5-3.5V13h-17Z" />
-                  </svg>
-                  <div className="flex flex-col">
-                    <span className="text-sm font-semibold text-gray-400 leading-tight">Android</span>
-                    <span className="text-[10px] text-gray-400 font-medium">Em breve</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2.5 rounded-xl bg-gray-50 border border-gray-200 px-4 py-2.5 opacity-60">
-                  <svg className="size-5 text-gray-400" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M18.71 19.5C17.88 20.74 17.02 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 16.56 2.93 11.3 4.7 7.72C5.57 5.94 7.36 4.86 9.28 4.84C10.56 4.82 11.75 5.74 12.55 5.74C13.33 5.74 14.77 4.62 16.35 4.8C17.02 4.83 18.77 5.07 19.87 6.72C19.78 6.78 17.5 8.12 17.53 10.88C17.56 14.19 20.43 15.28 20.47 15.3C20.44 15.39 19.99 16.93 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z" />
-                  </svg>
-                  <div className="flex flex-col">
-                    <span className="text-sm font-semibold text-gray-400 leading-tight">Apple</span>
-                    <span className="text-[10px] text-gray-400 font-medium">Em breve</span>
-                  </div>
-                </div>
+              <svg className="size-4 text-[#4A7AFF] opacity-50 group-hover:opacity-100 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            </Link>
+            <div className="flex items-center gap-2.5 rounded-xl bg-gray-50 border border-gray-200 px-4 py-2.5 opacity-60">
+              <svg className="size-5 text-gray-400" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.523 2.237a.625.625 0 0 0-.886 0L14.87 3.993a8.628 8.628 0 0 0-5.746 0L7.363 2.237a.625.625 0 1 0-.886.886l1.5 1.5A8.57 8.57 0 0 0 3.5 11.5v.5h17v-.5a8.57 8.57 0 0 0-4.477-6.877l1.5-1.5a.625.625 0 0 0 0-.886ZM8.75 9.5a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Zm6.5 0a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM3.5 13v5.5A3.5 3.5 0 0 0 7 22h10a3.5 3.5 0 0 0 3.5-3.5V13h-17Z" />
+              </svg>
+              <div className="flex flex-col">
+                <span className="text-sm font-semibold text-gray-400 leading-tight">Android</span>
+                <span className="text-[10px] text-gray-400 font-medium">Em breve</span>
               </div>
             </div>
-
-            {/* Illustration — 7 cols, boxed container */}
-            <div className="lg:col-span-7 hidden lg:block relative animate-fade-in-up delay-2">
-              <HeroScene className="w-full" />
+            <div className="flex items-center gap-2.5 rounded-xl bg-gray-50 border border-gray-200 px-4 py-2.5 opacity-60">
+              <svg className="size-5 text-gray-400" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.71 19.5C17.88 20.74 17.02 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.1 22C7.79 22.05 6.8 20.68 5.96 19.47C4.25 16.56 2.93 11.3 4.7 7.72C5.57 5.94 7.36 4.86 9.28 4.84C10.56 4.82 11.75 5.74 12.55 5.74C13.33 5.74 14.77 4.62 16.35 4.8C17.02 4.83 18.77 5.07 19.87 6.72C19.78 6.78 17.5 8.12 17.53 10.88C17.56 14.19 20.43 15.28 20.47 15.3C20.44 15.39 19.99 16.93 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z" />
+              </svg>
+              <div className="flex flex-col">
+                <span className="text-sm font-semibold text-gray-400 leading-tight">Apple</span>
+                <span className="text-[10px] text-gray-400 font-medium">Em breve</span>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── Features ── */}
-      <section id="features" className="py-20 sm:py-28 relative">
+      {/* ── Bento Grid — Feature Showcase ── */}
+      <section id="features" className="pb-20 sm:pb-28 relative">
         <div className="mx-auto max-w-6xl px-6">
-          <div className="mx-auto max-w-2xl text-center mb-16">
-            <p className="text-sm font-semibold tracking-widest uppercase text-[#4A7AFF]">Funcionalidades</p>
-            <h2 className="mt-3 font-display text-3xl tracking-tight text-[#1a1a2e] sm:text-4xl">
-              Uma rotina digital mais saudável
-            </h2>
-            <p className="mt-4 text-lg text-gray-500">
-              Ferramentas simples para ajudar seu filho a usar o computador de forma equilibrada.
-            </p>
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-5 animate-fade-in-up delay-5">
+            {/* ── Large card: Dashboard preview ── */}
+            <div className="lg:col-span-3 relative rounded-3xl bg-[#EDF2FF] border border-[#DAE5FF] p-6 sm:p-8 overflow-hidden min-h-[380px] sm:min-h-[420px]">
+              {/* Mock dashboard */}
+              <div className="relative z-10">
+                <div className="bg-white rounded-2xl shadow-lg border border-[#e8e0d8] p-5 max-w-sm">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="flex size-10 items-center justify-center rounded-xl bg-[#EDF2FF]">
+                      <svg className="size-5 text-[#4A7AFF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" /></svg>
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-[#1a1a2e]">PC do Miguel</p>
+                      <div className="flex items-center gap-1.5">
+                        <span className="size-1.5 rounded-full bg-[#51CF66]" />
+                        <span className="text-xs text-gray-400">Online agora</span>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Usage bar */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-xs">
+                      <span className="text-gray-500">Tempo usado hoje</span>
+                      <span className="font-semibold text-[#1a1a2e]">1h 24min / 2h</span>
+                    </div>
+                    <div className="h-2.5 rounded-full bg-[#EDF2FF] overflow-hidden">
+                      <div className="h-full rounded-full bg-[#4A7AFF]" style={{ width: "70%" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Floating badges */}
+              <div className="absolute top-6 right-6 sm:top-8 sm:right-8 bg-white rounded-xl shadow-lg border border-[#FFE0E0] px-3.5 py-2.5 flex items-center gap-2 animate-float z-10">
+                <SpeakerWaveIcon className="size-4 text-[#FF6B6B]" />
+                <div>
+                  <p className="text-[11px] font-semibold text-[#1a1a2e]">Volume alto</p>
+                  <p className="text-[10px] text-gray-400">Aviso enviado</p>
+                </div>
+              </div>
+
+              <div className="absolute bottom-6 left-6 sm:bottom-8 sm:left-8 bg-white rounded-xl shadow-lg border border-[#D6F5E0] px-3.5 py-2.5 flex items-center gap-2 animate-float-delay z-10">
+                <ClockIcon className="size-4 text-[#51CF66]" />
+                <div>
+                  <p className="text-[11px] font-semibold text-[#1a1a2e]">Tempo restante</p>
+                  <p className="text-[10px] text-[#51CF66] font-medium">36 min</p>
+                </div>
+              </div>
+
+              <div className="absolute bottom-6 right-6 sm:bottom-8 sm:right-8 bg-white rounded-xl shadow-lg border border-[#F3E8FF] px-3.5 py-2.5 flex items-center gap-2 animate-float-slow z-10">
+                <NoSymbolIcon className="size-4 text-[#9775FA]" />
+                <div>
+                  <p className="text-[11px] font-semibold text-[#1a1a2e]">App bloqueado</p>
+                  <p className="text-[10px] text-gray-400">Discord</p>
+                </div>
+              </div>
+            </div>
+
+            {/* ── Right card: Feature highlight ── */}
+            <div className="lg:col-span-2 rounded-3xl bg-[#1a1a2e] p-6 sm:p-8 flex flex-col justify-between min-h-[380px] sm:min-h-[420px]">
+              <div>
+                <h3 className="font-display text-2xl sm:text-3xl text-white leading-snug">
+                  Acompanhe tudo em tempo real
+                </h3>
+                <p className="mt-3 text-sm text-gray-400 leading-relaxed">
+                  Veja o uso do computador, controle apps e sites, e ajuste limites — de qualquer lugar.
+                </p>
+              </div>
+
+              {/* Mini stats card */}
+              <div className="mt-6 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/10 p-5">
+                <div className="flex items-center gap-2 mb-4">
+                  <GlobeAltIcon className="size-4 text-[#4A7AFF]" />
+                  <span className="text-xs font-semibold text-white">Uso da semana</span>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-2xl font-display text-white">8h</p>
+                    <p className="text-[11px] text-gray-400 mt-0.5">Tempo total</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-display text-[#51CF66]">3</p>
+                    <p className="text-[11px] text-gray-400 mt-0.5">Apps bloqueados</p>
+                  </div>
+                </div>
+                <div className="mt-4 flex gap-1.5">
+                  {[40, 65, 55, 80, 45, 70, 30].map((h, i) => (
+                    <div key={i} className="flex-1 flex flex-col items-center gap-1">
+                      <div className="w-full rounded-full bg-white/5 overflow-hidden" style={{ height: 48 }}>
+                        <div
+                          className="w-full rounded-full bg-[#4A7AFF] mt-auto"
+                          style={{ height: `${h}%`, marginTop: `${100 - h}%` }}
+                        />
+                      </div>
+                      <span className="text-[9px] text-gray-500">
+                        {["S", "T", "Q", "Q", "S", "S", "D"][i]}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map((feature) => (
-              <div key={feature.name} className="card-flat p-7">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className={`flex size-10 items-center justify-center rounded-xl ${feature.color}`}>
-                    <feature.icon className="size-5" />
-                  </div>
-                  {"badge" in feature && feature.badge && (
-                    <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-[#4A7AFF] text-white">
-                      {feature.badge}
-                    </span>
-                  )}
-                </div>
-                <h3 className="text-base font-semibold text-[#1a1a2e] mb-2">{feature.name}</h3>
-                <p className="text-sm leading-relaxed text-gray-500">{feature.description}</p>
+          {/* ── Mini feature row ── */}
+          <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-5 animate-fade-in-up delay-5">
+            <div className="card-flat p-6 flex items-start gap-4">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#FFE0E0] text-[#FF6B6B]">
+                <SpeakerWaveIcon className="size-5" />
               </div>
-            ))}
+              <div>
+                <h4 className="text-sm font-semibold text-[#1a1a2e]">Sensor de barulho</h4>
+                <p className="mt-1 text-xs text-gray-500 leading-relaxed">Detecta volume alto e ensina seu filho a se regular.</p>
+              </div>
+            </div>
+            <div className="card-flat p-6 flex items-start gap-4">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF3D6] text-[#FFA94D]">
+                <CalendarDaysIcon className="size-5" />
+              </div>
+              <div>
+                <h4 className="text-sm font-semibold text-[#1a1a2e]">Horários definidos</h4>
+                <p className="mt-1 text-xs text-gray-500 leading-relaxed">Escolha quando o computador fica disponível.</p>
+              </div>
+            </div>
+            <div className="card-flat p-6 flex items-start gap-4">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#EDF2FF] text-[#4A7AFF]">
+                <LockClosedIcon className="size-5" />
+              </div>
+              <div>
+                <h4 className="text-sm font-semibold text-[#1a1a2e]">Proteção inteligente</h4>
+                <p className="mt-1 text-xs text-gray-500 leading-relaxed">Seu filho não consegue alterar regras ou desinstalar.</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
