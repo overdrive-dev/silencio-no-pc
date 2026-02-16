@@ -157,15 +157,13 @@ export default function Home() {
             <div className="lg:col-span-3 relative rounded-3xl overflow-hidden min-h-[380px] sm:min-h-[420px]">
               {/* Background photo */}
               <Image
-                src="/images/hero-child-1.jpg"
+                src="/images/hero-child-2.jpg"
                 alt="Criança usando o computador com o KidsPC"
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 60vw"
                 priority
               />
-              {/* Soft blue overlay for legibility */}
-              <div className="absolute inset-0 bg-[#EDF2FF]/60" />
 
               {/* Dashboard card overlay */}
               <div className="relative z-10 p-6 sm:p-8">
@@ -194,30 +192,6 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Floating badges */}
-              <div className="absolute top-6 right-6 sm:top-8 sm:right-8 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-[#FFE0E0] px-3.5 py-2.5 flex items-center gap-2 animate-float z-10">
-                <SpeakerWaveIcon className="size-4 text-[#FF6B6B]" />
-                <div>
-                  <p className="text-[11px] font-semibold text-[#1a1a2e]">Volume alto</p>
-                  <p className="text-[10px] text-gray-400">Aviso enviado</p>
-                </div>
-              </div>
-
-              <div className="absolute bottom-6 left-6 sm:bottom-8 sm:left-8 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-[#D6F5E0] px-3.5 py-2.5 flex items-center gap-2 animate-float-delay z-10">
-                <ClockIcon className="size-4 text-[#51CF66]" />
-                <div>
-                  <p className="text-[11px] font-semibold text-[#1a1a2e]">Tempo restante</p>
-                  <p className="text-[10px] text-[#51CF66] font-medium">36 min</p>
-                </div>
-              </div>
-
-              <div className="absolute bottom-6 right-6 sm:bottom-8 sm:right-8 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-[#F3E8FF] px-3.5 py-2.5 flex items-center gap-2 animate-float-slow z-10">
-                <NoSymbolIcon className="size-4 text-[#9775FA]" />
-                <div>
-                  <p className="text-[11px] font-semibold text-[#1a1a2e]">App bloqueado</p>
-                  <p className="text-[10px] text-gray-400">Discord</p>
-                </div>
-              </div>
             </div>
 
             {/* ── Right card: Feature highlight ── */}
@@ -247,16 +221,16 @@ export default function Home() {
                     <p className="text-[11px] text-gray-400 mt-0.5">Apps bloqueados</p>
                   </div>
                 </div>
-                <div className="mt-4 flex gap-1.5">
+                <div className="mt-4 flex items-end gap-2">
                   {[40, 65, 55, 80, 45, 70, 30].map((h, i) => (
-                    <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                      <div className="w-full rounded-full bg-white/5 overflow-hidden" style={{ height: 48 }}>
+                    <div key={i} className="flex-1 flex flex-col items-center gap-1.5">
+                      <div className="w-full rounded-lg bg-white/5" style={{ height: 56 }}>
                         <div
-                          className="w-full rounded-full bg-[#4A7AFF] mt-auto"
+                          className="w-full rounded-lg bg-[#4A7AFF] transition-all"
                           style={{ height: `${h}%`, marginTop: `${100 - h}%` }}
                         />
                       </div>
-                      <span className="text-[9px] text-gray-500">
+                      <span className="text-[10px] text-gray-500 font-medium">
                         {["S", "T", "Q", "Q", "S", "S", "D"][i]}
                       </span>
                     </div>
@@ -266,33 +240,42 @@ export default function Home() {
             </div>
           </div>
 
-          {/* ── Mini feature row ── */}
-          <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-5 animate-fade-in-up delay-5">
-            <div className="card-flat p-6 flex items-start gap-4">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#FFE0E0] text-[#FF6B6B]">
-                <SpeakerWaveIcon className="size-5" />
+          {/* ── Floating badges row ── */}
+          <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-4 animate-fade-in-up delay-5">
+            <div className="card-flat px-4 py-3.5 flex items-center gap-3">
+              <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#FFE0E0]">
+                <SpeakerWaveIcon className="size-4 text-[#FF6B6B]" />
               </div>
               <div>
-                <h4 className="text-sm font-semibold text-[#1a1a2e]">Sensor de barulho</h4>
-                <p className="mt-1 text-xs text-gray-500 leading-relaxed">Detecta volume alto e ensina seu filho a se regular.</p>
+                <p className="text-xs font-semibold text-[#1a1a2e]">Volume alto</p>
+                <p className="text-[10px] text-gray-400">Aviso enviado</p>
               </div>
             </div>
-            <div className="card-flat p-6 flex items-start gap-4">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF3D6] text-[#FFA94D]">
-                <CalendarDaysIcon className="size-5" />
+            <div className="card-flat px-4 py-3.5 flex items-center gap-3">
+              <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#D6F5E0]">
+                <ClockIcon className="size-4 text-[#51CF66]" />
               </div>
               <div>
-                <h4 className="text-sm font-semibold text-[#1a1a2e]">Horários definidos</h4>
-                <p className="mt-1 text-xs text-gray-500 leading-relaxed">Escolha quando o computador fica disponível.</p>
+                <p className="text-xs font-semibold text-[#1a1a2e]">Tempo restante</p>
+                <p className="text-[10px] text-[#51CF66] font-medium">36 min</p>
               </div>
             </div>
-            <div className="card-flat p-6 flex items-start gap-4">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#EDF2FF] text-[#4A7AFF]">
-                <LockClosedIcon className="size-5" />
+            <div className="card-flat px-4 py-3.5 flex items-center gap-3">
+              <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#F3E8FF]">
+                <NoSymbolIcon className="size-4 text-[#9775FA]" />
               </div>
               <div>
-                <h4 className="text-sm font-semibold text-[#1a1a2e]">Proteção inteligente</h4>
-                <p className="mt-1 text-xs text-gray-500 leading-relaxed">Seu filho não consegue alterar regras ou desinstalar.</p>
+                <p className="text-xs font-semibold text-[#1a1a2e]">App bloqueado</p>
+                <p className="text-[10px] text-gray-400">Discord</p>
+              </div>
+            </div>
+            <div className="card-flat px-4 py-3.5 flex items-center gap-3">
+              <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-[#FFF3D6]">
+                <CalendarDaysIcon className="size-4 text-[#FFA94D]" />
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-[#1a1a2e]">Horário ativo</p>
+                <p className="text-[10px] text-gray-400">14h — 18h</p>
               </div>
             </div>
           </div>
