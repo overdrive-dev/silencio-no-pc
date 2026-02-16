@@ -312,8 +312,8 @@ export default function Home() {
             <div className="lg:col-span-7 relative hidden lg:block">
               <div className="relative rounded-3xl overflow-hidden max-w-xl mx-auto aspect-[4/3]">
                 <Image
-                  src="/images/hero-child-1.jpg"
-                  alt="Criança usando o computador protegida pelo KidsPC"
+                  src="/images/steps-photo.jpg"
+                  alt="Mãe e filho felizes usando smartphone juntos no sofá"
                   fill
                   className="object-cover"
                   sizes="(max-width: 1024px) 100vw, 50vw"
