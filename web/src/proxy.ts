@@ -4,7 +4,6 @@ const isProtectedRoute = createRouteMatcher([
   "/dispositivos(.*)",
   "/dispositivo(.*)",
   "/settings(.*)",
-  "/download(.*)",
   "/billing(.*)",
 ]);
 
