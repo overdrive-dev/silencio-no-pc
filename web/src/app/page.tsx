@@ -320,7 +320,7 @@ export default function Home() {
                 />
 
                 {/* Step badges floating over the photo */}
-                <div className="absolute top-5 left-5 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg px-4 py-3 flex items-center gap-3 animate-float z-10">
+                <div className="absolute top-8 left-8 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg px-4 py-3 flex items-center gap-3 animate-float z-10">
                   <div className="flex size-8 items-center justify-center rounded-full bg-[#4A7AFF] text-white">
                     <ShieldCheckIcon className="size-4" />
                   </div>
@@ -330,7 +330,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="absolute top-5 right-5 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg px-4 py-3 flex items-center gap-3 animate-float-delay z-10">
+                <div className="absolute top-8 right-8 bg-white/95 backdrop-blur-sm rounded-xl shadow-lg px-4 py-3 flex items-center gap-3 animate-float-delay z-10">
                   <div className="flex size-8 items-center justify-center rounded-full bg-[#FF6B6B] text-white">
                     <BoltIcon className="size-4" />
                   </div>
