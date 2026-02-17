@@ -103,7 +103,7 @@ silencio-no-pc/
 │   │   │       ├── dispositivo/[id]/blocked-apps/  # GET, POST, DELETE
 │   │   │       ├── dispositivo/[id]/blocked-sites/ # GET, POST, DELETE
 │   │   │       ├── pairing/               # POST validate pairing code
-│   │   │       └── mercadopago/           # checkout, webhook, status, sync, cancel
+│   │   │       └── mercadopago/           # checkout, webhook, status, sync, cancel, payments
 │   │   ├── components/
 │   │   │   ├── nav-bar.tsx
 │   │   │   ├── main-wrapper.tsx

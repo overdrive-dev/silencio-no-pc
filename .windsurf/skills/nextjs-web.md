@@ -56,6 +56,7 @@ Reference guide for the KidsPC web dashboard (`web/`). Use when modifying pages,
 | `/api/mercadopago/status` | GET | Check subscription status |
 | `/api/mercadopago/sync` | POST | Force-sync subscription state |
 | `/api/mercadopago/cancel` | POST | Cancel subscription |
+| `/api/mercadopago/payments` | GET | Payment history (last 12 payments via MP Payment.search) |
 
 ## Auth Pattern
 
