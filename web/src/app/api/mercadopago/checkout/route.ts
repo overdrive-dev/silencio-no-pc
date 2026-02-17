@@ -1,7 +1,7 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { PreApproval } from "mercadopago";
-import { getMercadoPagoClient } from "@/lib/mercadopago";
+import { getMercadoPagoClient, getOrCreatePlan, BASE_PRICE } from "@/lib/mercadopago";
 import { getUserSubscription } from "@/lib/subscription";
 
 export async function POST() {
@@ -32,20 +32,25 @@ export async function POST() {
       return NextResponse.json({ error: "Configuração do Mercado Pago ausente. Contate o suporte." }, { status: 500 });
     }
 
-    // 4. Create MercadoPago PreApproval
+    // 4. Get or create the subscription plan (enables boleto + pix + credit card)
+    const planId = await getOrCreatePlan();
+    console.log("[mp-checkout] Using plan:", planId);
+
+    // 5. Create MercadoPago PreApproval linked to the plan
     const client = getMercadoPagoClient();
     const preApproval = new PreApproval(client);
     const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://kidspc.com.br").trim();
 
     const subscription = await preApproval.create({
       body: {
+        preapproval_plan_id: planId,
         reason: "KidsPC — Plano Mensal",
         external_reference: userId,
         payer_email: payerEmail,
         auto_recurring: {
           frequency: 1,
           frequency_type: "months",
-          transaction_amount: 19.9,
+          transaction_amount: BASE_PRICE,
           currency_id: "BRL",
         },
         back_url: `${appUrl}/dispositivos?subscribed=true`,

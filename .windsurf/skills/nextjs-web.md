@@ -106,13 +106,23 @@ if (!pc) return NextResponse.json({ error: "Not found" }, { status: 404 });
 ## Subscription System (MercadoPago)
 
 ### Flow
-1. User clicks "Assinar agora" on `/pricing` → `POST /api/mercadopago/checkout` creates a pending PreApproval
-2. API returns MercadoPago `init_point` URL → user is **redirected to MercadoPago's page** to pay
-3. After payment, MercadoPago redirects back to `/dispositivos?subscribed=true`
-4. Webhook `POST /api/mercadopago/webhook` handles `subscription_preapproval`, `subscription_authorized_payment`, and `payment` events → upserts `subscriptions` table
-5. Client checks access via `useSubscription()` hook → `GET /api/mercadopago/status`
+1. User clicks "Assinar agora" on `/pricing` → `POST /api/mercadopago/checkout`
+2. Checkout calls `getOrCreatePlan()` → finds or creates a `preapproval_plan` with `payment_methods_allowed` (credit_card + ticket/boleto + bank_transfer/pix)
+3. Creates a pending PreApproval linked to the plan (`preapproval_plan_id`)
+4. API returns MercadoPago `init_point` URL → user is **redirected to MercadoPago's page** to pay (card, boleto, or Pix if they have MP account)
+5. After payment, MercadoPago redirects back to `/dispositivos?subscribed=true`
+6. Webhook `POST /api/mercadopago/webhook` handles `subscription_preapproval`, `subscription_authorized_payment`, `subscription_preapproval_plan`, and `payment` events → upserts `subscriptions` table
+7. Client checks access via `useSubscription()` hook → `GET /api/mercadopago/status`
 
 > **No CardPayment brick / client-side SDK** — all payment happens on MercadoPago's hosted page. `@mercadopago/sdk-react` is still a dependency but not used for checkout.
+
+### Plan-based Model (`preapproval_plan`)
+- `getOrCreatePlan()` in `lib/mercadopago.ts` lazily creates the plan on first checkout and caches in memory
+- Plan ID can be pre-set via `MP_PLAN_ID` env var to skip search/create
+- Plan enables 3 payment types: `credit_card`, `ticket` (boleto), `bank_transfer` (pix)
+- **Pix limitation**: only works for users with a MercadoPago account (MP platform restriction)
+- **Boleto**: available to all, fee R$3,49/receipt, 7-day due + 3-day grace
+- Individual subscriptions still override `transaction_amount` for device upgrades
 
 ### Plan & Device Limits
 - Base plan: **R$ 19,90/mês** — includes **2 devices** (defined in `lib/mercadopago.ts`)
