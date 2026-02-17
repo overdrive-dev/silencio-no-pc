@@ -12,6 +12,8 @@ export interface SubscriptionStatus {
   current_period_end: string | null;
   mp_subscription_id: string | null;
   stripe_subscription_id: string | null;
+  max_devices: number;
+  device_count: number;
 }
 
 const CACHE_KEY = "kidspc_sub_status";
@@ -94,6 +96,10 @@ export function useSubscription() {
     ? Math.max(0, Math.ceil((new Date(sub.current_period_end).getTime() + 7 * 24 * 60 * 60 * 1000 - Date.now()) / (24 * 60 * 60 * 1000)))
     : null;
 
+  const maxDevices = sub?.max_devices ?? 2;
+  const deviceCount = sub?.device_count ?? 0;
+  const canAddDevice = hasAccess && deviceCount < maxDevices;
+
   return {
     subscription: sub,
     loading,
@@ -104,5 +110,8 @@ export function useSubscription() {
     isPastDue: sub?.status === "past_due",
     isCanceled: sub?.cancel_at_period_end ?? false,
     invalidate,
+    maxDevices,
+    deviceCount,
+    canAddDevice,
   };
 }

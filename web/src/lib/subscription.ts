@@ -12,6 +12,7 @@ export interface Subscription {
   current_period_start: string | null;
   current_period_end: string | null;
   cancel_at_period_end: boolean;
+  max_devices: number;
   created_at: string;
   updated_at: string;
 }
@@ -30,6 +31,15 @@ export async function isUserSubscribed(userId: string): Promise<boolean> {
   const sub = await getUserSubscription(userId);
   if (!sub) return false;
   return sub.status === "active" || sub.status === "trialing";
+}
+
+export async function getDeviceCount(userId: string): Promise<number> {
+  const supabase = getSupabaseAdmin();
+  const { count } = await supabase
+    .from("pcs")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", userId);
+  return count ?? 0;
 }
 
 export async function upsertSubscription(

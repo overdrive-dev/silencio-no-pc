@@ -218,6 +218,7 @@ Reference guide for the KidsPC Supabase schema, RLS policies, and data patterns.
 | `current_period_start` | timestamptz | |
 | `current_period_end` | timestamptz | |
 | `cancel_at_period_end` | boolean | |
+| `max_devices` | integer NOT NULL | Default 2. Base plan includes 2; each extra costs R$14,90/mês |
 | `created_at` | timestamptz | |
 | `updated_at` | timestamptz | |
 

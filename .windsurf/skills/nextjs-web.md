@@ -38,7 +38,8 @@ Reference guide for the KidsPC web dashboard (`web/`). Use when modifying pages,
 
 | Route | Methods | Purpose |
 |---|---|---|
-| `/api/dispositivos` | GET, POST | List user's PCs, create new PC |
+| `/api/dispositivos` | GET, POST | List user's PCs, create new PC (requires subscription + device limit check) |
+| `/api/dispositivos/upgrade` | POST | Add device slot (+R$14,90/mês), updates MercadoPago subscription amount |
 | `/api/dispositivos/claim` | POST | Claim sync token (pairing flow). Accepts `token`, `platform` (`windows`/`android`), `name` |
 | `/api/dispositivo/[id]` | GET, PATCH, DELETE | Get/update/remove single PC |
 | `/api/dispositivo/[id]/settings` | GET, PUT | Read/update PC settings |
@@ -113,14 +114,21 @@ if (!pc) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
 > **No CardPayment brick / client-side SDK** — all payment happens on MercadoPago's hosted page. `@mercadopago/sdk-react` is still a dependency but not used for checkout.
 
-### Plan
-- Single plan: **R$ 19,90/mês** (defined in `lib/mercadopago.ts`)
-- Features: unlimited devices, all remote commands, full history
+### Plan & Device Limits
+- Base plan: **R$ 19,90/mês** — includes **2 devices** (defined in `lib/mercadopago.ts`)
+- Extra device: **R$ 14,90/mês** each (added to subscription via MercadoPago PreApproval update)
+- `subscriptions.max_devices` column tracks per-user device limit (default 2)
+- `calculateSubscriptionAmount(maxDevices)` computes total monthly price
+- Upgrade flow: `POST /api/dispositivos/upgrade` → increments `max_devices` → updates MP `transaction_amount`
+- "+ Adicionar" button is **hidden** when user has no active subscription
+- When at device limit, clicking "Adicionar" shows upgrade modal with price comparison
+- Server-side enforcement: `POST /api/dispositivos` checks subscription status AND device count < max_devices
 
 ### Hook Usage
 ```typescript
-const { hasAccess, loading } = useSubscription();
+const { hasAccess, loading, canAddDevice, maxDevices, deviceCount, invalidate } = useSubscription();
 // hasAccess = true if status is "active" or within 7-day grace period
+// canAddDevice = hasAccess && deviceCount < maxDevices
 ```
 Actions (commands, settings changes) are disabled when `!hasAccess`.
 
