@@ -7,8 +7,11 @@ import crypto from "crypto";
 const SUBSCRIPTION_TYPES = new Set([
   "subscription_preapproval",
   "subscription_authorized_payment",
-  "subscription_preapproval_plan",
 ]);
+
+// Plan-level notifications (subscription_preapproval_plan) carry a plan ID,
+// not a preapproval ID — they don't map to a specific user, so we just ACK them.
+const PLAN_TYPES = new Set(["subscription_preapproval_plan"]);
 
 async function handleSubscriptionNotification(id: string) {
   const client = getMercadoPagoClient();
@@ -126,7 +129,9 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    if (SUBSCRIPTION_TYPES.has(body.type)) {
+    if (PLAN_TYPES.has(body.type)) {
+      console.log(`[mp-webhook] Plan-level notification (ACK only): ${body.type} ${body.data.id}`);
+    } else if (SUBSCRIPTION_TYPES.has(body.type)) {
       await handleSubscriptionNotification(body.data.id);
     } else if (body.type === "payment") {
       await handlePaymentNotification(body.data.id);

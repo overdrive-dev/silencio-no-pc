@@ -5,6 +5,7 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import type { PC } from "@/lib/types";
 import { useSubscription } from "@/hooks/use-subscription";
+import { calculateSubscriptionAmount } from "@/lib/mercadopago";
 import PaymentBanner from "@/components/payment-banner";
 import { PlusIcon, ComputerDesktopIcon, DevicePhoneMobileIcon, ArrowPathIcon, LinkIcon } from "@heroicons/react/24/outline";
 import { QRCodeSVG } from "qrcode.react";
@@ -233,14 +234,14 @@ export default function PcsPage() {
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-slate-600">Plano atual ({maxDevices} dispositivos)</span>
                   <span className="font-semibold text-slate-900">
-                    R$ {(19.9 + Math.max(0, maxDevices - 2) * 14.9).toFixed(2).replace(".", ",")}/mês
+                    R$ {calculateSubscriptionAmount(maxDevices).toFixed(2).replace(".", ",")}/mês
                   </span>
                 </div>
                 <div className="border-t border-[#DAE5FF] my-2" />
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-slate-600">Novo plano ({maxDevices + 1} dispositivos)</span>
                   <span className="font-semibold text-[#4A7AFF]">
-                    R$ {(19.9 + Math.max(0, maxDevices - 2 + 1) * 14.9).toFixed(2).replace(".", ",")}/mês
+                    R$ {calculateSubscriptionAmount(maxDevices + 1).toFixed(2).replace(".", ",")}/mês
                   </span>
                 </div>
               </div>
