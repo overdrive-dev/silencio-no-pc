@@ -144,6 +144,13 @@ Actions (commands, settings changes) are disabled when `!hasAccess`.
 
 ## Device Management
 
+### Empty State (dispositivos page)
+When user has no devices, shows an onboarding experience with:
+- **Ghost device slots**: Two dashed-border cards (PC blue + Phone green) with pulse animation and "Aguardando" badges — visual placeholder showing where devices will appear
+- **QR code**: Points to `https://kidspc.com.br/download` via `qrcode.react` (`QRCodeSVG`)
+- **Two action cards**: "Baixar o app" (download QR + button) and "Vincular dispositivo" (subscribe CTA if no subscription, add device if subscribed)
+- **Compact step indicator**: 1→2→3 flow at bottom (Baixe → Vincule → Pronto)
+
 ### Danger Zone (device settings page)
 - **Desvincular**: Sends `unpair` command → desktop app clears local config → shows PairingDialog. History is kept.
 - **Excluir**: `DELETE /api/dispositivo/[id]` → removes PC + all related data. Desktop auto-detects on next heartbeat (3 consecutive orphan checks).
