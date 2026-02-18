@@ -43,6 +43,7 @@ class PairingViewModel @Inject constructor(
                 if (result != null) {
                     config.pcId = result.pcId
                     config.userId = result.userId
+                    config.deviceJwt = result.deviceJwt
                     config.isPaired = true
                     _uiState.value = _uiState.value.copy(loading = false, paired = true)
                 } else {

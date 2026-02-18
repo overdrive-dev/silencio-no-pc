@@ -7,11 +7,11 @@ KidsPC is a parental control SaaS for Windows PCs and Android devices. Parents m
 ```
 ┌─────────────────┐       polling 30s        ┌──────────────┐      service_role      ┌─────────────────┐
 │  Desktop App    │ ◄────────────────────────►│   Supabase   │◄─────────────────────► │  Next.js Web    │
-│  (Python/PyQt5) │   anon key + pc_id filter │  (Postgres)  │  Clerk auth + admin    │  (Vercel)       │
-│  Windows 10/11  │                           │  + Realtime   │                        │  kidspc.vercel  │
+│  (Python/PyQt5) │   per-device JWT (HS256)  │  (Postgres)  │  Clerk auth + admin    │  (Vercel)       │
+│  Windows 10/11  │   scoped to pc_id via RLS │  + Realtime   │                        │  kidspc.vercel  │
 └─────────────────┘                           └──────────────┘                        └─────────────────┘
        │                                             │                                        │
-       ├─ Audio monitoring (mic)                     ├─ RLS (permissive, filtered in code)     ├─ Clerk auth
+       ├─ Audio monitoring (mic)                     ├─ RLS (jwt_pc_id() scoped)               ├─ Clerk auth
        ├─ Activity tracking (Win32 API)              ├─ Realtime (pcs table)                   ├─ MercadoPago subs
        ├─ Screen lock enforcement                    └─ 10+ tables                             └─ Landing + Dashboard
        ├─ App/site blocking
@@ -113,6 +113,7 @@ silencio-no-pc/
 │   │   ├── lib/
 │   │   │   ├── types.ts            # TS interfaces mirroring Supabase tables
 │   │   │   ├── supabase-client.ts  # Anon key client (client-side)
+│   │   │   ├── device-jwt.ts       # Per-device JWT signing (HS256, used by claim route)
 │   │   │   ├── supabase-server.ts  # Service role client (server-side API routes)
 │   │   │   ├── subscription.ts     # Subscription CRUD helpers
 │   │   │   ├── mercadopago.ts      # MP client + plan config
@@ -123,8 +124,12 @@ silencio-no-pc/
 ├── supabase/
 │   └── migrations/
 │       ├── 001_create_tables.sql   # Core schema (10 tables)
-│       ├── 002_rls_policies.sql    # RLS (permissive TRUE policies)
-│       └── 003_app_usage_site_visits.sql  # app_usage + site_visits tables
+│       ├── 002_rls_policies.sql    # Original RLS (superseded by 007)
+│       ├── 003_app_usage_site_visits.sql  # app_usage + site_visits tables
+│       ├── 004_subscriptions.sql   # subscriptions table + RLS
+│       ├── 005_blocked_apps_sites.sql  # blocked_apps/sites DDL + RLS fix
+│       ├── 006_tighten_rls.sql     # Drop permissive INSERT/UPDATE
+│       └── 007_per_device_jwt_rls.sql  # JWT-scoped RLS (jwt_pc_id())
 │
 ├── installer/setup.iss     # Inno Setup script
 ├── build.py                # PyInstaller build script
@@ -182,6 +187,7 @@ silencio-no-pc/
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key (client-side) |
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key (API routes) |
+| `NEXT_PRIVATE_SUPABASE_JWT_SECRET` | Supabase legacy JWT secret (signs device JWTs) |
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk publishable key |
 | `CLERK_SECRET_KEY` | Clerk secret key |
 | `MELI_ACCESS_TOKEN` | MercadoPago access token |

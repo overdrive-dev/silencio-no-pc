@@ -165,6 +165,7 @@ class PairingDialog(QDialog):
                 if resp.status_code == 200 and "pc_id" in data:
                     self.config.set("pc_id", data["pc_id"])
                     self.config.set("user_id", data["user_id"])
+                    self.config.set("device_jwt", data.get("device_jwt", ""))
                     self.config.set("paired", True)
                     return True, "OK"
                 

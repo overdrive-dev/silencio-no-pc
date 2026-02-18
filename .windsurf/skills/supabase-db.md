@@ -222,42 +222,42 @@ Reference guide for the KidsPC Supabase schema, RLS policies, and data patterns.
 | `created_at` | timestamptz | |
 | `updated_at` | timestamptz | |
 
-## RLS Strategy
+## RLS Strategy — Per-Device JWT
 
-All tables have RLS enabled. Policies are split into **two tiers**:
+All tables have RLS enabled. Device clients (Python desktop + Android) receive a **per-device JWT** at pairing time containing `pc_id` and `user_id` claims. All RLS policies scope access to `pc_id = jwt_pc_id()`.
 
-### Tier 1 — Desktop-writable (anon key can SELECT + INSERT + UPDATE)
+### How it works
 
-Tables the Python desktop client writes to via anon key:
+1. At pairing, `/api/dispositivos/claim` signs a custom JWT (HS256, 1-year expiry) with the Supabase JWT secret
+2. JWT payload: `{ iss: "supabase", ref: "<project>", role: "anon", pc_id: "<uuid>", user_id: "<clerk-id>" }`
+3. Client stores the JWT and uses it as the Supabase access token (overrides the anon key's Bearer header)
+4. SQL helper `jwt_pc_id()` extracts `pc_id` from `request.jwt.claims`
+5. Web dashboard uses `service_role` key → bypasses RLS entirely
 
-| Table | SELECT | INSERT | UPDATE | Notes |
+### Tier 1 — Desktop-writable (scoped to `jwt.pc_id`)
+
+| Table | SELECT | INSERT | UPDATE | Scope |
 |---|---|---|---|---|
-| `pcs` | ✅ | ✅ | ✅ | Heartbeat, status updates |
-| `events` | ✅ | ✅ | — | Event logging |
-| `usage_sessions` | ✅ | ✅ | ✅ | Session start/end |
-| `daily_usage` | ✅ | ✅ | ✅ | Daily aggregate upsert |
-| `app_usage` | ✅ | ✅ | ✅ | Per-app time upsert |
-| `site_visits` | ✅ | ✅ | ✅ | Domain visit upsert |
-| `pairing_codes` | ✅ | ✅ | ✅ | Code validation + mark used |
-| `commands` | ✅ | — | ✅ | Read pending, mark executed |
-| `app_version` | ✅ | — | — | Read-only (version check) |
+| `pcs` | ✅ | — | ✅ | `id = jwt_pc_id()` |
+| `events` | ✅ | ✅ | — | `pc_id = jwt_pc_id()` |
+| `usage_sessions` | ✅ | ✅ | ✅ | `pc_id = jwt_pc_id()` |
+| `daily_usage` | ✅ | ✅ | ✅ | `pc_id = jwt_pc_id()` |
+| `app_usage` | ✅ | ✅ | ✅ | `pc_id = jwt_pc_id()` |
+| `site_visits` | ✅ | ✅ | ✅ | `pc_id = jwt_pc_id()` |
+| `pairing_codes` | ✅ | ✅ | ✅ | `pc_id = jwt_pc_id()` |
+| `commands` | ✅ | — | ✅ | `pc_id = jwt_pc_id()` |
+| `app_version` | ✅ | — | — | `USING (true)` — global lookup |
 
-### Tier 2 — Read-only for anon (only service_role can write)
-
-Tables the desktop client reads but never writes to. Web uses service_role (bypasses RLS).
+### Tier 2 — Read-only (scoped to `jwt.pc_id`)
 
 | Table | SELECT | INSERT | UPDATE | DELETE |
 |---|---|---|---|---|
-| `subscriptions` | ✅ | — | — | — |
-| `pc_settings` | ✅ | — | — | — |
-| `blocked_apps` | ✅ | — | — | — |
-| `blocked_sites` | ✅ | — | — | — |
+| `pc_settings` | ✅ (scoped) | — | — | — |
+| `blocked_apps` | ✅ (scoped) | — | — | — |
+| `blocked_sites` | ✅ (scoped) | — | — | — |
+| `subscriptions` | ✅ (unscoped) | — | — | — |
 
-**Rationale**: The desktop app uses the anon key filtered by `pc_id` in application code. The web app uses `service_role` key which bypasses RLS entirely. Sensitive tables (subscriptions, settings, blocking rules) are read-only for anon to prevent unauthorized writes.
-- Desktop: hardcoded anon key + filters by `config.pc_id`
-- Web: service_role key + filters by `auth().userId`
-
-**Known risk**: Any client with the anon key can read all rows in Tier 1 tables. Acceptable because the anon key is embedded in a compiled Windows binary, not exposed in browser JS.
+**Security**: A compromised device JWT can only access its own device's data. The anon key alone (without a device JWT) returns zero rows on all scoped tables. Security advisor: **0 warnings**.
 
 ## Migration Conventions
 
@@ -363,8 +363,9 @@ Used for live dashboard updates (device online/offline status, usage counters). 
 ## Anti-Patterns
 
 - **Don't edit existing migration files** — always create a new numbered migration
-- **Don't add RLS policies that break desktop access** — desktop uses anon key; Tier 1 tables need permissive SELECT/INSERT/UPDATE, Tier 2 tables need permissive SELECT only
+- **Don't add RLS policies without `jwt_pc_id()` scoping** — all device-accessible tables must check `pc_id = jwt_pc_id()` (or `id = jwt_pc_id()` for `pcs`)
 - **Don't add INSERT/UPDATE policies on Tier 2 tables** — `subscriptions`, `pc_settings`, `blocked_apps`, `blocked_sites` should only be writable via service_role
+- **Don't use `USING (true)` on new tables** — only `app_version` (global lookup) and `subscriptions` (no pc_id) are exempted
 - **Don't forget ON DELETE CASCADE** — all child tables reference `pcs.id` with cascade
 - **Don't use raw SQL in web code** — always go through `supabase-js` client
 - **Don't forget to update types.ts** — after any schema change, sync the TypeScript interfaces

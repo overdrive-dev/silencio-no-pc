@@ -49,6 +49,10 @@ class RemoteSync:
             try:
                 from supabase import create_client
                 self._supabase = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
+                # Use per-device JWT for row-scoped RLS (if available from pairing)
+                device_jwt = self.config.get("device_jwt", "")
+                if device_jwt:
+                    self._supabase.postgrest.auth(device_jwt)
             except Exception as e:
                 print(f"Erro ao criar Supabase client: {e}")
         return self._supabase

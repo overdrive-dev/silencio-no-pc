@@ -174,6 +174,7 @@ class SyncRepository @Inject constructor(
                 ClaimResponse(
                     pcId = json["pc_id"]?.jsonPrimitive?.content ?: return null,
                     userId = json["user_id"]?.jsonPrimitive?.content ?: return null,
+                    deviceJwt = json["device_jwt"]?.jsonPrimitive?.content ?: "",
                 )
             } else {
                 null

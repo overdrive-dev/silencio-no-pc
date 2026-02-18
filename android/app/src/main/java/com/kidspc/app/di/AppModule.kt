@@ -25,11 +25,16 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideSupabaseClient(): SupabaseClient {
+    fun provideSupabaseClient(config: AppConfig): SupabaseClient {
         return createSupabaseClient(
             supabaseUrl = BuildConfig.SUPABASE_URL,
             supabaseKey = BuildConfig.SUPABASE_ANON_KEY
         ) {
+            // Use per-device JWT for row-scoped RLS when available
+            val jwt = config.deviceJwt
+            if (jwt.isNotBlank()) {
+                accessToken = { jwt }
+            }
             install(Postgrest)
         }
     }

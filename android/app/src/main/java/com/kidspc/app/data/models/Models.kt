@@ -63,6 +63,7 @@ data class BlockedSite(
 data class ClaimResponse(
     @SerialName("pc_id") val pcId: String,
     @SerialName("user_id") val userId: String,
+    @SerialName("device_jwt") val deviceJwt: String = "",
 )
 
 /** Heartbeat update payload */

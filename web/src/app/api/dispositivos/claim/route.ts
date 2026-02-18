@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase-server";
+import { signDeviceJwt } from "@/lib/device-jwt";
 
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT_MAX = 10;
@@ -75,5 +76,6 @@ export async function POST(request: Request) {
   return NextResponse.json({
     pc_id: pc.id,
     user_id: pc.user_id,
+    device_jwt: signDeviceJwt(pc.id, pc.user_id),
   });
 }

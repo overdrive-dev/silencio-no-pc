@@ -35,6 +35,7 @@ class Config:
         "paired": False,
         "pc_id": "",
         "user_id": "",
+        "device_jwt": "",
         # Sync remoto
         "remote_sync_enabled": True,
         "sync_interval_seconds": 30,

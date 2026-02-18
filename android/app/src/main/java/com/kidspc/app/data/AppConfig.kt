@@ -35,6 +35,10 @@ class AppConfig(context: Context) {
         get() = prefs.getString(KEY_USER_ID, "") ?: ""
         set(value) = prefs.edit().putString(KEY_USER_ID, value).apply()
 
+    var deviceJwt: String
+        get() = prefs.getString(KEY_DEVICE_JWT, "") ?: ""
+        set(value) = prefs.edit().putString(KEY_DEVICE_JWT, value).apply()
+
     var deviceName: String
         get() = prefs.getString(KEY_DEVICE_NAME, android.os.Build.MODEL) ?: android.os.Build.MODEL
         set(value) = prefs.edit().putString(KEY_DEVICE_NAME, value).apply()
@@ -53,6 +57,7 @@ class AppConfig(context: Context) {
             .putBoolean(KEY_PAIRED, false)
             .putString(KEY_PC_ID, "")
             .putString(KEY_USER_ID, "")
+            .putString(KEY_DEVICE_JWT, "")
             .apply()
     }
 
@@ -61,6 +66,7 @@ class AppConfig(context: Context) {
         private const val KEY_PC_ID = "pc_id"
         private const val KEY_USER_ID = "user_id"
         private const val KEY_DEVICE_NAME = "device_name"
+        private const val KEY_DEVICE_JWT = "device_jwt"
         private const val KEY_DAILY_LIMIT = "daily_limit_minutes"
         private const val KEY_LOCKED = "locked"
     }
