@@ -224,19 +224,40 @@ Reference guide for the KidsPC Supabase schema, RLS policies, and data patterns.
 
 ## RLS Strategy
 
-All tables have RLS enabled with **permissive TRUE policies**:
+All tables have RLS enabled. Policies are split into **two tiers**:
 
-```sql
-CREATE POLICY "allow_all_select" ON pcs FOR SELECT USING (true);
-CREATE POLICY "allow_all_insert" ON pcs FOR INSERT WITH CHECK (true);
-CREATE POLICY "allow_all_update" ON pcs FOR UPDATE USING (true);
-```
+### Tier 1 — Desktop-writable (anon key can SELECT + INSERT + UPDATE)
 
-**Rationale**: The desktop app uses the anon key but filters by `pc_id` in application code. The web app uses `service_role` key which bypasses RLS entirely. This simplifies access while both clients handle their own authorization:
+Tables the Python desktop client writes to via anon key:
+
+| Table | SELECT | INSERT | UPDATE | Notes |
+|---|---|---|---|---|
+| `pcs` | ✅ | ✅ | ✅ | Heartbeat, status updates |
+| `events` | ✅ | ✅ | — | Event logging |
+| `usage_sessions` | ✅ | ✅ | ✅ | Session start/end |
+| `daily_usage` | ✅ | ✅ | ✅ | Daily aggregate upsert |
+| `app_usage` | ✅ | ✅ | ✅ | Per-app time upsert |
+| `site_visits` | ✅ | ✅ | ✅ | Domain visit upsert |
+| `pairing_codes` | ✅ | ✅ | ✅ | Code validation + mark used |
+| `commands` | ✅ | — | ✅ | Read pending, mark executed |
+| `app_version` | ✅ | — | — | Read-only (version check) |
+
+### Tier 2 — Read-only for anon (only service_role can write)
+
+Tables the desktop client reads but never writes to. Web uses service_role (bypasses RLS).
+
+| Table | SELECT | INSERT | UPDATE | DELETE |
+|---|---|---|---|---|
+| `subscriptions` | ✅ | — | — | — |
+| `pc_settings` | ✅ | — | — | — |
+| `blocked_apps` | ✅ | — | — | — |
+| `blocked_sites` | ✅ | — | — | — |
+
+**Rationale**: The desktop app uses the anon key filtered by `pc_id` in application code. The web app uses `service_role` key which bypasses RLS entirely. Sensitive tables (subscriptions, settings, blocking rules) are read-only for anon to prevent unauthorized writes.
 - Desktop: hardcoded anon key + filters by `config.pc_id`
 - Web: service_role key + filters by `auth().userId`
 
-**Known risk**: Any client with the anon key can read/write all rows. Acceptable because the anon key is embedded in a compiled Windows binary, not exposed in browser JS.
+**Known risk**: Any client with the anon key can read all rows in Tier 1 tables. Acceptable because the anon key is embedded in a compiled Windows binary, not exposed in browser JS.
 
 ## Migration Conventions
 
@@ -342,7 +363,8 @@ Used for live dashboard updates (device online/offline status, usage counters). 
 ## Anti-Patterns
 
 - **Don't edit existing migration files** — always create a new numbered migration
-- **Don't add RLS policies that break desktop access** — desktop uses anon key with permissive policies
+- **Don't add RLS policies that break desktop access** — desktop uses anon key; Tier 1 tables need permissive SELECT/INSERT/UPDATE, Tier 2 tables need permissive SELECT only
+- **Don't add INSERT/UPDATE policies on Tier 2 tables** — `subscriptions`, `pc_settings`, `blocked_apps`, `blocked_sites` should only be writable via service_role
 - **Don't forget ON DELETE CASCADE** — all child tables reference `pcs.id` with cascade
 - **Don't use raw SQL in web code** — always go through `supabase-js` client
 - **Don't forget to update types.ts** — after any schema change, sync the TypeScript interfaces
