@@ -6,7 +6,8 @@ from PyQt5.QtGui import QFont
 
 from src.auto_updater import AutoUpdater
 
-WEB_API_URL_PROD = "https://kidspc.vercel.app"
+WEB_API_URL_CUSTOM = "https://www.kidspc.com.br"
+WEB_API_URL_VERCEL = "https://kidspc.vercel.app"
 WEB_API_URL_LOCAL = "http://localhost:3000"
 
 
@@ -175,9 +176,9 @@ class PairingDialog(QDialog):
     
     def _claim_token(self, token: str) -> tuple:
         """Envia token para a API de claim e vincula o PC.
-        Tenta produção primeiro, depois localhost como fallback.
-        Sem retry ao mesmo servidor — claim consome o token (não é idempotente)."""
-        urls = [WEB_API_URL_PROD, WEB_API_URL_LOCAL]
+        Tenta domínio customizado, depois vercel, depois localhost.
+        Claim é idempotente — retries são seguros."""
+        urls = [WEB_API_URL_CUSTOM, WEB_API_URL_VERCEL, WEB_API_URL_LOCAL]
         last_error = ""
         
         for base_url in urls:
@@ -185,7 +186,7 @@ class PairingDialog(QDialog):
                 resp = requests.post(
                     f"{base_url}/api/dispositivos/claim",
                     json={"token": token},
-                    timeout=20,
+                    timeout=30,
                 )
                 data = resp.json()
                 
