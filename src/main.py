@@ -4,7 +4,7 @@ import atexit
 import signal
 from pathlib import Path
 
-__version__ = "2.3.1"
+__version__ = "2.3.2"
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -317,10 +317,48 @@ class KidsPC:
         
         self._setup_time_check_timer()
     
+    def _check_startup_update(self):
+        """Verifica atualização no início — garante que bugs críticos sejam corrigidos."""
+        try:
+            update = self.auto_updater.check_for_update()
+            if not update:
+                return
+            
+            msg = (
+                f"Nova versão disponível: v{update['version']}\n"
+                f"Versão atual: v{self.auto_updater.current_version}\n"
+            )
+            changelog = update.get("changelog", "")
+            if changelog:
+                msg += f"\n{changelog}\n"
+            msg += "\nDeseja atualizar agora?"
+            
+            reply = QMessageBox.question(
+                None, "Atualização disponível", msg,
+                QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes
+            )
+            
+            if reply != QMessageBox.Yes:
+                return
+            
+            if not update.get("download_url"):
+                return
+            
+            exe_path = self.auto_updater.download_update(update["download_url"])
+            if exe_path:
+                QMessageBox.information(
+                    None, "Atualização",
+                    f"Download concluído!\nO programa vai reiniciar para aplicar a v{update['version']}."
+                )
+                self.auto_updater.apply_update(exe_path, is_installer=update.get("is_installer", False))
+        except Exception as e:
+            print(f"AutoUpdate startup check error: {e}")
+    
     def run(self):
         if self.config.primeiro_uso:
             self._primeiro_uso()
         
+        self._check_startup_update()
         self._check_pairing()
         
         self._init_ui()
