@@ -6,13 +6,14 @@ import {
   SignUpButton,
   SignedIn,
   SignedOut,
+  SignOutButton,
   UserButton,
   useUser,
 } from "@clerk/nextjs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSubscription } from "@/hooks/use-subscription";
-import { Bars3Icon, XMarkIcon, Cog6ToothIcon, CreditCardIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, XMarkIcon, Cog6ToothIcon, CreditCardIcon, ArrowRightStartOnRectangleIcon } from "@heroicons/react/24/outline";
 
 function cn(...classes: (string | boolean | undefined)[]) {
   return classes.filter(Boolean).join(" ");
@@ -223,6 +224,11 @@ export default function NavBar() {
                     {user?.primaryEmailAddress?.emailAddress}
                   </p>
                 </div>
+                <SignOutButton redirectUrl="/">
+                  <button className="p-2 rounded-lg text-gray-400 hover:text-[#FF6B6B] hover:bg-red-50 transition" title="Sair">
+                    <ArrowRightStartOnRectangleIcon className="size-5" />
+                  </button>
+                </SignOutButton>
               </div>
             </div>
           </SignedIn>

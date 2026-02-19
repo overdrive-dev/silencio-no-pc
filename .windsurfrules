@@ -1,0 +1,42 @@
+# KidsPC (Silêncio no PC) — Project Rules
+
+## Stack
+- Desktop app: Python 3, PyQt5, pyaudio, numpy, pycaw, cryptography, supabase-py
+- Web dashboard: Next.js 16, React 19, TypeScript, Tailwind CSS v4 (@theme inline tokens)
+- Auth: Clerk (@clerk/nextjs, modal sign-in/up)
+- Database: Supabase (PostgreSQL + RLS + per-device JWT)
+- Payments: MercadoPago (plan-based preapproval subscriptions)
+- Android app: Kotlin 2.1, Jetpack Compose, Hilt DI, supabase-kt
+- Build: PyInstaller + Inno Setup (desktop), Vercel (web), GitHub Releases (auto-updater)
+
+## File Conventions
+- Python desktop modules: `src/` (main.py, config.py, remote_sync.py, etc.)
+- Python UI: `src/ui/` (PyQt5 dialogs and widgets)
+- Web pages: `web/src/app/` (Next.js App Router)
+- Web API routes: `web/src/app/api/` (dispositivos, mercadopago, pairing)
+- Web components: `web/src/components/` (nav-bar, payment-banner, device/, landing/)
+- Web hooks: `web/src/hooks/` (use-subscription, etc.)
+- Web lib: `web/src/lib/` (device-jwt, supabase helpers)
+- Supabase migrations: `supabase/migrations/`
+- Android: `android/app/src/`
+- Installer: `installer/setup.iss`
+- Assets: `assets/` (icons, imgs, sounds)
+
+## Development Rules
+- No Python/TS/Kotlin logic changes unless explicitly requested
+- No new pip/npm/gradle dependencies without asking
+- Imports always at top of file
+- Idioma da UI: Português (BR)
+- Desktop app config is encrypted — always use Config class, never raw file access
+- Supabase RLS uses per-device JWT (`jwt_pc_id()`) — never use shared anon key
+- Clerk auth in web — use `auth()` from `@clerk/nextjs/server`, never deprecated patterns
+
+## Frontend Design
+For detailed design system guidelines (tokens, components, patterns, anti-patterns), use the `/frontend-design` skill.
+Quick reminders:
+- Fonts: DM Serif Display (headings) + Plus Jakarta Sans (body)
+- Palette: warm cream #FAF7F2 + soft blue #4A7AFF accent, no dark mode
+- Icons: Lucide React + @heroicons/react — no FontAwesome
+- Cards: `card-flat` (white rounded-xl, warm border, subtle shadow)
+- Buttons: `btn-pill btn-pill-primary` (fully rounded, blue)
+- Use CSS token classes, never hardcoded hex in new code
