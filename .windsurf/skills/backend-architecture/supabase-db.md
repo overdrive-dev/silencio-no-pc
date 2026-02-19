@@ -43,6 +43,6 @@ Two auth patterns coexist:
 
 - **Device online**: heartbeat every 30s updates `pcs.last_seen`
 - **Orphan detection**: 3 consecutive failed orphan checks → auto-unpair
-- **Device deletion**: CASCADE deletes all related data (settings, usage, strikes, commands, blocked lists)
+- **Device deletion**: Soft delete — sets `pcs.deleted_at` timestamp. All API queries filter `.is("deleted_at", null)`. An `unpair` command is sent so desktop/android app auto-unpairs. Related data (settings, usage, events, blocked lists) is preserved for history.
 - **Subscription cancellation**: devices keep working during grace period, then block
 - **Pairing tokens**: auto-expire after 5 minutes

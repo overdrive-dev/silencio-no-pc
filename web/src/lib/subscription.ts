@@ -38,7 +38,8 @@ export async function getDeviceCount(userId: string): Promise<number> {
   const { count } = await supabase
     .from("pcs")
     .select("*", { count: "exact", head: true })
-    .eq("user_id", userId);
+    .eq("user_id", userId)
+    .is("deleted_at", null);
   return count ?? 0;
 }
 

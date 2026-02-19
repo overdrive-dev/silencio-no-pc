@@ -20,6 +20,7 @@ export async function GET() {
     .from("pcs")
     .select("*")
     .eq("user_id", userId)
+    .is("deleted_at", null)
     .order("paired_at", { ascending: false });
 
   if (error) {

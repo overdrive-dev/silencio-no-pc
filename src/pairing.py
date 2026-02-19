@@ -149,8 +149,8 @@ class PairingDialog(QDialog):
     
     def _claim_token(self, token: str) -> tuple:
         """Envia token para a API de claim e vincula o PC.
-        Tenta produção primeiro, depois localhost como fallback."""
-        urls = [WEB_API_URL_PROD, WEB_API_URL_LOCAL]
+        Tenta produção primeiro (com retry), depois localhost como fallback."""
+        urls = [WEB_API_URL_PROD, WEB_API_URL_PROD, WEB_API_URL_LOCAL]
         last_error = ""
         
         for base_url in urls:
@@ -158,7 +158,7 @@ class PairingDialog(QDialog):
                 resp = requests.post(
                     f"{base_url}/api/dispositivos/claim",
                     json={"token": token},
-                    timeout=10,
+                    timeout=20,
                 )
                 data = resp.json()
                 

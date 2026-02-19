@@ -20,6 +20,7 @@ export async function POST(
     .select("id")
     .eq("id", id)
     .eq("user_id", userId)
+    .is("deleted_at", null)
     .single();
 
   if (!pcCheck.data) {

@@ -24,6 +24,7 @@ export async function GET(
     .select("id")
     .eq("id", id)
     .eq("user_id", userId)
+    .is("deleted_at", null)
     .single();
 
   if (!pc) {

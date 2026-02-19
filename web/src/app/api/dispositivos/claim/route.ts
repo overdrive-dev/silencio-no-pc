@@ -39,6 +39,7 @@ export async function POST(request: Request) {
     .from("pcs")
     .select("id, user_id, sync_token_expires_at")
     .eq("sync_token", token)
+    .is("deleted_at", null)
     .single();
 
   if (findError || !pc) {

@@ -29,7 +29,8 @@ export async function POST(
       sync_token_expires_at: expiresAt,
     })
     .eq("id", id)
-    .eq("user_id", userId);
+    .eq("user_id", userId)
+    .is("deleted_at", null);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

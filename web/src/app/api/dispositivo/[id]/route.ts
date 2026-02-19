@@ -19,6 +19,7 @@ export async function GET(
     .select("*")
     .eq("id", id)
     .eq("user_id", userId)
+    .is("deleted_at", null)
     .single();
 
   if (error || !data) {
@@ -45,7 +46,8 @@ export async function PATCH(
     .from("pcs")
     .update({ name: body.name })
     .eq("id", id)
-    .eq("user_id", userId);
+    .eq("user_id", userId)
+    .is("deleted_at", null);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -66,16 +68,26 @@ export async function DELETE(
   const { id } = await params;
   const supabaseAdmin = getSupabaseAdmin();
 
+  // Soft delete: set deleted_at instead of removing the row
   const { error } = await supabaseAdmin
     .from("pcs")
-    .delete()
+    .update({ deleted_at: new Date().toISOString() })
     .eq("id", id)
-    .eq("user_id", userId);
+    .eq("user_id", userId)
+    .is("deleted_at", null);
 
   if (error) {
     console.error("DELETE PC error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  // Send unpair command so the desktop/android app auto-unpairs
+  await supabaseAdmin.from("commands").insert({
+    user_id: userId,
+    pc_id: id,
+    command: "unpair",
+    payload: {},
+  });
 
   return NextResponse.json({ ok: true });
 }
