@@ -4,6 +4,8 @@ from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QLabel, QLineEdit,
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 
+from src.auto_updater import AutoUpdater
+
 WEB_API_URL_PROD = "https://kidspc.vercel.app"
 WEB_API_URL_LOCAL = "http://localhost:3000"
 
@@ -22,7 +24,7 @@ class PairingDialog(QDialog):
         self.setWindowFlags(
             Qt.WindowStaysOnTopHint | Qt.Dialog
         )
-        self.setFixedSize(420, 420)
+        self.setFixedSize(420, 460)
         self._center_on_screen()
         
         self.setStyleSheet("background-color: #1e1e22; color: white;")
@@ -108,6 +110,30 @@ class PairingDialog(QDialog):
         self.label_status.setAlignment(Qt.AlignCenter)
         self.label_status.setFont(QFont("Segoe UI", 9))
         layout.addWidget(self.label_status)
+        
+        layout.addStretch()
+        
+        # Version + update link at the bottom
+        version = self.config.get("app_version", "?")
+        self.btn_update = QPushButton(f"v{version} — Buscar atualização")
+        self.btn_update.setFont(QFont("Segoe UI", 9))
+        self.btn_update.setCursor(Qt.PointingHandCursor)
+        self.btn_update.setStyleSheet("""
+            QPushButton {
+                background: transparent;
+                color: #6C63FF;
+                border: none;
+                text-decoration: underline;
+            }
+            QPushButton:hover {
+                color: #8B83FF;
+            }
+            QPushButton:disabled {
+                color: #555;
+            }
+        """)
+        self.btn_update.clicked.connect(self._on_check_update)
+        layout.addWidget(self.btn_update, alignment=Qt.AlignCenter)
     
     def _center_on_screen(self):
         screen = QApplication.primaryScreen()
@@ -181,6 +207,64 @@ class PairingDialog(QDialog):
                 continue
         
         return False, "Sem conexão com o servidor."
+    
+    def _on_check_update(self):
+        """Verifica e aplica atualização a partir do diálogo de pareamento."""
+        version = self.config.get("app_version", "?")
+        self.btn_update.setText(f"v{version} — Verificando...")
+        self.btn_update.setEnabled(False)
+        QApplication.processEvents()
+        
+        try:
+            updater = AutoUpdater(current_version=version)
+            update = updater.check_for_update()
+            
+            if not update:
+                QMessageBox.information(
+                    self, "Atualização",
+                    f"Você já está na versão mais recente (v{version})."
+                )
+                return
+            
+            msg = (
+                f"Nova versão disponível: v{update['version']}\n"
+                f"Versão atual: v{version}\n"
+            )
+            changelog = update.get("changelog", "")
+            if changelog:
+                msg += f"\n{changelog}\n"
+            msg += "\nDeseja atualizar agora?"
+            
+            reply = QMessageBox.question(
+                self, "Atualização disponível", msg,
+                QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes
+            )
+            
+            if reply != QMessageBox.Yes:
+                return
+            
+            if not update.get("download_url"):
+                QMessageBox.warning(self, "Erro", "URL de download não disponível.")
+                return
+            
+            self.btn_update.setText(f"v{version} — Baixando...")
+            QApplication.processEvents()
+            
+            exe_path = updater.download_update(update["download_url"])
+            if not exe_path:
+                QMessageBox.warning(self, "Erro", "Falha ao baixar a atualização.")
+                return
+            
+            QMessageBox.information(
+                self, "Atualização",
+                f"Download concluído!\nO programa vai reiniciar para aplicar a v{update['version']}."
+            )
+            updater.apply_update(exe_path, is_installer=update.get("is_installer", False))
+        except Exception as e:
+            QMessageBox.warning(self, "Erro", f"Erro ao verificar atualização:\n{e}")
+        finally:
+            self.btn_update.setText(f"v{version} — Buscar atualização")
+            self.btn_update.setEnabled(True)
     
     def is_paired(self) -> bool:
         return self._paired
