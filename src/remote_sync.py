@@ -138,7 +138,7 @@ class RemoteSync:
                 "last_heartbeat": datetime.now(timezone.utc).isoformat(),
                 "last_activity": datetime.now(timezone.utc).isoformat() if self.activity_tracker.is_active() else None,
                 "app_version": self.config.get("app_version", "2.0.0"),
-            }).eq("id", pc_id).execute()
+            }).eq("id", pc_id).is_("deleted_at", "null").execute()
             
             # Pairing validation: if heartbeat updated 0 rows, PC was deleted from DB
             if not result.data:
@@ -458,6 +458,6 @@ class RemoteSync:
                 "app_running": False,
                 "is_online": False,
                 "shutdown_type": shutdown_type,
-            }).eq("id", pc_id).execute()
+            }).eq("id", pc_id).is_("deleted_at", "null").execute()
         except Exception:
             pass
