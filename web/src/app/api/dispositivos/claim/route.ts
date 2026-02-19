@@ -37,7 +37,7 @@ export async function POST(request: Request) {
   // Find PC by sync_token
   const { data: pc, error: findError } = await supabaseAdmin
     .from("pcs")
-    .select("id, user_id, sync_token_expires_at")
+    .select("id, user_id, sync_token_expires_at, paired_at")
     .eq("sync_token", token)
     .is("deleted_at", null)
     .single();
@@ -46,21 +46,21 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Token inválido." }, { status: 404 });
   }
 
-  // Check expiry
-  if (pc.sync_token_expires_at) {
+  // Check expiry — skip if device is already paired (idempotent retry)
+  const isRetry = !!pc.paired_at;
+  if (pc.sync_token_expires_at && !isRetry) {
     const expiresAt = new Date(pc.sync_token_expires_at);
     if (Date.now() > expiresAt.getTime()) {
       return NextResponse.json({ error: "Token expirado. Solicite um novo no painel." }, { status: 410 });
     }
   }
 
-  // Consume token (clear it so it can't be reused)
+  // Keep sync_token for idempotent retries — expire it immediately instead of clearing
   const updateData: Record<string, unknown> = {
-    sync_token: null,
-    sync_token_expires_at: null,
+    sync_token_expires_at: new Date().toISOString(),
     is_online: true,
     app_running: true,
-    paired_at: new Date().toISOString(),
+    paired_at: isRetry ? pc.paired_at : new Date().toISOString(),
     platform,
   };
   if (deviceName) updateData.name = deviceName;
