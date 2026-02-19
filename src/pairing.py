@@ -175,8 +175,9 @@ class PairingDialog(QDialog):
     
     def _claim_token(self, token: str) -> tuple:
         """Envia token para a API de claim e vincula o PC.
-        Tenta produção primeiro (com retry), depois localhost como fallback."""
-        urls = [WEB_API_URL_PROD, WEB_API_URL_PROD, WEB_API_URL_LOCAL]
+        Tenta produção primeiro, depois localhost como fallback.
+        Sem retry ao mesmo servidor — claim consome o token (não é idempotente)."""
+        urls = [WEB_API_URL_PROD, WEB_API_URL_LOCAL]
         last_error = ""
         
         for base_url in urls:

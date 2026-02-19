@@ -22,11 +22,14 @@ export async function POST(
 
   const supabaseAdmin = getSupabaseAdmin();
 
+  // Reset online/pairing flags so the polling won't false-positive from stale data
   const { error } = await supabaseAdmin
     .from("pcs")
     .update({
       sync_token: syncToken,
       sync_token_expires_at: expiresAt,
+      is_online: false,
+      app_running: false,
     })
     .eq("id", id)
     .eq("user_id", userId)
