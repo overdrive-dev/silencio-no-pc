@@ -6,6 +6,7 @@ import { BASE_DEVICES } from "@/lib/mercadopago";
 import { signDeviceJwt } from "@/lib/device-jwt";
 
 export async function POST(request: Request) {
+  try {
   const { userId } = await auth();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -146,4 +147,11 @@ export async function POST(request: Request) {
     device_name: pc!.name,
     is_repair: isRepair,
   });
+  } catch (err) {
+    console.error("[pairing/confirm] Unhandled error:", err);
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Erro interno do servidor." },
+      { status: 500 }
+    );
+  }
 }

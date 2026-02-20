@@ -60,7 +60,16 @@ function VincularContent() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code }),
       });
-      const data = await res.json();
+
+      const text = await res.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        setErrorMsg(`Erro do servidor (${res.status}). ${text.slice(0, 120)}`);
+        setStatus("error");
+        return;
+      }
 
       if (!res.ok) {
         setErrorMsg(data.error || "Erro ao vincular.");
@@ -71,8 +80,8 @@ function VincularContent() {
 
       setDeviceName(data.device_name || "Novo PC");
       setStatus("success");
-    } catch {
-      setErrorMsg("Erro de conexão. Tente novamente.");
+    } catch (err) {
+      setErrorMsg(`Erro de conexão: ${err instanceof Error ? err.message : "Tente novamente."}`);
       setStatus("error");
     }
   };
