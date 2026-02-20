@@ -128,7 +128,7 @@ class AutoUpdater:
                     creationflags=subprocess.DETACHED_PROCESS,
                 )
                 print("AutoUpdater: novo executável iniciado (dev mode)")
-                sys.exit(0)
+                os._exit(0)
                 return
             
             bat_path = os.path.join(tempfile.gettempdir(), "kidspc_update.bat")
@@ -158,7 +158,7 @@ class AutoUpdater:
             )
             
             print("AutoUpdater: script de update iniciado, encerrando app...")
-            sys.exit(0)
+            os._exit(0)
             
         except Exception as e:
             print(f"AutoUpdater: erro ao aplicar update: {e}")
