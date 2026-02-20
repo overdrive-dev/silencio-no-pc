@@ -8,7 +8,7 @@
 | `pc_settings` | Per-device settings (limits, schedule, volume thresholds, block modes) | per-device JWT |
 | `daily_usage` | Daily minutes used per device | per-device JWT |
 | `remote_commands` | Commands from web → device (lock, unlock, unpair, update_settings) | per-device JWT |
-| `pairing_tokens` | 6-digit tokens for device claim (TTL: 5 min) | public insert, Clerk-scoped read |
+| `pairing_codes` | Inverted pairing codes (desktop generates, parent confirms via QR scan). Columns: code, platform, user_id (nullable until confirmed), pc_id, device_jwt, used, expires_at (10 min) | public insert (rate-limited), Clerk-scoped confirm |
 | `strikes` | Strike events (timestamp, volume_db, penalty_minutes) | per-device JWT |
 | `app_usage` | Per-app usage time tracking | per-device JWT |
 | `site_visits` | Browser history entries synced from device | per-device JWT |
@@ -45,4 +45,4 @@ Two auth patterns coexist:
 - **Orphan detection**: 3 consecutive failed orphan checks → auto-unpair
 - **Device deletion**: Soft delete — sets `pcs.deleted_at` timestamp. All API queries filter `.is("deleted_at", null)`. An `unpair` command is sent so desktop/android app auto-unpairs. Related data (settings, usage, events, blocked lists) is preserved for history.
 - **Subscription cancellation**: devices keep working during grace period, then block
-- **Pairing tokens**: auto-expire after 5 minutes
+- **Pairing codes**: auto-expire after 10 minutes. Desktop generates code → shows QR + text → parent scans → confirms on web → device auto-detects via polling

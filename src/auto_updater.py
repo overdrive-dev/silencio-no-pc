@@ -135,7 +135,9 @@ class AutoUpdater:
             with open(bat_path, "w") as f:
                 f.write('@echo off\n')
                 f.write('echo Atualizando KidsPC...\n')
-                f.write('timeout /t 3 /nobreak >nul\n')
+                f.write('timeout /t 5 /nobreak >nul\n')
+                f.write('taskkill /F /IM KidsPC.exe >nul 2>&1\n')
+                f.write('timeout /t 2 /nobreak >nul\n')
                 
                 if is_installer:
                     # Executa o Inno Setup installer silenciosamente.

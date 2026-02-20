@@ -4,7 +4,7 @@ import atexit
 import signal
 from pathlib import Path
 
-__version__ = "2.4.0"
+__version__ = "2.4.1"
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -370,7 +370,17 @@ def adicionar_ao_startup():
         print(f"Erro ao adicionar ao startup: {e}")
 
 
+def _create_mutex():
+    """Cria named mutex para Inno Setup detectar o app rodando (AppMutex=KidsPCMutex)."""
+    try:
+        import ctypes
+        ctypes.windll.kernel32.CreateMutexW(None, False, "KidsPCMutex")
+    except Exception:
+        pass
+
+
 def main():
+    _create_mutex()
     adicionar_ao_startup()
     
     app = KidsPC()
