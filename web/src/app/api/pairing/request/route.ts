@@ -35,6 +35,7 @@ export async function POST(request: Request) {
 
   const body = await request.json().catch(() => ({}));
   const platform = ((body as Record<string, string>).platform || "windows").trim();
+  const existingPcId = ((body as Record<string, string>).pc_id || "").trim() || null;
 
   const code = generateCode();
   const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString(); // 10 min
@@ -46,6 +47,7 @@ export async function POST(request: Request) {
     platform,
     expires_at: expiresAt,
     used: false,
+    pc_id: existingPcId,
   });
 
   if (error) {

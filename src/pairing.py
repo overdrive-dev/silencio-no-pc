@@ -175,9 +175,13 @@ class PairingDialog(QDialog):
         urls = [WEB_API_URL_CUSTOM, WEB_API_URL_VERCEL, WEB_API_URL_LOCAL]
         for base_url in urls:
             try:
+                payload = {"platform": "windows"}
+                existing_pc_id = self.config.get("pc_id", "")
+                if existing_pc_id:
+                    payload["pc_id"] = existing_pc_id
                 resp = requests.post(
                     f"{base_url}/api/pairing/request",
-                    json={"platform": "windows"},
+                    json=payload,
                     timeout=15,
                 )
                 data = resp.json()
