@@ -34,6 +34,7 @@ def build():
         "--hidden-import=numpy",
         "--hidden-import=supabase",
         "--hidden-import=httpx",
+        "--hidden-import=qrcode",
         str(src_dir / "main.py")
     ]
     

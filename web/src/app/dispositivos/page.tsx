@@ -9,6 +9,7 @@ import { calculateSubscriptionAmount } from "@/lib/mercadopago";
 import PaymentBanner from "@/components/payment-banner";
 import { PlusIcon, ComputerDesktopIcon, DevicePhoneMobileIcon, ArrowPathIcon, LinkIcon } from "@heroicons/react/24/outline";
 import { QRCodeSVG } from "qrcode.react";
+import { QrCodeIcon } from "@heroicons/react/24/outline";
 
 function formatTime(minutes: number): string {
   if (minutes <= 0) return "0min";
@@ -42,18 +43,10 @@ function UsageBar({ used, limit }: { used: number; limit: number }) {
 
 export default function PcsPage() {
   const { user } = useUser();
-  const { hasAccess, loading: subLoading, canAddDevice, maxDevices, deviceCount, invalidate } = useSubscription();
+  const { hasAccess, loading: subLoading, maxDevices, deviceCount, invalidate } = useSubscription();
   const [pcs, setPcs] = useState<PC[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showAddModal, setShowAddModal] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-  const [newPcName, setNewPcName] = useState("");
-  const [creating, setCreating] = useState(false);
-  const [createError, setCreateError] = useState<string | null>(null);
-  const [newToken, setNewToken] = useState<string | null>(null);
-  const [regenPcId, setRegenPcId] = useState<string | null>(null);
-  const [regenToken, setRegenToken] = useState<string | null>(null);
-  const [regenerating, setRegenerating] = useState(false);
   const [upgrading, setUpgrading] = useState(false);
   const [upgradeError, setUpgradeError] = useState<string | null>(null);
 
@@ -76,50 +69,6 @@ export default function PcsPage() {
     return () => clearInterval(interval);
   }, [fetchPcs]);
 
-  const handleAddClick = () => {
-    if (!hasAccess) return; // button hidden, but just in case
-    if (canAddDevice) {
-      setCreateError(null);
-      setShowAddModal(true);
-    } else {
-      setUpgradeError(null);
-      setShowUpgradeModal(true);
-    }
-  };
-
-  const createPc = async () => {
-    if (!newPcName.trim()) return;
-    setCreating(true);
-    setCreateError(null);
-    try {
-      const res = await fetch("/api/dispositivos", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: newPcName.trim() }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        if (data.code === "DEVICE_LIMIT_REACHED") {
-          setShowAddModal(false);
-          setShowUpgradeModal(true);
-          return;
-        }
-        setCreateError(data.error || "Erro ao criar dispositivo.");
-        return;
-      }
-      if (data.sync_token) {
-        setNewToken(data.sync_token);
-        invalidate();
-        fetchPcs();
-      }
-    } catch (err) {
-      console.error("Erro ao criar dispositivo:", err);
-      setCreateError("Erro de conexão. Tente novamente.");
-    } finally {
-      setCreating(false);
-    }
-  };
-
   const handleUpgrade = async () => {
     setUpgrading(true);
     setUpgradeError(null);
@@ -130,42 +79,15 @@ export default function PcsPage() {
         setUpgradeError(data.error || "Erro ao fazer upgrade.");
         return;
       }
-      // Upgrade successful — refresh subscription data and open add modal
+      // Upgrade successful — refresh subscription data
       invalidate();
       setShowUpgradeModal(false);
-      setCreateError(null);
-      setShowAddModal(true);
     } catch (err) {
       console.error("Erro ao fazer upgrade:", err);
       setUpgradeError("Erro de conexão. Tente novamente.");
     } finally {
       setUpgrading(false);
     }
-  };
-
-  const regenerateToken = async (pcId: string) => {
-    setRegenerating(true);
-    setRegenPcId(pcId);
-    try {
-      const res = await fetch(`/api/dispositivo/${pcId}/token`, { method: "POST" });
-      const data = await res.json();
-      if (data.sync_token) setRegenToken(data.sync_token);
-    } catch (err) {
-      console.error("Erro ao regenerar token:", err);
-    } finally {
-      setRegenerating(false);
-    }
-  };
-
-  const copyToken = (token: string) => {
-    navigator.clipboard.writeText(token);
-  };
-
-  const closeAddModal = () => {
-    setShowAddModal(false);
-    setNewPcName("");
-    setNewToken(null);
-    setCreateError(null);
   };
 
   if (loading || subLoading) {
@@ -201,15 +123,6 @@ export default function PcsPage() {
             <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Baixar app
           </Link>
-          {hasAccess && (
-            <button
-              onClick={handleAddClick}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-pink-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-violet-500/20 hover:shadow-lg hover:shadow-violet-500/30 transition-all hover:-translate-y-0.5"
-            >
-              <PlusIcon className="size-4" />
-              Adicionar
-            </button>
-          )}
         </div>
       </div>
 
@@ -270,111 +183,8 @@ export default function PcsPage() {
         </div>
       )}
 
-      {/* Add PC Modal */}
-      {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl">
-            {!newToken ? (
-              <>
-                <h2 className="text-lg font-display font-bold text-slate-900">Adicionar Dispositivo</h2>
-                <p className="mt-1 text-sm text-slate-500">
-                  Dê um nome para identificar o dispositivo.
-                </p>
-                <input
-                  type="text"
-                  value={newPcName}
-                  onChange={(e) => setNewPcName(e.target.value)}
-                  placeholder="Ex: PC do Quarto, Notebook da Sala..."
-                  className="mt-4 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-500 transition"
-                  autoFocus
-                  onKeyDown={(e) => e.key === "Enter" && createPc()}
-                />
-                {createError && (
-                  <div className="mt-3 rounded-xl bg-red-50 border border-red-200 p-3 text-sm text-red-600">
-                    {createError}
-                  </div>
-                )}
-                <div className="mt-5 flex gap-3 justify-end">
-                  <button
-                    onClick={closeAddModal}
-                    className="rounded-lg px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 transition"
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    onClick={createPc}
-                    disabled={creating || !newPcName.trim()}
-                    className="rounded-lg bg-gradient-to-r from-violet-600 to-pink-500 px-5 py-2.5 text-sm font-semibold text-white hover:shadow-lg disabled:opacity-50 transition"
-                  >
-                    {creating ? "Criando..." : "Criar"}
-                  </button>
-                </div>
-              </>
-            ) : (
-              <div className="text-center space-y-4">
-                <div className="inline-flex items-center justify-center size-14 rounded-2xl bg-emerald-50">
-                  <svg className="size-7 text-emerald-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                </div>
-                <h2 className="text-lg font-display font-bold text-slate-900">
-                  Dispositivo criado!
-                </h2>
-                <p className="text-sm text-slate-500">
-                  Cole este token no app KidsPC para vincular:
-                </p>
-                <div
-                  onClick={() => copyToken(newToken)}
-                  className="rounded-xl bg-zinc-50 border border-zinc-200 p-4 cursor-pointer hover:bg-zinc-100 transition group"
-                  title="Clique para copiar"
-                >
-                  <code className="text-lg font-mono font-bold text-violet-600 break-all group-hover:text-violet-500 transition">
-                    {newToken}
-                  </code>
-                </div>
-                <p className="text-xs text-amber-600 font-medium">
-                  Válido por 30 minutos. Uso único.
-                </p>
-                <button
-                  onClick={closeAddModal}
-                  className="w-full rounded-lg bg-gradient-to-r from-violet-600 to-pink-500 py-2.5 text-sm font-semibold text-white hover:shadow-lg transition"
-                >
-                  Fechar
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Regenerate token modal */}
-      {regenToken && regenPcId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl">
-            <div className="text-center space-y-4">
-              <h2 className="text-lg font-display font-bold text-slate-900">Novo Token</h2>
-              <p className="text-sm text-slate-500">Cole no programa KidsPC:</p>
-              <div
-                onClick={() => copyToken(regenToken)}
-                className="rounded-xl bg-slate-50 border border-slate-200 p-4 cursor-pointer hover:bg-slate-100 transition"
-                title="Clique para copiar"
-              >
-                <code className="text-lg font-mono font-bold text-violet-600 break-all">
-                  {regenToken}
-                </code>
-              </div>
-              <p className="text-xs text-amber-600 font-medium">Válido por 30 minutos. Uso único.</p>
-              <button
-                onClick={() => { setRegenToken(null); setRegenPcId(null); }}
-                className="w-full rounded-lg bg-violet-600 py-2.5 text-sm font-semibold text-white hover:bg-violet-500 transition"
-              >
-                Fechar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Empty state */}
-      {pcs.length === 0 && !showAddModal && (
+      {pcs.length === 0 && (
         <div className="max-w-2xl mx-auto space-y-6">
           {/* Ghost device slots */}
           <div className="grid grid-cols-2 gap-4">
@@ -449,31 +259,19 @@ export default function PcsPage() {
               {/* Vincular card */}
               <div className="rounded-xl border border-[#e8e0d8] bg-[#FAF7F2] p-5 flex flex-col items-center justify-center text-center">
                 <div className="inline-flex items-center justify-center size-14 rounded-2xl bg-[#EDF2FF] mb-3">
-                  <LinkIcon className="size-7 text-[#4A7AFF]" />
+                  <QrCodeIcon className="size-7 text-[#4A7AFF]" />
                 </div>
-                <h4 className="text-sm font-semibold text-[#1a1a2e] mb-1">Vincular dispositivo</h4>
+                <h4 className="text-sm font-semibold text-[#1a1a2e] mb-1">Vincular via QR Code</h4>
                 <p className="text-xs text-gray-400 mb-4 leading-relaxed">
-                  {hasAccess
-                    ? "Gere um código e cole no app instalado no dispositivo do seu filho."
-                    : "Assine um plano para vincular dispositivos e controlar remotamente."}
+                  Abra o app KidsPC no dispositivo do seu filho e escaneie o QR code com seu celular.
                 </p>
-                {hasAccess ? (
-                  <button
-                    onClick={handleAddClick}
-                    className="inline-flex items-center gap-2 rounded-full bg-[#4A7AFF] px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-[#4A7AFF]/20 hover:bg-[#3A6AEF] hover:shadow-md hover:shadow-[#4A7AFF]/30 transition-all w-full justify-center"
-                  >
-                    <PlusIcon className="size-4" />
-                    Vincular dispositivo
-                  </button>
-                ) : (
-                  <Link
-                    href="/pricing"
-                    className="inline-flex items-center gap-2 rounded-full bg-[#4A7AFF] px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-[#4A7AFF]/20 hover:bg-[#3A6AEF] hover:shadow-md hover:shadow-[#4A7AFF]/30 transition-all w-full justify-center"
-                  >
-                    <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
-                    Assinar para vincular
-                  </Link>
-                )}
+                <Link
+                  href="/download"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#4A7AFF] px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-[#4A7AFF]/20 hover:bg-[#3A6AEF] hover:shadow-md hover:shadow-[#4A7AFF]/30 transition-all w-full justify-center"
+                >
+                  <LinkIcon className="size-4" />
+                  Como vincular
+                </Link>
               </div>
             </div>
 
@@ -487,7 +285,7 @@ export default function PcsPage() {
                 <svg className="size-4 text-gray-300" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                 <div className="flex items-center gap-2 text-xs text-gray-400">
                   <span className="flex items-center justify-center size-5 rounded-full bg-[#FFE0E0] text-[#FF6B6B] text-[10px] font-bold">2</span>
-                  Vincule aqui
+                  Escaneie o QR
                 </div>
                 <svg className="size-4 text-gray-300" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                 <div className="flex items-center gap-2 text-xs text-gray-400">
@@ -531,16 +329,9 @@ export default function PcsPage() {
                         Aguardando
                       </span>
                     </div>
-                    <p className="text-sm text-zinc-500 mb-3">
-                      Instale o app e cole o token para vincular.
+                    <p className="text-sm text-zinc-500">
+                      Abra o app no dispositivo e escaneie o QR code.
                     </p>
-                    <button
-                      onClick={() => regenerateToken(pc.id)}
-                      disabled={regenerating && regenPcId === pc.id}
-                      className="text-sm font-medium text-violet-600 hover:text-violet-500 transition disabled:opacity-50"
-                    >
-                      {regenerating && regenPcId === pc.id ? "Gerando..." : "Gerar novo token"}
-                    </button>
                   </div>
                 ) : (
                   <Link

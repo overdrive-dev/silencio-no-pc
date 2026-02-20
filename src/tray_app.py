@@ -173,43 +173,8 @@ class TrayApp:
         QApplication.processEvents()
         
         try:
-            update = self.auto_updater.check_for_update()
-            
-            if not update:
-                QMessageBox.information(
-                    None, "Atualização",
-                    f"Você já está na versão mais recente ({self.auto_updater.current_version})."
-                )
-                return
-            
-            changelog = update.get("changelog", "")
-            msg = f"Nova versão disponível: {update['version']}\n(Atual: {self.auto_updater.current_version})"
-            if changelog:
-                msg += f"\n\n{changelog}"
-            msg += "\n\nDeseja atualizar agora?"
-            
-            reply = QMessageBox.question(
-                None, "Atualização disponível", msg,
-                QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes
-            )
-            
-            if reply != QMessageBox.Yes:
-                return
-            
-            self.action_update.setText("🔄 Baixando...")
-            QApplication.processEvents()
-            
-            exe_path = self.auto_updater.download_update(update["download_url"])
-            if not exe_path:
-                QMessageBox.warning(None, "Erro", "Falha ao baixar a atualização.")
-                return
-            
-            QMessageBox.information(
-                None, "Atualização",
-                f"Download concluído!\nO programa vai reiniciar para aplicar a v{update['version']}."
-            )
-            self.auto_updater.apply_update(exe_path, is_installer=update.get("is_installer", False))
-            
+            from src.ui.update_progress import run_update_flow
+            run_update_flow(self.auto_updater.current_version)
         except Exception as e:
             QMessageBox.warning(None, "Erro", f"Erro ao verificar atualização:\n{e}")
         finally:

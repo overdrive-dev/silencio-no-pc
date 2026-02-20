@@ -69,8 +69,13 @@ class AutoUpdater:
             print(f"AutoUpdater: erro ao verificar: {e}")
             return None
     
-    def download_update(self, download_url: str) -> Optional[str]:
-        """Baixa o update para pasta temporária. Retorna caminho do arquivo."""
+    def download_update(self, download_url: str, on_progress: Optional[Callable] = None,
+                        cancel_check: Optional[Callable] = None) -> Optional[str]:
+        """Baixa o update para pasta temporária. Retorna caminho do arquivo.
+        
+        on_progress(downloaded_bytes, total_bytes) — chamado a cada chunk.
+        cancel_check() — retorna True se download deve ser cancelado.
+        """
         try:
             import httpx
             
@@ -82,9 +87,17 @@ class AutoUpdater:
             timeout = httpx.Timeout(connect=30, read=300, write=300, pool=300)
             with httpx.stream("GET", download_url, follow_redirects=True, timeout=timeout) as response:
                 response.raise_for_status()
+                total = int(response.headers.get("content-length", 0))
+                downloaded = 0
                 with open(temp_path, "wb") as f:
-                    for chunk in response.iter_bytes(chunk_size=8192):
+                    for chunk in response.iter_bytes(chunk_size=65536):
+                        if cancel_check and cancel_check():
+                            print("AutoUpdater: download cancelado pelo usuário")
+                            return None
                         f.write(chunk)
+                        downloaded += len(chunk)
+                        if on_progress:
+                            on_progress(downloaded, total)
             
             print(f"AutoUpdater: download concluído: {temp_path}")
             return temp_path
