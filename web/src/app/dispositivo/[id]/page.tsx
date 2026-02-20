@@ -29,11 +29,6 @@ export default function PcDashboard() {
   const [settings, setSettings] = useState<PCSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [cmdLoading, setCmdLoading] = useState<string | null>(null);
-  const [tokenModal, setTokenModal] = useState(false);
-  const [generatedToken, setGeneratedToken] = useState<string | null>(null);
-  const [tokenLoading, setTokenLoading] = useState(false);
-  const [tokenCopied, setTokenCopied] = useState(false);
-  const [tokenClaimed, setTokenClaimed] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [activeTab, setActiveTab] = useState<"history" | "events" | "activity" | "controls">("history");
@@ -63,28 +58,6 @@ export default function PcDashboard() {
     } finally {
       setDeleting(false);
     }
-  };
-
-  const generateToken = async () => {
-    setTokenLoading(true);
-    try {
-      const res = await fetch(`/api/dispositivo/${id}/token`, { method: "POST" });
-      const data = await res.json();
-      if (data.sync_token) {
-        setGeneratedToken(data.sync_token);
-        setTokenModal(true);
-      }
-    } catch (err) {
-      console.error("Erro ao gerar token:", err);
-    } finally {
-      setTokenLoading(false);
-    }
-  };
-
-  const copyToken = (token: string) => {
-    navigator.clipboard.writeText(token);
-    setTokenCopied(true);
-    setTimeout(() => setTokenCopied(false), 2000);
   };
 
   const fetchData = useCallback(async () => {
@@ -215,24 +188,6 @@ export default function PcDashboard() {
     setEventsOffset(0);
   }, [eventFilter]);
 
-  // Fast polling when token modal is open — detect claim
-  useEffect(() => {
-    if (!tokenModal || tokenClaimed) return;
-    const fast = setInterval(async () => {
-      try {
-        const res = await fetch(`/api/dispositivo/${id}`);
-        const data = await res.json();
-        if (data.pc) {
-          setPc(data.pc);
-          if (data.pc.paired_at && data.pc.is_online) {
-            setTokenClaimed(true);
-          }
-        }
-      } catch {}
-    }, 3000);
-    return () => clearInterval(fast);
-  }, [tokenModal, tokenClaimed, id]);
-
   const sendCommand = async (command: string, payload: Record<string, unknown> = {}) => {
     if (!hasAccess) return;
     setCmdLoading(command);
@@ -294,13 +249,6 @@ export default function PcDashboard() {
           </div>
         </div>
         <div className="flex gap-2">
-          <button
-            onClick={generateToken}
-            disabled={tokenLoading}
-            className="rounded-lg bg-gradient-to-r from-violet-600 to-pink-500 px-3.5 py-2 text-sm font-medium text-white shadow-sm shadow-violet-500/20 hover:shadow-lg disabled:opacity-50 transition"
-          >
-            {tokenLoading ? "Gerando..." : "Vincular"}
-          </button>
           <Link
             href={`/dispositivo/${id}/settings`}
             className="rounded-lg bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-sm ring-1 ring-inset ring-slate-200 hover:bg-slate-50 transition"
@@ -526,63 +474,6 @@ export default function PcDashboard() {
         </div>
       )}
 
-      {/* Token modal */}
-      {tokenModal && generatedToken && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl space-y-5">
-            {tokenClaimed ? (
-              <>
-                <div className="text-center space-y-3">
-                  <div className="inline-flex items-center justify-center size-16 rounded-2xl bg-emerald-50">
-                    <svg className="size-8 text-emerald-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                  </div>
-                  <h2 className="text-xl font-display font-bold text-slate-900">Vinculado!</h2>
-                  <p className="text-sm text-slate-500">O app KidsPC se conectou com sucesso.</p>
-                </div>
-                <div className="flex items-center justify-center gap-2 text-sm text-emerald-600 font-medium">
-                  <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
-                  Online agora
-                </div>
-                <button
-                  onClick={() => { setTokenModal(false); setGeneratedToken(null); setTokenCopied(false); setTokenClaimed(false); fetchData(); }}
-                  className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold transition"
-                >
-                  Fechar
-                </button>
-              </>
-            ) : (
-              <>
-                <div className="text-center">
-                  <div className="inline-flex items-center justify-center size-14 rounded-2xl bg-violet-50 mb-3">
-                    <svg className="size-7 text-violet-500" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m9.86-1.06 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" /></svg>
-                  </div>
-                  <h2 className="text-xl font-display font-bold text-slate-900">Token de Vinculação</h2>
-                  <p className="text-sm text-slate-500 mt-1">Cole no app KidsPC para vincular.</p>
-                </div>
-                <div
-                  onClick={() => copyToken(generatedToken)}
-                  className="rounded-xl bg-slate-50 border border-slate-200 p-4 text-center font-mono text-sm tracking-wide text-slate-900 cursor-pointer hover:bg-slate-100 transition select-all break-all"
-                >
-                  {generatedToken}
-                </div>
-                <p className="text-center text-xs font-medium">
-                  {tokenCopied ? <span className="text-emerald-600">Copiado!</span> : <span className="text-amber-600">Clique para copiar. Válido por 30min.</span>}
-                </p>
-                <div className="flex items-center justify-center gap-2 text-xs text-slate-400">
-                  <span className="size-1.5 rounded-full bg-zinc-400 animate-pulse" />
-                  Aguardando vinculação...
-                </div>
-                <button
-                  onClick={() => { setTokenModal(false); setGeneratedToken(null); setTokenCopied(false); setTokenClaimed(false); }}
-                  className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium transition"
-                >
-                  Cancelar
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
